@@ -1,0 +1,22 @@
+{
+  "name": "AlcyZ/GX-Selenium-Framework",
+  "description": "php selenium framework",
+  "version": "1.0",
+  "license": "MIT",
+  "require": {
+    "php": ">=5.4.0",
+    "facebook/webdriver": "~1.0",
+    "alcyZ/alcys-orm": "dev-master"
+  },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/AlcyZ/Alcys-ORM.git"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "GXSelenium\\": "src/"
+    }
+  }
+}
