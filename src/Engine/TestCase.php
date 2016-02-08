@@ -168,27 +168,10 @@ abstract class TestCase
 
 
 	/**
-	 * Login as admin.
-	 *
-	 * @return \GXSelenium\Engine\Emulator\Client
-	 */
-	protected function _admin()
-	{
-		$this->client->openBaseUrl(['logoff.php'])
-		             ->openBaseUrl()
-		             ->typeName('email_address', 'admin@shop.de')
-		             ->typeName('password', '12345')
-		             ->clickLinkText('Anmelden');
-
-		return $this->client;
-	}
-
-
-	/**
 	 * Logs an error and do a screenshot of the current screen.
 	 *
-	 * @param string $case    Name of the current case.
-	 * @param string $method  Name of failed method.
+	 * @param string $case Name of the current case.
+	 * @param string $method Name of failed method.
 	 * @param string $message Error message to log.
 	 *
 	 * @Todo Case maybe redundant - is it possible to use self::_getCaseName()?
@@ -217,9 +200,9 @@ abstract class TestCase
 	/**
 	 * Logs a thrown exception and do a screenshot of the current screen.
 	 *
-	 * @param string     $case   Name of the current case.
-	 * @param string     $method Name of failed method.
-	 * @param \Exception $e      Thrown exception.
+	 * @param string $case Name of the current case.
+	 * @param string $method Name of failed method.
+	 * @param \Exception $e Thrown exception.
 	 *
 	 * @return $this|TestCase Same instance for chained method calls.
 	 */
@@ -249,9 +232,9 @@ abstract class TestCase
 	 * Wait the specified amount of time until the case will continue.
 	 *
 	 * @param string $expectedUrlSnippet Snippet of url to match before continue the case.
-	 * @param int    $waitTimeout        (Optional) Amount of seconds to wait before the case fail. Default is 5.
-	 * @param int    $delay              (Optional) Delay after the page is loaded. Default is 1.
-	 * @param string $return             (Optional) Return value, when empty the client instance is returned.
+	 * @param int $waitTimeout (Optional) Amount of seconds to wait before the case fail. Default is 5.
+	 * @param int $delay (Optional) Delay after the page is loaded. Default is 1.
+	 * @param string $return (Optional) Return value, when empty the client instance is returned.
 	 *
 	 * @return Client|TestCase|$this Either the same or the client instance, specified by the 3. argument.
 	 */
