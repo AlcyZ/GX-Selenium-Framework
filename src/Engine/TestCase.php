@@ -97,6 +97,7 @@ abstract class TestCase
 	 */
 	public function run()
 	{
+		$this->client->reset();
 		$this->sqlLogger->startCase($this);
 		try
 		{
@@ -168,30 +169,46 @@ abstract class TestCase
 
 
 	/**
+	 * Login as admin.
+	 *
+	 * @return \GXSelenium\Engine\Emulator\Client
+	 */
+	protected function _admin()
+	{
+		$this->client->openBaseUrl(['logoff.php'])
+		             ->openBaseUrl()
+		             ->typeName('email_address', 'admin@shop.de')
+		             ->typeName('password', '12345')
+		             ->clickLinkText('Anmelden');
+
+		return $this->client;
+	}
+
+
+	/**
 	 * Logs an error and do a screenshot of the current screen.
 	 *
-	 * @param string $case Name of the current case.
-	 * @param string $method Name of failed method.
 	 * @param string $message Error message to log.
 	 *
-	 * @Todo Case maybe redundant - is it possible to use self::_getCaseName()?
+	 * @Todo Maybe merge code with _exceptionError method, seems to be redundant.
 	 *
 	 * @return $this|TestCase Same instance for chained method calls.
 	 */
-	protected function _error($case, $method, $message)
+	protected function _error($message)
 	{
-		if($this->failed):
+		if($this->_isFailed()):
 			return $this;
 		endif;
 
-		if(!$this->_isFailed()):
-			$this->testSuite->setFailed(true);
-			$txt = $case . ' | ' . $method . ' | ' . $message;
-			$this->fileLogger->log($txt, 'errors');
-			$this->fileLogger->screenshot($this->webDriver, str_replace(' ', '', $txt));
-			echo "TestCaseFailed ..\n";
-			$this->failed = true;
-		endif;
+		ob_start();
+		debug_print_backtrace();
+		$backtrace = ob_get_clean();
+
+		$txt = $this->_getCaseName() . ' | ' . $this->_invokedBy() . ' | ' . $message . "\n" . $backtrace;
+		$this->fileLogger->log($txt, 'errors');
+		$this->fileLogger->screenshot($this->webDriver, implode('', array_map('ucfirst', explode(' ', $message))));
+		echo "TestCaseFailed ..\n";
+		$this->failed = true;
 
 		return $this;
 	}
@@ -200,31 +217,55 @@ abstract class TestCase
 	/**
 	 * Logs a thrown exception and do a screenshot of the current screen.
 	 *
-	 * @param string $case Name of the current case.
-	 * @param string $method Name of failed method.
-	 * @param \Exception $e Thrown exception.
+	 * @param string     $message Error message of the current case.
+	 * @param \Exception $e       Thrown exception.
 	 *
 	 * @return $this|TestCase Same instance for chained method calls.
 	 */
-	protected function _exceptionError($case, $method, \Exception $e)
+	protected function _exceptionError($message, \Exception $e)
 	{
-		if($this->failed):
+		if($this->_isFailed()):
 			return $this;
 		endif;
 
-		if(!$this->_isFailed()):
-			$this->testSuite->setFailed(true);
-			$exceptionName = array_pop(explode('\\', get_class($e)));
-			$screenName    = $case . ' | ' . $method . ' | ' . $exceptionName;
+		$screenMessage = implode('', array_map('ucfirst', explode(' ', $message)));
+		$exceptionName = array_pop(explode('\\', get_class($e)));
+		$screenName    = $this->_getCaseName() .
+		                 ' | ' .
+		                 $this->_invokedBy() .
+		                 ' | ' .
+		                 $screenMessage .
+		                 ' | ' .
+		                 $exceptionName;
 
-			$txt = $case . ' | ' . $method . ' | ' . $exceptionName . " |\n" . $e->getTraceAsString() . "\n";
-			$this->fileLogger->log($txt, 'errors');
-			$this->fileLogger->screenshot($this->webDriver, str_replace(' ', '', $screenName));
-			echo "TestCaseFailed ..\n";
-			$this->failed = true;
-		endif;
+		$txt = $this->_getCaseName() .
+		       ' | ' .
+		       $this->_invokedBy() .
+		       ' | ' .
+		       $message .
+		       ' | ' .
+		       $exceptionName .
+		       " |\n" .
+		       $e->getTraceAsString() .
+		       "\n";
+
+		$this->fileLogger->log($txt, 'errors');
+		$this->fileLogger->screenshot($this->webDriver, str_replace(' ', '', $screenName));
+		echo "TestCaseFailed ..\n";
+		$this->failed = true;
 
 		return $this;
+	}
+
+
+	private function _asd($message, \Exception $e = null)
+	{
+		$exceptionName = $e ? ' | ' . array_pop(explode('\\', get_class($e))) : null;
+		$screenMessage = implode('', array_map('ucfirst', explode(' ', $message)));
+		$screenName    = $this->_getCaseName() . ' | ' . $this->_invokedBy() . ' | ' . $screenMessage . $exceptionName;
+
+		$this->fileLogger->screenshot($this->webDriver, str_replace(' ', '', $screenName));
+		//		$this->fileLogger->log($txt, 'errors');
 	}
 
 
@@ -232,9 +273,9 @@ abstract class TestCase
 	 * Wait the specified amount of time until the case will continue.
 	 *
 	 * @param string $expectedUrlSnippet Snippet of url to match before continue the case.
-	 * @param int $waitTimeout (Optional) Amount of seconds to wait before the case fail. Default is 5.
-	 * @param int $delay (Optional) Delay after the page is loaded. Default is 1.
-	 * @param string $return (Optional) Return value, when empty the client instance is returned.
+	 * @param int    $waitTimeout        (Optional) Amount of seconds to wait before the case fail. Default is 5.
+	 * @param int    $delay              (Optional) Delay after the page is loaded. Default is 1.
+	 * @param string $return             (Optional) Return value, when empty the client instance is returned.
 	 *
 	 * @return Client|TestCase|$this Either the same or the client instance, specified by the 3. argument.
 	 */
@@ -246,13 +287,47 @@ abstract class TestCase
 		}
 		catch(\Exception $e)
 		{
-			$this->_exceptionError($this->getCaseName(), explode('::', __METHOD__)[1], $e);
+			$this->_exceptionError('Wait to long for page load', $e);
 		}
 		($delay > 0) ? sleep($delay) : null;
 
 		return ($return === 'client') ? $this->client : $this;
 	}
 
+
+	/**
+	 * Returns the name of the current case.
+	 *
+	 * @return string
+	 */
+	protected function _getCaseName()
+	{
+		return array_pop(explode('\\', get_class($this)));
+	}
+
+
+	/**
+	 * Returns the method which call the method of current scope without arguments.
+	 * The argument must be a key of the debug backtrace array, otherwise the key is automatic set to 'function'.
+	 *
+	 * @param string|null $type     (Optional) Second key of multidimensional debug backtrace array.
+	 * @param int         $deepness (Optional) Deepness of invocation.
+	 *
+	 * @return mixed|string
+	 */
+	private function _invokedBy($type = null, $deepness = 2)
+	{
+		$return = $type ?: 'function';
+
+		$debugBacktrace = debug_backtrace();
+		if(!array_key_exists($deepness, $debugBacktrace)):
+			throw new \UnexpectedValueException('no invokation with deepness "' . $deepness . '" found in backtrace');
+		elseif(!array_key_exists($return, $debugBacktrace[2])):
+			$return = 'function';
+		endif;
+
+		return $debugBacktrace[$deepness][$return];
+	}
 
 	/**
 	 * Run the test case.

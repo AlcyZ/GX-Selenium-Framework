@@ -40,138 +40,140 @@ use GXSelenium\Engine\TestSuite;
 /**
  * Class Client
  * @package GXSelenium\Engine\Emulator
- *          
+ *
  * @Todo Maybe refactor instantiation in selenium factory .. are multiple instances required (if not, refactor!)
  */
 class Client
 {
-    use ClickProviderTrait, InspectionProviderTrait, SelectingProviderTrait, TypingProviderTrait, MouseTrait;
+	use ClickProviderTrait, InspectionProviderTrait, SelectingProviderTrait, TypingProviderTrait, MouseTrait;
 
-    /**
-     * @var TestSuite
-     */
-    private $testSuite;
+	/**
+	 * @var TestSuite
+	 */
+	private $testSuite;
 
-    /**
-     * @var WebDriver|JavaScriptExecutor
-     */
-    private $webDriver;
+	/**
+	 * @var WebDriver|JavaScriptExecutor
+	 */
+	private $webDriver;
 
-    /**
-     * @var ElementProvider
-     */
-    private $elementProvider;
+	/**
+	 * @var ElementProvider
+	 */
+	private $elementProvider;
 
-    /**
-     * @var string
-     */
-    private $baseUrl;
+	/**
+	 * @var string
+	 */
+	private $baseUrl;
 
-    /**
-     * @var bool
-     */
-    private $failed = false;
-
-
-    /**
-     * Initialize the client emulator.
-     *
-     * @param TestSuite $testSuite
-     * @param ElementProvider $elementProvider
-     */
-    public function __construct(TestSuite $testSuite, ElementProvider $elementProvider)
-    {
-        $this->testSuite = $testSuite;
-        $this->webDriver = $this->testSuite->getWebDriver();
-        $this->elementProvider = $elementProvider;
-        $this->baseUrl =
-            $this->testSuite->getSuiteSettings()->getBaseUrl() . '/' . $this->testSuite->getSuiteSettings()
-                ->getWebApp();
-    }
+	/**
+	 * @var bool
+	 */
+	private $failed = false;
 
 
-    /**
-     * Open the base url with the web app path (given from constructor argument).
-     * When the second argument isset, a sub url is opened.
-     *
-     * @param array $pathArray Array which elements are the sub paths.
-     *
-     * @return $this|Client Same instance for chained method calls.
-     */
-    public function openBaseUrl(array $pathArray = array())
-    {
-        $url = $this->baseUrl . '/';
-        foreach ($pathArray as $path):
-            $url .= $path . '/';
-        endforeach;
-        $url = rtrim($url, '/');
-        $this->webDriver->get($url);
-
-        return $this;
-    }
+	/**
+	 * Initialize the client emulator.
+	 *
+	 * @param TestSuite       $testSuite
+	 * @param ElementProvider $elementProvider
+	 */
+	public function __construct(TestSuite $testSuite, ElementProvider $elementProvider)
+	{
+		$this->testSuite       = $testSuite;
+		$this->webDriver       = $this->testSuite->getWebDriver();
+		$this->elementProvider = $elementProvider;
+		$this->baseUrl
+		                       = $this->testSuite->getSuiteSettings()->getBaseUrl() .
+		                         '/' .
+		                         $this->testSuite->getSuiteSettings()->getWebApp();
+	}
 
 
-    /**
-     * Scroll to a position.
-     *
-     * @param int $xPos X-position to scroll.
-     * @param int $yPos Y-position to scroll.
-     *
-     * @return $this Same instance for chained method calls.
-     */
-    public function scrollTo($xPos = 0, $yPos = 0)
-    {
-        $this->webDriver->executeScript('javascript:window.scrollTo(' . $xPos . ', ' . $yPos . ')');
+	/**
+	 * Open the base url with the web app path (given from constructor argument).
+	 * When the second argument isset, a sub url is opened.
+	 *
+	 * @param array $pathArray Array which elements are the sub paths.
+	 *
+	 * @return $this|Client Same instance for chained method calls.
+	 */
+	public function openBaseUrl(array $pathArray = array())
+	{
+		$url = $this->baseUrl . '/';
+		foreach($pathArray as $path):
+			$url .= $path . '/';
+		endforeach;
+		$url = rtrim($url, '/');
+		$this->webDriver->get($url);
 
-        return $this;
-    }
-
-
-    /**
-     * Scroll to an element.
-     *
-     * @param WebDriverElement $element The element to that the client scroll.
-     *
-     * @Todo Add settings - e.g.: scrollElementOffset (Maybe the use the suite settings or create settings for test
-     *       cases)
-     *
-     * @return $this|Client Same instance for chained method calls.
-     */
-    public function scrollToElement(WebDriverElement $element)
-    {
-        $xOffset = $this->testSuite->getSuiteSettings()->getScrollXOffset();
-        $yOffset = $this->testSuite->getSuiteSettings()->getScrollYOffset();
-
-        $xPos = $element->getLocation()->getX() - $xOffset;
-        $yPos = $element->getLocation()->getY() - $yOffset;
-
-        return $this->scrollTo($xPos, $yPos);
-    }
+		return $this;
+	}
 
 
-    /**
-     * Wait the specified amount of time until the case will continue.
-     *
-     * @param string $expectedUrlSnippet Snippet of url to match before continue the case.
-     * @param int $waitTimeout Amount of seconds to wait before the case fail.
-     *
-     * @return $this|Client Same instance for chained method calls.
-     *
-     * @throws \Exception Look at WebDriverWait::until() for detailed information.
-     * @throws \Facebook\WebDriver\Exception\TimeOutException Look at WebDriverWait::until() for detailed information.
-     * @throws \Facebook\WebDriver\Exception\NoSuchElementException Look at WebDriverWait::until() for detailed
-     *                                                              information.
-     * @codeCoverageIgnore
-     */
-    public function waitForPageLoaded($expectedUrlSnippet, $waitTimeout)
-    {
-        $this->webDriver->wait($waitTimeout)->until(function ($webDriver) use ($expectedUrlSnippet) {
-            /** @var RemoteWebDriver $webDriver */
-            return (strpos($webDriver->getCurrentURL(), $expectedUrlSnippet)) ? true : false;
-        });
+	/**
+	 * Scroll to a position.
+	 *
+	 * @param int $xPos X-position to scroll.
+	 * @param int $yPos Y-position to scroll.
+	 *
+	 * @return $this Same instance for chained method calls.
+	 */
+	public function scrollTo($xPos = 0, $yPos = 0)
+	{
+		$this->webDriver->executeScript('javascript:window.scrollTo(' . $xPos . ', ' . $yPos . ')');
 
-        return $this;
-    }
+		return $this;
+	}
+
+
+	/**
+	 * Scroll to an element.
+	 *
+	 * @param WebDriverElement $element The element to that the client scroll.
+	 *
+	 * @Todo Add settings - e.g.: scrollElementOffset (Maybe the use the suite settings or create settings for test
+	 *       cases)
+	 *
+	 * @return $this|Client Same instance for chained method calls.
+	 */
+	public function scrollToElement(WebDriverElement $element)
+	{
+		$xOffset = $this->testSuite->getSuiteSettings()->getScrollXOffset();
+		$yOffset = $this->testSuite->getSuiteSettings()->getScrollYOffset();
+
+		$xPos = $element->getLocation()->getX() - $xOffset;
+		$yPos = $element->getLocation()->getY() - $yOffset;
+
+		return $this->scrollTo($xPos, $yPos);
+	}
+
+
+	/**
+	 * Wait the specified amount of time until the case will continue.
+	 *
+	 * @param string $expectedUrlSnippet Snippet of url to match before continue the case.
+	 * @param int    $waitTimeout        Amount of seconds to wait before the case fail.
+	 *
+	 * @return $this|Client Same instance for chained method calls.
+	 *
+	 * @throws \Exception Look at WebDriverWait::until() for detailed information.
+	 * @throws \Facebook\WebDriver\Exception\TimeOutException Look at WebDriverWait::until() for detailed information.
+	 * @throws \Facebook\WebDriver\Exception\NoSuchElementException Look at WebDriverWait::until() for detailed
+	 *                                                              information.
+	 * @codeCoverageIgnore
+	 */
+	public function waitForPageLoaded($expectedUrlSnippet, $waitTimeout)
+	{
+		$this->webDriver->wait($waitTimeout)->until(function($webDriver) use ($expectedUrlSnippet)
+		{
+			/** @var RemoteWebDriver $webDriver */
+			return (strpos($webDriver->getCurrentURL(), $expectedUrlSnippet)) ? true : false;
+		});
+
+		return $this;
+	}
 
 
     /**
@@ -186,71 +188,88 @@ class Client
             return $this;
         endif;
 
-        echo "Client deactivated ..\n";
-        $this->failed = true;
+		echo "Client deactivated ..\n";
+		$this->failed = true;
 
-        return $this;
-    }
-
-
-    /**
-     * Returns the element provider which is required for the trait methods.
-     *
-     * @return ElementProvider
-     */
-    public function getElementProvider()
-    {
-        return $this->elementProvider;
-    }
+		return $this;
+	}
 
 
-    /**
-     * Returns if the element provider is failed or not.
-     *
-     * @return bool
-     */
-    public function isElementProviderFailed()
-    {
-        return $this->elementProvider->isFailed();
-    }
+	/**
+	 * Returns the element provider which is required for the trait methods.
+	 *
+	 * @return ElementProvider
+	 */
+	public function getElementProvider()
+	{
+		return $this->elementProvider;
+	}
 
 
-    /**
-     * Returns the web driver instance.
-     *
-     * @return RemoteWebDriver
-     */
-    public function getWebDriver()
-    {
-        return $this->webDriver;
-    }
+	/**
+	 * Returns if the element provider is failed or not.
+	 *
+	 * @return bool
+	 */
+	public function isElementProviderFailed()
+	{
+		return $this->elementProvider->isFailed();
+	}
 
 
-    /**
-     * Implementation of abstract method signature from trait.
-     *
-     * @param WebDriverElement $element
-     *
-     * @return WebDriverSelect
-     * @codeCoverageIgnore
-     */
-    protected function _createWebDriverSelect(WebDriverElement $element)
-    {
-        return new WebDriverSelect($element);
-    }
+	/**
+	 * Returns the web driver instance.
+	 *
+	 * @return RemoteWebDriver
+	 */
+	public function getWebDriver()
+	{
+		return $this->webDriver;
+	}
 
-    /**
-     * Returns true when the test case is failed.
-     *
-     * @return bool
-     */
-    public function isFailed()
-    {
-        $elementProviderFailed = $this->isElementProviderFailed();
-        if (!$this->failed && $elementProviderFailed):
-            $this->failed();
-        endif;
+	/**
+	 * Resets the internal failed property of the client.
+	 *
+	 * @return $this Same instance for chained method calls.
+	 */
+	public function reset()
+	{
+		if($this->failed):
+			echo "\nClient reset..\n";
+		endif;
+		$this->failed = false;
 
-        return $this->failed;
-    }
+		$this->elementProvider->reset();
+
+		return $this;
+	}
+
+
+	/**
+	 * Implementation of abstract method signature from trait.
+	 *
+	 * @param WebDriverElement $element
+	 *
+	 * @return WebDriverSelect
+	 * @codeCoverageIgnore
+	 */
+	protected function _createWebDriverSelect(WebDriverElement $element)
+	{
+		return new WebDriverSelect($element);
+	}
+
+	/**
+	 * Returns true when the test case is failed.
+	 *
+	 * @return bool
+	 */
+	public function isFailed()
+	{
+		$elementProviderFailed = $this->isElementProviderFailed();
+		if(!$this->failed && $elementProviderFailed):
+			$this->failed();
+		endif;
+
+		return $this->failed;
+	}
 }
