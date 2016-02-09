@@ -2,4 +2,5 @@
 composer.lock
 .idea
 logs
+!logs/index.html
 tests/_coverage
