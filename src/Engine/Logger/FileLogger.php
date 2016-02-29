@@ -25,6 +25,7 @@
 namespace GXSelenium\Engine\Logger;
 
 use Facebook\WebDriver\WebDriver;
+use GXSelenium\Engine\Settings\SuiteSettings;
 
 /**
  * Class FileLogger
@@ -32,6 +33,11 @@ use Facebook\WebDriver\WebDriver;
  */
 class FileLogger
 {
+	/**
+	 * @var SuiteSettings
+	 */
+	private $suiteSettings;
+
 	/**
 	 * @var string
 	 */
@@ -51,17 +57,20 @@ class FileLogger
 	/**
 	 * Initialize the file logger.
 	 *
-	 * @param string $buildNumber
-	 * @param string $loggingDir
+	 * @param SuiteSettings $settings
 	 */
-	public function __construct($buildNumber, $loggingDir = null)
+	public function __construct(SuiteSettings $settings)
 	{
-		$this->logsDir       =
-			($loggingDir) ? $loggingDir . DIRECTORY_SEPARATOR . $buildNumber : dirname(dirname(dirname(__DIR__)))
-			                                                                   . DIRECTORY_SEPARATOR
-			                                                                   . 'logs'
-			                                                                   . DIRECTORY_SEPARATOR
-			                                                                   . $buildNumber;
+		$this->suiteSettings = $settings;
+
+		$buildNumber     = $this->suiteSettings->getBuildNumber();
+		$buildNumberPath = ($buildNumber !== '') ? DIRECTORY_SEPARATOR . $buildNumber : '';
+
+		$this->logsDir = $this->suiteSettings->getLoggingDirectory() .
+		                 $buildNumberPath .
+		                 DIRECTORY_SEPARATOR .
+		                 $this->suiteSettings->getLoggingDirectoryName();
+
 		$this->screenshotDir = $this->logsDir . DIRECTORY_SEPARATOR . 'screenshots';
 	}
 
@@ -90,6 +99,16 @@ class FileLogger
 		$screenName = date('d|m|y|H|i|s') . '|' . $case . '.jpg';
 
 		file_put_contents($this->screenshotDir . DIRECTORY_SEPARATOR . $screenName, $webDriver->takeScreenshot());
+
+		$buildNumber     = $this->suiteSettings->getBuildNumber();
+		$buildNumberPath = ($buildNumber !== '') ? $buildNumber . DIRECTORY_SEPARATOR : '';
+
+		return $buildNumberPath .
+		       $this->suiteSettings->getLoggingDirectoryName() .
+		       DIRECTORY_SEPARATOR .
+		       'screenshots' .
+		       DIRECTORY_SEPARATOR .
+		       $screenName;
 	}
 
 
@@ -114,7 +133,7 @@ class FileLogger
 	 */
 	private function _createLoggingDirIfNotExists()
 	{
-		(!is_dir($this->logsDir)) ? mkdir($this->logsDir) : null;
+		(!is_dir($this->logsDir)) ? mkdir($this->logsDir, 0777, true) : null;
 
 		return $this;
 	}

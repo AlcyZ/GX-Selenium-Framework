@@ -25,6 +25,7 @@
 namespace GXSelenium\Engine\Settings;
 
 use \Facebook\WebDriver\Remote\DesiredCapabilities;
+use GXSelenium\Engine\TestCase;
 
 /**
  * Class SuiteSettings
@@ -57,7 +58,7 @@ class SuiteSettings
 	/**
 	 * @var string
 	 */
-	private $shopVersion = '';
+	private $version = '';
 
 	/**
 	 * @var string
@@ -77,7 +78,7 @@ class SuiteSettings
 	/**
 	 * @var string
 	 */
-	private $seleniumHost = 'http://selenium:4444/wd/hub';
+	private $seleniumHost = 'http://localhost:4444/wd/hub';
 
 	/**
 	 * @var int
@@ -97,19 +98,36 @@ class SuiteSettings
 	/**
 	 * @var string
 	 */
-	private $currentTestCase = '';
+	private $loggingDirectory;
+
+	/**
+	 * @var string
+	 */
+	private $currentTestCase;
 
 	/**
 	 * @var string
 	 */
 	private $suiteName = 'Selenium Testsuite';
 
+	/**
+	 * @var string
+	 */
 	private $dbHost = 'localhost';
-	
+
+	/**
+	 * @var string
+	 */
 	private $dbUser = 'root';
-	
+
+	/**
+	 * @var string
+	 */
 	private $dbPassword = '';
-	
+
+	/**
+	 * @var string
+	 */
 	private $dbName = 'database_name';
 
 
@@ -118,7 +136,8 @@ class SuiteSettings
 	 */
 	public function __construct()
 	{
-		$this->capabilities = DesiredCapabilities::firefox();
+		$this->capabilities     = DesiredCapabilities::firefox();
+		$this->loggingDirectory = dirname(dirname(dirname(__DIR__))) . DIRECTORY_SEPARATOR . 'logs';
 	}
 
 
@@ -197,18 +216,18 @@ class SuiteSettings
 	/**
 	 * @return string
 	 */
-	public function getShopVersion()
+	public function getVersion()
 	{
-		return $this->shopVersion;
+		return $this->version;
 	}
 
 
 	/**
-	 * @param string $shopVersion
+	 * @param string $version
 	 */
-	public function setShopVersion($shopVersion)
+	public function setVersion($version)
 	{
-		$this->shopVersion = $shopVersion;
+		$this->version = $version;
 	}
 
 
@@ -337,22 +356,36 @@ class SuiteSettings
 		$this->loggingDirectoryName = $loggingDirectoryName;
 	}
 
-
 	/**
 	 * @return string
 	 */
-	public function getCurrentTestCase()
+	public function getLoggingDirectory()
 	{
-		$caseNameArray = explode('\\', $this->currentTestCase);
+		return $this->loggingDirectory;
+	}
 
-		return $caseNameArray[count($caseNameArray) - 1];
+	/**
+	 * @param string $loggingDirectory
+	 */
+	public function setLoggingDirectory($loggingDirectory)
+	{
+		$this->loggingDirectory = $loggingDirectory;
 	}
 
 
 	/**
-	 * @param string $currentCase
+	 * @return TestCase
 	 */
-	public function setCurrentTestCase($currentCase)
+	public function getCurrentTestCase()
+	{
+		return $this->currentTestCase;
+	}
+
+
+	/**
+	 * @param TestCase $currentCase
+	 */
+	public function setCurrentTestCase(TestCase $currentCase)
 	{
 		$this->currentTestCase = $currentCase;
 	}

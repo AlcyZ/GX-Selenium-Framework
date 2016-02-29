@@ -48,7 +48,7 @@ class SqlLogger implements SqlInterface
 	/**
 	 * @var string
 	 */
-	private $suitesTable = 'suites';
+	private $suitesTable = 'test_suites';
 
 	/**
 	 * @var int
@@ -63,7 +63,7 @@ class SqlLogger implements SqlInterface
 	/**
 	 * @var string
 	 */
-	private $casesTable = 'cases';
+	private $casesTable = 'test_cases';
 
 	/**
 	 * @var int
@@ -78,7 +78,7 @@ class SqlLogger implements SqlInterface
 	/**
 	 * @var string
 	 */
-	private $caseErrorsTable = 'case_errors';
+	private $caseErrorsTable = 'test_case_errors';
 
 
 	/**
@@ -181,18 +181,18 @@ class SqlLogger implements SqlInterface
 	{
 		$insert = $this->db->insert($this->caseErrorsTable);
 		$insert->columns([
-			                 'case_id',
-			                 'error_message',
-			                 'screenshot_url',
-			                 'error_url',
-			                 'time'
-		                 ])->values([
-			                            $this->lastCaseId,
-			                            $message,
-			                            $screenshotUrl,
-			                            $errorUrl,
-			                            date('Y-m-d H:i:s')
-		                            ]);
+			'test_case_id',
+			'error_message',
+			'screenshot_url',
+			'error_url',
+			'time'
+		])->values([
+			$this->lastCaseId,
+			$message,
+			$screenshotUrl,
+			$errorUrl,
+			date('Y-m-d H:i:s')
+		])->execute();
 
 		return $this;
 	}
@@ -218,7 +218,7 @@ class SqlLogger implements SqlInterface
 		return [
 			'build_number',
 			'suite_name',
-			'shop_version',
+			'version',
 			'branch',
 			'status',
 			'begin',
@@ -248,7 +248,7 @@ class SqlLogger implements SqlInterface
 		return [
 			$this->testSuite->getSuiteSettings()->getBuildNumber(),
 			$this->testSuite->getSuiteSettings()->getSuiteName(),
-			$this->testSuite->getSuiteSettings()->getShopVersion(),
+			$this->testSuite->getSuiteSettings()->getVersion(),
 			$this->testSuite->getSuiteSettings()->getBranch(),
 			0,
 			date('Y-m-d H:i:s'),
@@ -295,7 +295,7 @@ class SqlLogger implements SqlInterface
 		endif;
 
 		return [
-			'suite_id',
+			'test_suite_id',
 			'name',
 			'status',
 			'begin',

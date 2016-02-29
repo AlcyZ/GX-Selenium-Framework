@@ -26,6 +26,7 @@ namespace GXSelenium\Engine\Provider\Traits;
 
 use Facebook\WebDriver\Remote\RemoteWebElement;
 use Facebook\WebDriver\WebDriverElement;
+use GXSelenium\Engine\NullObjects\WebDriverElementNull;
 use GXSelenium\Engine\Provider\ElementProvider;
 
 /**
@@ -71,6 +72,24 @@ trait ClickProviderTrait
 		return $this;
 	}
 
+	/**
+	 * Try to click at an element by the given id.
+	 *
+	 * @param string $id Id of expected element.
+	 *
+	 * @return $this Same instance for chained method calls.
+	 */
+	public function tryClickId($id)
+	{
+		if($this->isFailed()):
+			return $this;
+		endif;
+
+		$this->_logClick($this->getElementProvider()->tryById($id))->click();
+
+		return $this;
+	}
+
 
 	/**
 	 * Click at an element by the given name attribute.
@@ -86,6 +105,24 @@ trait ClickProviderTrait
 		endif;
 
 		$this->_logClick($this->getElementProvider()->byName($name))->click();
+
+		return $this;
+	}
+
+	/**
+	 * Try to click at an element by the given name attribute.
+	 *
+	 * @param string $name Name attribute of expected element.
+	 *
+	 * @return $this Same instance for chained method calls.
+	 */
+	public function tryClickName($name)
+	{
+		if($this->isFailed()):
+			return $this;
+		endif;
+
+		$this->_logClick($this->getElementProvider()->tryByName($name))->click();
 
 		return $this;
 	}
@@ -109,6 +146,24 @@ trait ClickProviderTrait
 		return $this;
 	}
 
+	/**
+	 * Try to click at an element by the given class name.
+	 *
+	 * @param string $className Class name of expected element.
+	 *
+	 * @return $this Same instance for chained method calls.
+	 */
+	public function tryClickClassName($className)
+	{
+		if($this->isFailed()):
+			return $this;
+		endif;
+
+		$this->_logClick($this->getElementProvider()->tryByClassName($className))->click();
+
+		return $this;
+	}
+
 
 	/**
 	 * Click at an element by the given link text.
@@ -124,6 +179,24 @@ trait ClickProviderTrait
 		endif;
 
 		$this->_logClick($this->getElementProvider()->byLinkText($linkText))->click();
+
+		return $this;
+	}
+
+	/**
+	 * Try to click at an element by the given link text.
+	 *
+	 * @param string $linkText Link text of expected element.
+	 *
+	 * @return $this Same instance for chained method calls.
+	 */
+	public function tryClickLinkText($linkText)
+	{
+		if($this->isFailed()):
+			return $this;
+		endif;
+
+		$this->_logClick($this->getElementProvider()->tryByLinkText($linkText))->click();
 
 		return $this;
 	}
@@ -147,6 +220,24 @@ trait ClickProviderTrait
 		return $this;
 	}
 
+	/**
+	 * Try to click at an element by the given partial link text.
+	 *
+	 * @param string $partialLinkText Partial link text of expected element.
+	 *
+	 * @return $this Same instance for chained method calls.
+	 */
+	public function tryClickPartialLinkText($partialLinkText)
+	{
+		if($this->isFailed()):
+			return $this;
+		endif;
+
+		$this->_logClick($this->getElementProvider()->tryByPartialLinkText($partialLinkText))->click();
+
+		return $this;
+	}
+
 
 	/**
 	 * Click at an element by the given tag name.
@@ -162,6 +253,24 @@ trait ClickProviderTrait
 		endif;
 
 		$this->_logClick($this->getElementProvider()->byTagName($tagName))->click();
+
+		return $this;
+	}
+
+	/**
+	 * Try to click at an element by the given tag name.
+	 *
+	 * @param string $tagName Tag name of expected element.
+	 *
+	 * @return $this Same instance for chained method calls.
+	 */
+	public function tryClickTagName($tagName)
+	{
+		if($this->isFailed()):
+			return $this;
+		endif;
+
+		$this->_logClick($this->getElementProvider()->tryByTagName($tagName))->click();
 
 		return $this;
 	}
@@ -185,6 +294,24 @@ trait ClickProviderTrait
 		return $this;
 	}
 
+	/**
+	 * Try to click at an element by the given css selector.
+	 *
+	 * @param string $cssSelector Css selector of expected element.
+	 *
+	 * @return $this Same instance for chained method calls.
+	 */
+	public function tryClickByCssSelector($cssSelector)
+	{
+		if($this->isFailed()):
+			return $this;
+		endif;
+
+		$this->_logClick($this->getElementProvider()->tryByCssSelector($cssSelector))->click();
+
+		return $this;
+	}
+
 
 	/**
 	 * Click at an element by the given xpath.
@@ -204,6 +331,24 @@ trait ClickProviderTrait
 		return $this;
 	}
 
+	/**
+	 * Try to click at an element by the given xpath.
+	 *
+	 * @param string $xPath Xpath of expected element.
+	 *
+	 * @return $this Same instance for chained method calls.
+	 */
+	public function tryClickByXpath($xPath)
+	{
+		if($this->isFailed()):
+			return $this;
+		endif;
+
+		$this->_logClick($this->getElementProvider()->tryByXpath($xPath))->click();
+
+		return $this;
+	}
+
 
 	/**
 	 * Log information about a web driver element.
@@ -214,6 +359,10 @@ trait ClickProviderTrait
 	 */
 	private function _logClick(WebDriverElement $element)
 	{
+		if($element instanceof WebDriverElementNull || $this->isFailed()):
+			return $element;
+		endif;
+
 		$id       = ($element->getAttribute('id') !== '') ? $element->getAttribute('id') : null;
 		$class    = ($element->getAttribute('class') !== '') ? $element->getAttribute('class') : null;
 		$disabled = ($element->getAttribute('disabled') !== '') ? $element->getAttribute('disabled') : null;

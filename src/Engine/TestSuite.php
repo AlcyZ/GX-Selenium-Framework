@@ -24,6 +24,7 @@
 
 namespace GXSelenium\Engine;
 
+use Facebook\WebDriver\Chrome\ChromeOptions;
 use Facebook\WebDriver\Remote\DesiredCapabilities;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\WebDriver;
@@ -111,8 +112,8 @@ class TestSuite
 	{
 		$this->sqlLogger->startSuite();
 		foreach($this->testCaseCollection as $testCase):
-			$this->suiteSettings->setCurrentTestCase(get_class($testCase));
 			/** @var TestCase $testCase */
+			$this->suiteSettings->setCurrentTestCase($testCase);
 			$testCase->run();
 		endforeach;
 		$this->sqlLogger->endSuite();
@@ -237,8 +238,8 @@ class TestSuite
 	 */
 	private function _initWebDriver()
 	{
-		$this->webDriver =
-			RemoteWebDriver::create($this->suiteSettings->getSeleniumHost(), $this->suiteSettings->getCapabilities());
+		$this->webDriver
+			= RemoteWebDriver::create($this->suiteSettings->getSeleniumHost(), $this->suiteSettings->getCapabilities());
 
 		return $this;
 	}
@@ -257,31 +258,23 @@ class TestSuite
 		$suiteSettings = $this->seleniumFactory->createSuiteSettings();
 		foreach($settings as $key => $value):
 			if($key === 'browser'):
-				$setterName = 'setDesiredCapabilities';
+				$setterName = 'setCapabilities';
 				switch($value):
 					case 'firefox':
 						$value = DesiredCapabilities::firefox();
-						break;
+					break;
 					case 'chrome':
 						$value = DesiredCapabilities::chrome();
-						break;
+					break;
 				endswitch;
 			else:
 				$setterName = 'set' . ucfirst($key);
 			endif;
 
 			if(method_exists($suiteSettings, $setterName)):
-				echo ($value instanceof DesiredCapabilities) ? 'Set '
-				                                               . lcfirst(str_replace('set', '', $setterName))
-				                                               . ' = '
-				                                               . $value->getBrowserName()
-				                                               . "\n" : 'Set '
-				                                                        . lcfirst(str_replace('set',
-				                                                                              '',
-				                                                                              $setterName))
-				                                                        . ' = '
-				                                                        . $value
-				                                                        . "\n";
+				echo ($value instanceof DesiredCapabilities) ?
+					'Set ' . lcfirst(str_replace('set', '', $setterName)) . ' = ' . $value->getBrowserName() . "\n" :
+					'Set ' . lcfirst(str_replace('set', '', $setterName)) . ' = ' . $value . "\n";
 
 				call_user_func([$suiteSettings, $setterName], $value);
 			endif;

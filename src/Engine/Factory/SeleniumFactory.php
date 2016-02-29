@@ -147,7 +147,7 @@ class SeleniumFactory
 	public function createFileLogger()
 	{
 		if(null === $this->fileLogger):
-			$this->fileLogger = new FileLogger($this->testSuite->getSuiteSettings()->getLoggingDirectoryName());
+			$this->fileLogger = new FileLogger($this->testSuite->getSuiteSettings());
 		endif;
 
 		return $this->fileLogger;

@@ -65,7 +65,7 @@ class ElementProvider
 	/**
 	 * Initialize the element provider.
 	 *
-	 * @param TestSuite  $testSuite
+	 * @param TestSuite $testSuite
 	 */
 	public function __construct(TestSuite $testSuite)
 	{
@@ -514,21 +514,11 @@ class ElementProvider
 		}
 		catch(NoSuchElementException $e)
 		{
-			$this->failed();
-
-			$message
-				= $this->testSuite->getSuiteSettings()->getCurrentTestCase() .
-				  ' | ' .
-				  'Can not find element by "' .
-				  $by .
-				  '" with value "' .
-				  $value .
-				  '"';
-
-			$this->fileLogger->log($message, 'errors');
-			$this->fileLogger->screenshot($this->webDriver, $this->testSuite->getSuiteSettings()->getCurrentTestCase() .
-			                                                '|' .
-			                                                str_replace(' ', '', $message));
+			$this->testSuite->getSuiteSettings()->getCurrentTestCase()->_exceptionError('element by "' .
+			                                                                            $by .
+			                                                                            '" with value "' .
+			                                                                            $value .
+			                                                                            '" not found', $e);
 
 			return new WebDriverElementNull();
 		}

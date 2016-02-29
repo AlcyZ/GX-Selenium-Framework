@@ -21,9 +21,9 @@ SET time_zone = "+00:00";
 -- Tabellenstruktur für Tabelle `cases`
 --
 
-CREATE TABLE IF NOT EXISTS `cases` (
+CREATE TABLE IF NOT EXISTS `test_cases` (
   `id` int(255) NOT NULL AUTO_INCREMENT,
-  `suite_id` int(255) NOT NULL,
+  `test_suite_id` int(255) NOT NULL,
   `name` varchar(255) NOT NULL,
   `status` tinyint(4) NOT NULL,
   `begin` datetime NOT NULL,
@@ -38,9 +38,9 @@ CREATE TABLE IF NOT EXISTS `cases` (
 -- Tabellenstruktur für Tabelle `case_errors`
 --
 
-CREATE TABLE IF NOT EXISTS `case_errors` (
+CREATE TABLE IF NOT EXISTS `test_case_errors` (
   `id` int(255) NOT NULL AUTO_INCREMENT,
-  `case_id` int(255) NOT NULL,
+  `test_case_id` int(255) NOT NULL,
   `error_message` varchar(1200) NOT NULL,
   `error_url` varchar(650) NOT NULL,
   `screenshot_url` varchar(650) NOT NULL,
@@ -54,7 +54,7 @@ CREATE TABLE IF NOT EXISTS `case_errors` (
 -- Tabellenstruktur für Tabelle `suites`
 --
 
-CREATE TABLE IF NOT EXISTS `suites` (
+CREATE TABLE IF NOT EXISTS `test_suites` (
   `id` int(255) NOT NULL AUTO_INCREMENT,
   `suite_name` varchar(255) NOT NULL,
   `build_number` varchar(255) NOT NULL,
