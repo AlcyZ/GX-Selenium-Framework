@@ -90,6 +90,8 @@ class TestSuite
 		$this->seleniumFactory = new SeleniumFactory($this);
 
 		$this->setSettings($settings);
+		$this->_initWebDriver();
+
 		$this->fileLogger = $this->seleniumFactory->createFileLogger();
 		$this->sqlLogger  = $this->seleniumFactory->createSqlLogger();
 	}
@@ -109,8 +111,6 @@ class TestSuite
 
 	public function run()
 	{
-		$this->_initWebDriver();
-
 		$this->sqlLogger->startSuite();
 		foreach($this->testCaseCollection as $testCase):
 			/** @var TestCase $testCase */
