@@ -90,9 +90,6 @@ class TestSuite
 
 		$this->setSettings($settings);
 		$this->_initWebDriver();
-
-		$this->fileLogger = $this->seleniumFactory->createFileLogger();
-		$this->sqlLogger  = $this->seleniumFactory->createSqlLogger();
 	}
 
 
@@ -110,6 +107,9 @@ class TestSuite
 
 	public function run()
 	{
+		$this->fileLogger = $this->fileLogger ?: $this->seleniumFactory->createFileLogger();
+		$this->sqlLogger  = $this->sqlLogger ?: $this->seleniumFactory->createSqlLogger();
+
 		$this->sqlLogger->startSuite();
 		foreach($this->testCaseCollection as $testCase):
 			/** @var TestCase $testCase */
@@ -316,5 +316,23 @@ class TestSuite
 	public function getSqlLogger()
 	{
 		return $this->sqlLogger;
+	}
+
+
+	/**
+	 * @param SqlLogger $sqlLogger
+	 */
+	public function setSqlLogger(SqlLogger $sqlLogger)
+	{
+		$this->sqlLogger = $sqlLogger;
+	}
+
+
+	/**
+	 * @param FileLogger $fileLogger
+	 */
+	public function setFileLogger(FileLogger $fileLogger)
+	{
+		$this->fileLogger = $fileLogger;
 	}
 }
