@@ -205,7 +205,7 @@ class SqlLogger implements SqlInterface
 	 *
 	 * @return array
 	 */
-	private function _getSuiteColumnsArray($update = false)
+	protected function _getSuiteColumnsArray($update = false)
 	{
 		if($update):
 			return [
@@ -235,7 +235,7 @@ class SqlLogger implements SqlInterface
 	 *
 	 * @return array
 	 */
-	private function _getSuiteValuesArray($update = false)
+	protected function _getSuiteValuesArray($update = false)
 	{
 		if($update):
 			return [
@@ -284,7 +284,7 @@ class SqlLogger implements SqlInterface
 	 *
 	 * @return array
 	 */
-	private function _getCaseColumnsArray($update = false)
+	protected function _getCaseColumnsArray($update = false)
 	{
 		if($update):
 			return [
@@ -313,7 +313,7 @@ class SqlLogger implements SqlInterface
 	 *
 	 * @return array
 	 */
-	private function _getCaseValuesArray(TestCase $case, $update = false)
+	protected function _getCaseValuesArray(TestCase $case, $update = false)
 	{
 		if($update):
 			return [
