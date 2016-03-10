@@ -36,7 +36,7 @@ class SuiteSettings
 	/**
 	 * @var string
 	 */
-	private $branch = 'default';
+	private $branch = '';
 
 	/**
 	 * @var string
@@ -93,7 +93,7 @@ class SuiteSettings
 	/**
 	 * @var string
 	 */
-	private $loggingDirectoryName = 'develop';
+	private $loggingDirectoryName = '';
 
 	/**
 	 * @var string
