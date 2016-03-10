@@ -25,6 +25,7 @@
 namespace GXSelenium\Engine\Logger;
 
 use Alcys\Core\Db\Service\AlcysDb;
+use GXSelenium\Engine\Settings\SuiteSettings;
 use GXSelenium\Engine\TestCase;
 use GXSelenium\Engine\TestSuite;
 use GXSelenium\Engine\Timer\Timer;
@@ -44,6 +45,11 @@ class SqlLogger implements SqlInterface
 	 * @var TestSuite
 	 */
 	protected $testSuite;
+
+	/**
+	 * @var SuiteSettings
+	 */
+	protected $suiteSettings;
 
 	/**
 	 * @var string
@@ -91,6 +97,7 @@ class SqlLogger implements SqlInterface
 	{
 		$this->db        = $db;
 		$this->testSuite = $testSuite;
+		$this->suiteSettings = $this->testSuite->getSuiteSettings();
 	}
 
 
@@ -246,10 +253,10 @@ class SqlLogger implements SqlInterface
 		endif;
 
 		return [
-			$this->testSuite->getSuiteSettings()->getBuildNumber(),
-			$this->testSuite->getSuiteSettings()->getSuiteName(),
-			$this->testSuite->getSuiteSettings()->getVersion(),
-			$this->testSuite->getSuiteSettings()->getBranch(),
+			$this->suiteSettings->getBuildNumber(),
+			$this->suiteSettings->getSuiteName(),
+			$this->suiteSettings->getVersion(),
+			$this->suiteSettings->getBranch(),
 			0,
 			date('Y-m-d H:i:s'),
 			date('Y-m-d H:i:s'),
