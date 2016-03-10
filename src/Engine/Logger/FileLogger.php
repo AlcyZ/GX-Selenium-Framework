@@ -107,8 +107,11 @@ class FileLogger
 		$buildNumber     = $this->suiteSettings->getBuildNumber();
 		$buildNumberPath = ($buildNumber !== '') ? $buildNumber . DIRECTORY_SEPARATOR : '';
 
-		return $buildNumberPath . $this->suiteSettings->getLoggingDirectoryName() . DIRECTORY_SEPARATOR . 'screenshots'
-		       . DIRECTORY_SEPARATOR . $screenName;
+		$loggingDirectoryName     = $this->suiteSettings->getLoggingDirectoryName();
+		$loggingDirectoryNamePath = ($loggingDirectoryName !== '') ? $loggingDirectoryName . DIRECTORY_SEPARATOR : '';
+
+		return rtrim($buildNumberPath . $loggingDirectoryNamePath, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR
+		       . 'screenshots' . DIRECTORY_SEPARATOR . $screenName;
 	}
 
 
