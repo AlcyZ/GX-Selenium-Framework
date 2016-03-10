@@ -25,6 +25,7 @@
 namespace GXSelenium\Engine;
 
 use Facebook\WebDriver\Chrome\ChromeOptions;
+use Facebook\WebDriver\Exception\WebDriverCurlException;
 use Facebook\WebDriver\Remote\DesiredCapabilities;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\WebDriver;
@@ -89,7 +90,8 @@ class TestSuite
 		$this->seleniumFactory = new SeleniumFactory($this);
 
 		$this->setSettings($settings);
-		$this->_initWebDriver();
+		$this->fileLogger = $this->seleniumFactory->createFileLogger();
+		$this->sqlLogger  = $this->seleniumFactory->createSqlLogger();
 	}
 
 
@@ -107,8 +109,7 @@ class TestSuite
 
 	public function run()
 	{
-		$this->fileLogger = $this->fileLogger ?: $this->seleniumFactory->createFileLogger();
-		$this->sqlLogger  = $this->sqlLogger ?: $this->seleniumFactory->createSqlLogger();
+		$this->_initWebDriver();
 
 		$this->sqlLogger->startSuite();
 		foreach($this->testCaseCollection as $testCase):
@@ -238,10 +239,17 @@ class TestSuite
 	 */
 	private function _initWebDriver()
 	{
-		$this->webDriver
-			= RemoteWebDriver::create($this->suiteSettings->getSeleniumHost(), $this->suiteSettings->getCapabilities());
+		try
+		{
+			$this->webDriver = RemoteWebDriver::create($this->suiteSettings->getSeleniumHost(),
+			                                           $this->suiteSettings->getCapabilities());
 
-		return $this;
+			return $this;
+		}
+		catch(WebDriverCurlException $e)
+		{
+			exit("\nFailed to initialize the remote web driver, they may be a problem with the browser driver.\n");
+		}
 	}
 
 
