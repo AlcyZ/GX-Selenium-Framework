@@ -38,47 +38,47 @@ class SqlLogger implements SqlInterface
 	/**
 	 * @var AlcysDb
 	 */
-	private $db;
+	protected $db;
 
 	/**
 	 * @var TestSuite
 	 */
-	private $testSuite;
+	protected $testSuite;
 
 	/**
 	 * @var string
 	 */
-	private $suitesTable = 'test_suites';
+	protected $suitesTable = 'test_suites';
 
 	/**
 	 * @var int
 	 */
-	private $lastSuiteId;
+	protected $lastSuiteId;
 
 	/**
 	 * @var Timer
 	 */
-	private $suiteTimer;
+	protected $suiteTimer;
 
 	/**
 	 * @var string
 	 */
-	private $casesTable = 'test_cases';
+	protected $casesTable = 'test_cases';
 
 	/**
 	 * @var int
 	 */
-	private $lastCaseId;
+	protected $lastCaseId;
 
 	/**
 	 * @var Timer
 	 */
-	private $caseTimer;
+	protected $caseTimer;
 
 	/**
 	 * @var string
 	 */
-	private $caseErrorsTable = 'test_case_errors';
+	protected $caseErrorsTable = 'test_case_errors';
 
 
 	/**
