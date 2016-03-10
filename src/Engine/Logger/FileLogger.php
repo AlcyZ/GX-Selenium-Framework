@@ -63,13 +63,17 @@ class FileLogger
 	{
 		$this->suiteSettings = $settings;
 
+		$loggingDirectory     = $this->suiteSettings->getLoggingDirectory();
+		$loggingDirectoryPath = ($loggingDirectory !== '') ? $loggingDirectory : dirname(dirname(dirname(__DIR__)))
+		                                                                         . DIRECTORY_SEPARATOR . 'logs';
+
 		$buildNumber     = $this->suiteSettings->getBuildNumber();
 		$buildNumberPath = ($buildNumber !== '') ? DIRECTORY_SEPARATOR . $buildNumber : '';
 
-		$this->logsDir = $this->suiteSettings->getLoggingDirectory() .
-		                 $buildNumberPath .
-		                 DIRECTORY_SEPARATOR .
-		                 $this->suiteSettings->getLoggingDirectoryName();
+		$loggingDirectoryName     = $this->suiteSettings->getLoggingDirectoryName();
+		$loggingDirectoryNamePath = ($loggingDirectoryName !== '') ? DIRECTORY_SEPARATOR . $loggingDirectoryName : '';
+
+		$this->logsDir = $loggingDirectoryPath . $buildNumberPath . $loggingDirectoryNamePath;
 
 		$this->screenshotDir = $this->logsDir . DIRECTORY_SEPARATOR . 'screenshots';
 	}
@@ -103,12 +107,8 @@ class FileLogger
 		$buildNumber     = $this->suiteSettings->getBuildNumber();
 		$buildNumberPath = ($buildNumber !== '') ? $buildNumber . DIRECTORY_SEPARATOR : '';
 
-		return $buildNumberPath .
-		       $this->suiteSettings->getLoggingDirectoryName() .
-		       DIRECTORY_SEPARATOR .
-		       'screenshots' .
-		       DIRECTORY_SEPARATOR .
-		       $screenName;
+		return $buildNumberPath . $this->suiteSettings->getLoggingDirectoryName() . DIRECTORY_SEPARATOR . 'screenshots'
+		       . DIRECTORY_SEPARATOR . $screenName;
 	}
 
 
