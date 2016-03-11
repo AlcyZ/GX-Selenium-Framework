@@ -165,6 +165,7 @@ class TestSuite
 		$header  = 'From: ' . $from . "\r\n" . 'Reply-To: ' . $reply . "\r\n"
 		           . 'Content-Type: text/plain; charset=UTF-8"';
 		mail($to, $subject, $this->errorMessages, $header);
+		echo "Error E-Mail send!\n";
 		$this->errorMailSend = true;
 
 		return $this;
