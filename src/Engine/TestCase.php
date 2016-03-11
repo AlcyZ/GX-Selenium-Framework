@@ -275,7 +275,7 @@ abstract class TestCase
 		$this->fileLogger->log($txt, 'errors');
 		$this->sqlLogger->caseError($message, $this->webDriver->getCurrentURL(), $screenPath);
 
-		$this->addErrorMessages($screenPath)->failed = false;
+		$this->addErrorMessages($screenPath)->failed = true;
 		echo "TestCaseFailed ..\n";
 
 		return $this;
