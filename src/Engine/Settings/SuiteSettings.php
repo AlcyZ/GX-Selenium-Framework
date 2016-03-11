@@ -118,6 +118,11 @@ class SuiteSettings
 	/**
 	 * @var string
 	 */
+	private $screenShotDirectory = '';
+
+	/**
+	 * @var string
+	 */
 	private $currentTestCase;
 
 	/**
@@ -444,6 +449,24 @@ class SuiteSettings
 	public function setLoggingDirectory($loggingDirectory)
 	{
 		$this->loggingDirectory = $loggingDirectory;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getScreenShotDirectory()
+	{
+		return $this->screenShotDirectory;
+	}
+
+
+	/**
+	 * @param string $screenShotDirectory
+	 */
+	public function setScreenShotDirectory($screenShotDirectory)
+	{
+		$this->screenShotDirectory = $screenShotDirectory;
 	}
 
 

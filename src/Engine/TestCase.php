@@ -275,7 +275,7 @@ abstract class TestCase
 		$this->fileLogger->log($txt, 'errors');
 		$this->sqlLogger->caseError($message, $this->webDriver->getCurrentURL(), $screenPath);
 
-		$this->addErrorMessages($screenPath)->failed = true;
+		$this->addErrorMessages($screenPath, $txt)->failed = true;
 		echo "TestCaseFailed ..\n";
 
 		return $this;
@@ -286,19 +286,22 @@ abstract class TestCase
 	 * Adds error messages after an error is occurred.
 	 *
 	 * @param string $screenShotUrl Path to the error screen shot.
+	 * @param string $errorMessage Error message, which is passed to the FileLogger::log method.
 	 *
 	 * @return $this Same instance for chained method calls.
 	 */
-	protected function addErrorMessages($screenShotUrl)
+	protected function addErrorMessages($screenShotUrl, $errorMessage)
 	{
-		$this->testSuite->addErrorMessage('Branch: ' . $this->testSuite->getSuiteSettings()->getBranch());
-		$this->testSuite->addErrorMessage('Build number: ' . $this->testSuite->getSuiteSettings()->getBuildNumber());
-		$this->testSuite->addErrorMessage('Suite name: ' . $this->testSuite->getSuiteSettings()->getSuiteName());
+		$this->testSuite->addErrorMessage('Branch: ' . $this->suiteSettings->getBranch());
+		$this->testSuite->addErrorMessage('Build number: ' . $this->suiteSettings->getBuildNumber());
+		$this->testSuite->addErrorMessage('Suite name: ' . $this->suiteSettings->getSuiteName());
 		$this->testSuite->addErrorMessage('Case: ' . $this->_getCaseName());
 		$this->testSuite->addErrorMessage('Test method: ' . $this->_invokedBy(null, 4));
 		$this->testSuite->addErrorMessage('Failure url: ' . $this->webDriver->getCurrentURL());
+		$this->testSuite->addErrorMessage('Error Message: ' . $errorMessage);
 		$this->testSuite->addErrorMessage('Error time: ' . date('d.m.Y H:i:s'));
-		$this->testSuite->addErrorMessage('Screenshot: ' . $screenShotUrl);
+		$this->testSuite->addErrorMessage('Screenshot: ' . $this->suiteSettings->getScreenShotDirectory()
+		                                  . DIRECTORY_SEPARATOR . $screenShotUrl);
 		$this->testSuite->addErrorMessage('Logfile: [Functionality not developed]');
 		$this->testSuite->addErrorMessage('');
 
