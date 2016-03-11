@@ -134,7 +134,7 @@ class TestSuite
 		endforeach;
 		$this->sqlLogger->endSuite();
 
-		if(!$this->errorMailSend && $this->suiteSettings->isSendErrorMail()):
+		if(!$this->errorMailSend && $this->failed && $this->suiteSettings->isSendErrorMail()):
 			$this->_sendErrorMail();
 		endif;
 
