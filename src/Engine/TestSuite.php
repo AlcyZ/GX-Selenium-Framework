@@ -158,7 +158,7 @@ class TestSuite
 		if($to === '' || $reply === '' || $from === ''):
 			echo 'Invalid E-Mail credentials, not possible to send the error mail' . "\n";
 
-			return;
+			return $this;
 		endif;
 
 		$subject = '[SeleniumTest] Test fehlgeschlagen, Branch: ' . $this->suiteSettings->getBranch();
