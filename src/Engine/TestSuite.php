@@ -248,7 +248,7 @@ class TestSuite
 		}
 		catch(WebDriverCurlException $e)
 		{
-			exit("\n\e[41mFailed to initialize the remote web driver, there is may be a problem with the browser driver.\e[0m\n\n");
+			exit("\n\e[41mFailed to initialize the remote web driver, there is may be a problem with the browser driver.\n" . $e->getMessage() . "\e[0m\n\n");
 		}
 	}
 
