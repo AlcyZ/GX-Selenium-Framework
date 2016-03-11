@@ -58,6 +58,21 @@ class SuiteSettings
 	/**
 	 * @var string
 	 */
+	private $sendMailFrom = '';
+
+	/**
+	 * @var string
+	 */
+	private $sendMailReplyTo = '';
+
+	/**
+	 * @var string
+	 */
+	private $sendMailTo = '';
+
+	/**
+	 * @var string
+	 */
 	private $version = '';
 
 	/**
@@ -209,7 +224,64 @@ class SuiteSettings
 	 */
 	public function setSendErrorMail($sendErrorMail)
 	{
-		$this->sendErrorMail = $sendErrorMail;
+		$this->sendErrorMail = (bool)$sendErrorMail;
+		if((string)$sendErrorMail === 'false'):
+			$this->sendErrorMail = false;
+		endif;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getSendMailFrom()
+	{
+		return $this->sendMailFrom;
+	}
+
+
+	/**
+	 * @param string $sendMailFrom
+	 */
+	public function setSendMailFrom($sendMailFrom)
+	{
+		$this->sendMailFrom = $sendMailFrom;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getSendMailReplyTo()
+	{
+		return $this->sendMailReplyTo;
+	}
+
+
+	/**
+	 * @param string $sendMailReplyTo
+	 */
+	public function setSendMailReplyTo($sendMailReplyTo)
+	{
+		$this->sendMailReplyTo = $sendMailReplyTo;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getSendMailTo()
+	{
+		return $this->sendMailTo;
+	}
+
+
+	/**
+	 * @param string $sendMailTo
+	 */
+	public function setSendMailTo($sendMailTo)
+	{
+		$this->sendMailTo = $sendMailTo;
 	}
 
 
@@ -356,6 +428,7 @@ class SuiteSettings
 		$this->loggingDirectoryName = $loggingDirectoryName;
 	}
 
+
 	/**
 	 * @return string
 	 */
@@ -363,6 +436,7 @@ class SuiteSettings
 	{
 		return $this->loggingDirectory;
 	}
+
 
 	/**
 	 * @param string $loggingDirectory

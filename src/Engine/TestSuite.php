@@ -76,6 +76,16 @@ class TestSuite
 	 */
 	private $sqlLogger;
 
+	/**
+	 * @var bool
+	 */
+	private $errorMailSend = false;
+
+	/**
+	 * @var string
+	 */
+	private $errorMessages = '';
+
 
 	/**
 	 * Initialize the test suite.
@@ -109,6 +119,11 @@ class TestSuite
 	}
 
 
+	/**
+	 * Start the test suite run.
+	 *
+	 * @return $this
+	 */
 	public function run()
 	{
 		$this->sqlLogger->startSuite();
@@ -118,6 +133,39 @@ class TestSuite
 			$testCase->run();
 		endforeach;
 		$this->sqlLogger->endSuite();
+
+		if(!$this->errorMailSend && $this->suiteSettings->isSendErrorMail()):
+			$this->_sendErrorMail();
+		endif;
+
+		return $this;
+	}
+
+
+	/**
+	 * Sends an mail with the error messages.
+	 *
+	 * The receiver and the sender is set in the suite settings.
+	 *
+	 * @return $this|TestSuite Same instance for chained method calls.
+	 */
+	private function _sendErrorMail()
+	{
+		$from  = $this->suiteSettings->getSendMailFrom();
+		$to    = $this->suiteSettings->getSendMailTo();
+		$reply = $this->suiteSettings->getSendMailReplyTo();
+
+		if($to === '' || $reply === '' || $from === ''):
+			echo 'Invalid E-Mail credentials, not possible to send the error mail' . "\n";
+
+			return;
+		endif;
+
+		$subject = '[SeleniumTest] Test fehlgeschlagen, Branch: ' . $this->suiteSettings->getBranch();
+		$header  = 'From: ' . $from . "\r\n" . 'Reply-To: ' . $reply . "\r\n"
+		           . 'Content-Type: text/plain; charset=UTF-8"';
+		mail($to, $subject, $this->errorMessages, $header);
+		$this->errorMailSend = true;
 
 		return $this;
 	}
@@ -248,7 +296,8 @@ class TestSuite
 		}
 		catch(WebDriverCurlException $e)
 		{
-			exit("\n\e[41mFailed to initialize the remote web driver, there is may be a problem with the browser driver.\n" . $e->getMessage() . "\e[0m\n\n");
+			exit("\n\e[41mFailed to initialize the remote web driver, there is may be a problem with the browser driver.\n"
+			     . $e->getMessage() . "\e[0m\n\n");
 		}
 	}
 
@@ -302,10 +351,14 @@ class TestSuite
 
 	/**
 	 * @param boolean $failed
+	 *
+	 * @return $this|TestSuite Same instance for chained method calls.
 	 */
 	public function setFailed($failed)
 	{
 		$this->failed = $failed;
+
+		return $this;
 	}
 
 
@@ -329,18 +382,41 @@ class TestSuite
 
 	/**
 	 * @param SqlLogger $sqlLogger
+	 *
+	 * @return $this|TestSuite Same instance for chained method calls.
 	 */
 	public function setSqlLogger(SqlLogger $sqlLogger)
 	{
 		$this->sqlLogger = $sqlLogger;
+
+		return $this;
 	}
 
 
 	/**
 	 * @param FileLogger $fileLogger
+	 *
+	 * @return $this|TestSuite Same instance for chained method calls.
 	 */
 	public function setFileLogger(FileLogger $fileLogger)
 	{
 		$this->fileLogger = $fileLogger;
+
+		return $this;
+	}
+	
+
+	/**
+	 * Adds a message to the error message string.
+	 *
+	 * @param $errorMessage
+	 *
+	 * @return $this|TestSuite Same instance for chained method calls.
+	 */
+	public function addErrorMessage($errorMessage)
+	{
+		$this->errorMessages .= $errorMessage . "\n";
+
+		return $this;
 	}
 }

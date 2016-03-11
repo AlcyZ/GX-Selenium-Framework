@@ -270,14 +270,37 @@ abstract class TestCase
 	 */
 	private function _logData($message, $txt, $screenName)
 	{
-		$screenPath
-			= $this->fileLogger->screenshot($this->webDriver, str_replace(' ', '', $screenName));
+		$screenPath = $this->fileLogger->screenshot($this->webDriver, str_replace(' ', '', $screenName));
 
 		$this->fileLogger->log($txt, 'errors');
 		$this->sqlLogger->caseError($message, $this->webDriver->getCurrentURL(), $screenPath);
 
+		$this->addErrorMessages($screenPath)->failed = false;
 		echo "TestCaseFailed ..\n";
-		$this->failed = true;
+
+		return $this;
+	}
+	
+
+	/**
+	 * Adds error messages after an error is occurred.
+	 *
+	 * @param string $screenShotUrl Path to the error screen shot.
+	 *
+	 * @return $this Same instance for chained method calls.
+	 */
+	protected function addErrorMessages($screenShotUrl)
+	{
+		$this->testSuite->addErrorMessage('Branch: ' . $this->testSuite->getSuiteSettings()->getBranch());
+		$this->testSuite->addErrorMessage('Build number: ' . $this->testSuite->getSuiteSettings()->getBuildNumber());
+		$this->testSuite->addErrorMessage('Suite name: ' . $this->testSuite->getSuiteSettings()->getSuiteName());
+		$this->testSuite->addErrorMessage('Case: ' . $this->_getCaseName());
+		$this->testSuite->addErrorMessage('Test method: ' . $this->_invokedBy(null, 4));
+		$this->testSuite->addErrorMessage('Failure url: ' . $this->webDriver->getCurrentURL());
+		$this->testSuite->addErrorMessage('Error time: ' . date('d.m.Y H:i:s'));
+		$this->testSuite->addErrorMessage('Screenshot: ' . $screenShotUrl);
+		$this->testSuite->addErrorMessage('Logfile: [Functionality not developed]');
+		$this->testSuite->addErrorMessage('');
 
 		return $this;
 	}
