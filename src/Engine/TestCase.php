@@ -299,7 +299,7 @@ abstract class TestCase
 		$this->testSuite->addErrorMessage('Test method: ' . $this->_invokedBy(null, 4));
 		$this->testSuite->addErrorMessage('Failure url: ' . $this->webDriver->getCurrentURL());
 		$this->testSuite->addErrorMessage('');
-		$this->testSuite->addErrorMessage('Error Message: ' . $errorMessage);
+		$this->testSuite->addErrorMessage("Error Message: \n" . $errorMessage);
 		$this->testSuite->addErrorMessage('Error time: ' . date('d.m.Y H:i:s'));
 		$this->testSuite->addErrorMessage('Screenshot: ' . $this->suiteSettings->getScreenShotDirectory()
 		                                  . DIRECTORY_SEPARATOR . $screenShotUrl);
