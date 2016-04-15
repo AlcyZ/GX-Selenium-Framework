@@ -216,9 +216,7 @@ class SqlLogger implements SqlInterface
 	public function initError()
 	{
 		$insert = $this->db->insert($this->suitesTable);
-		$insert->columns($this->_getSuiteColumnsArray())->values([
-			                                                         $this->_getSuiteValuesArray(false, true)
-		                                                         ])->execute();
+		$insert->columns($this->_getSuiteColumnsArray())->values($this->_getSuiteValuesArray(false, true))->execute();
 
 		return $this;
 	}
