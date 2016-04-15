@@ -203,6 +203,26 @@ class SqlLogger implements SqlInterface
 
 		return $this;
 	}
+	
+
+	/**
+	 * Adds a new log entry for a failed web driver initialization.
+	 *
+	 * @Todo Maybe add log entry in case table for error message.
+	 *
+	 * @return $this Same instance for chained method calls.
+	 * @throws \Exception
+	 */
+	public function initError()
+	{
+		$insert = $this->db->insert($this->suitesTable);
+		$insert->columns($this->_getSuiteColumnsArray())->values([
+			                                                         $this->_getSuiteValuesArray(false, true)
+		                                                         ])->execute();
+
+		return $this;
+	}
+
 
 	################################### helper methods for the suite table #############################################
 	/**
@@ -238,11 +258,12 @@ class SqlLogger implements SqlInterface
 	/**
 	 * Returns an array with values for the suite log entry.
 	 *
-	 * @param false|bool $update Values for insert or update statement?
+	 * @param false|bool $update (Optional) Values for insert or update statement?
+	 * @param bool       $error  (Optional) Sets instead of the pending value(0) the error status (2)
 	 *
 	 * @return array
 	 */
-	protected function _getSuiteValuesArray($update = false)
+	protected function _getSuiteValuesArray($update = false, $error = false)
 	{
 		if($update):
 			return [
@@ -257,7 +278,7 @@ class SqlLogger implements SqlInterface
 			$this->suiteSettings->getSuiteName(),
 			$this->suiteSettings->getVersion(),
 			$this->suiteSettings->getBranch(),
-			0,
+			$error ? 2 : 0,
 			date('Y-m-d H:i:s'),
 			date('Y-m-d H:i:s'),
 			0.00
