@@ -232,7 +232,7 @@ class TestSuite
 	 */
 	public function getWebDriver()
 	{
-		return $this->webDriver;
+		return $this->_initWebDriver();
 	}
 
 
@@ -346,7 +346,7 @@ class TestSuite
 	/**
 	 * Initialize the remove web driver.
 	 *
-	 * @return $this|TestSuite Same instance for chained method calls.
+	 * @return WebDriver Web driver instance.
 	 */
 	private function _initWebDriver()
 	{
@@ -364,7 +364,7 @@ class TestSuite
 			     . $e->getMessage() . "\e[0m\n\n");
 		}
 
-		return $this;
+		return $this->webDriver;
 	}
 
 
