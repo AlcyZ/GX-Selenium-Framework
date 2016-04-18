@@ -276,7 +276,7 @@ class SqlLogger implements SqlInterface
 			$this->suiteSettings->getSuiteName(),
 			$this->suiteSettings->getVersion(),
 			$this->suiteSettings->getBranch(),
-			$error ? 2 : 0,
+			$error ? 3 : 0, # 3 for bootstrap value 'info'
 			date('Y-m-d H:i:s'),
 			date('Y-m-d H:i:s'),
 			0.00
