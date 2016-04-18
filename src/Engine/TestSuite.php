@@ -98,12 +98,7 @@ class TestSuite
 	{
 		//echo "\nInitialize selenium test suite\n";
 		$this->seleniumFactory = new SeleniumFactory($this);
-
 		$this->setSettings($settings);
-		$this->_initWebDriver();
-
-		$this->fileLogger = $this->seleniumFactory->createFileLogger();
-		$this->sqlLogger  = $this->seleniumFactory->createSqlLogger();
 	}
 
 
@@ -126,6 +121,7 @@ class TestSuite
 	 */
 	public function run()
 	{
+		$this->init();
 		$this->sqlLogger->startSuite();
 		foreach($this->testCaseCollection as $testCase):
 			/** @var TestCase $testCase */
@@ -137,36 +133,6 @@ class TestSuite
 		if(!$this->errorMailSend && $this->failed && $this->suiteSettings->isSendErrorMail()):
 			$this->_sendErrorMail();
 		endif;
-
-		return $this;
-	}
-
-
-	/**
-	 * Sends an mail with the error messages.
-	 *
-	 * The receiver and the sender is set in the suite settings.
-	 *
-	 * @return $this|TestSuite Same instance for chained method calls.
-	 */
-	private function _sendErrorMail()
-	{
-		$from  = $this->suiteSettings->getSendMailFrom();
-		$to    = $this->suiteSettings->getSendMailTo();
-		$reply = $this->suiteSettings->getSendMailReplyTo();
-
-		if($to === '' || $reply === '' || $from === ''):
-			echo 'Invalid E-Mail credentials, not possible to send the error mail' . "\n";
-
-			return $this;
-		endif;
-
-		$subject = '[SeleniumTest] Test fehlgeschlagen, Branch: ' . $this->suiteSettings->getBranch();
-		$header  = 'From: ' . $from . "\r\n" . 'Reply-To: ' . $reply . "\r\n"
-		           . 'Content-Type: text/plain; charset=UTF-8"';
-		mail($to, $subject, $this->errorMessages, $header);
-		echo "Error E-Mail send!\n";
-		$this->errorMailSend = true;
 
 		return $this;
 	}
@@ -282,68 +248,6 @@ class TestSuite
 
 
 	/**
-	 * Initialize the remove web driver.
-	 *
-	 * @return $this|TestSuite Same instance for chained method calls.
-	 */
-	private function _initWebDriver()
-	{
-		try
-		{
-			$this->webDriver = RemoteWebDriver::create($this->suiteSettings->getSeleniumHost(),
-			                                           $this->suiteSettings->getCapabilities());
-
-			return $this;
-		}
-		catch(WebDriverCurlException $e)
-		{
-			$this->sqlLogger  = $this->seleniumFactory->createSqlLogger();
-			$this->sqlLogger->initError();
-			exit("\n\e[41mFailed to initialize the remote web driver, there is may be a problem with the browser driver.\n"
-			     . $e->getMessage() . "\e[0m\n\n");
-		}
-	}
-
-
-	/**
-	 * Sets the suite settings from an associative array.
-	 *
-	 * @param array $settings Settings array.
-	 *
-	 * @return $this|TestSuite Same instance for chained method calls.
-	 */
-	private function _setSettingsFromArray(array $settings)
-	{
-		echo "\nInitialize the test suite settings.\n";
-		$suiteSettings = $this->seleniumFactory->createSuiteSettings();
-		foreach($settings as $key => $value):
-			if($key === 'browser'):
-				$setterName = 'setCapabilities';
-				switch($value):
-					case 'firefox':
-						$value = DesiredCapabilities::firefox();
-					break;
-					case 'chrome':
-						$value = DesiredCapabilities::chrome();
-					break;
-				endswitch;
-			else:
-				$setterName = 'set' . ucfirst($key);
-			endif;
-
-			if(method_exists($suiteSettings, $setterName)):
-				echo ($value instanceof DesiredCapabilities) ?
-					'Set ' . lcfirst(str_replace('set', '', $setterName)) . ' = ' . $value->getBrowserName() . "\n" :
-					'Set ' . lcfirst(str_replace('set', '', $setterName)) . ' = ' . $value . "\n";
-
-				call_user_func([$suiteSettings, $setterName], $value);
-			endif;
-		endforeach;
-		$this->suiteSettings = $suiteSettings;
-	}
-
-
-	/**
 	 * @return boolean
 	 */
 	public function isFailed()
@@ -421,5 +325,143 @@ class TestSuite
 		$this->errorMessages .= $errorMessage . "\n";
 
 		return $this;
+	}
+
+
+	/**
+	 * Initialize all required properties to run the test suite.
+	 *
+	 * @return $this|TestSuite Same instance for chained method calls.
+	 */
+	private function init()
+	{
+		$this->_initFileLogger();
+		$this->_initSqlLogger();
+		$this->_initWebDriver();
+
+		return $this;
+	}
+
+
+	/**
+	 * Initialize the remove web driver.
+	 *
+	 * @return $this|TestSuite Same instance for chained method calls.
+	 */
+	private function _initWebDriver()
+	{
+		try
+		{
+			if(null === $this->webDriver):
+				$this->webDriver = RemoteWebDriver::create($this->suiteSettings->getSeleniumHost(),
+				                                           $this->suiteSettings->getCapabilities());
+			endif;
+		}
+		catch(WebDriverCurlException $e)
+		{
+			$this->_initSqlLogger()->initError();
+			exit("\n\e[41mFailed to initialize the remote web driver, there is may be a problem with the browser driver.\n"
+			     . $e->getMessage() . "\e[0m\n\n");
+		}
+
+		return $this;
+	}
+
+
+	/**
+	 * Initialize the sql logger if not already set and return it.
+	 *
+	 * @return \GXSelenium\Engine\Logger\SqlLogger
+	 */
+	private function _initSqlLogger()
+	{
+		if(null === $this->sqlLogger):
+			$this->sqlLogger = $this->seleniumFactory->createSqlLogger();
+		endif;
+
+		return $this->sqlLogger;
+	}
+
+
+	/**
+	 * Initialize the file logger if not already set and return it.
+	 *
+	 * @return \GXSelenium\Engine\Logger\FileLogger
+	 */
+	private function _initFileLogger()
+	{
+		if(null === $this->fileLogger):
+			$this->fileLogger = $this->seleniumFactory->createFileLogger();
+		endif;
+
+		return $this->fileLogger;
+	}
+
+
+	/**
+	 * Sends an mail with the error messages.
+	 *
+	 * The receiver and the sender is set in the suite settings.
+	 *
+	 * @return $this|TestSuite Same instance for chained method calls.
+	 */
+	private function _sendErrorMail()
+	{
+		$from  = $this->suiteSettings->getSendMailFrom();
+		$to    = $this->suiteSettings->getSendMailTo();
+		$reply = $this->suiteSettings->getSendMailReplyTo();
+
+		if($to === '' || $reply === '' || $from === ''):
+			echo 'Invalid E-Mail credentials, not possible to send the error mail' . "\n";
+
+			return $this;
+		endif;
+
+		$subject = '[SeleniumTest] Test fehlgeschlagen, Branch: ' . $this->suiteSettings->getBranch();
+		$header  = 'From: ' . $from . "\r\n" . 'Reply-To: ' . $reply . "\r\n"
+		           . 'Content-Type: text/plain; charset=UTF-8"';
+		mail($to, $subject, $this->errorMessages, $header);
+		echo "Error E-Mail send!\n";
+		$this->errorMailSend = true;
+
+		return $this;
+	}
+
+
+	/**
+	 * Sets the suite settings from an associative array.
+	 *
+	 * @param array $settings Settings array.
+	 *
+	 * @return $this|TestSuite Same instance for chained method calls.
+	 */
+	private function _setSettingsFromArray(array $settings)
+	{
+		echo "\nInitialize the test suite settings.\n";
+		$suiteSettings = $this->seleniumFactory->createSuiteSettings();
+		foreach($settings as $key => $value):
+			if($key === 'browser'):
+				$setterName = 'setCapabilities';
+				switch($value):
+					case 'firefox':
+						$value = DesiredCapabilities::firefox();
+						break;
+					case 'chrome':
+						$value = DesiredCapabilities::chrome();
+						break;
+				endswitch;
+			else:
+				$setterName = 'set' . ucfirst($key);
+			endif;
+
+			if(method_exists($suiteSettings, $setterName)):
+				echo ($value instanceof DesiredCapabilities) ?
+					'Set ' . lcfirst(str_replace('set', '', $setterName)) . ' = ' . $value->getBrowserName() . "\n" :
+					'Set ' . lcfirst(str_replace('set', '', $setterName)) . ' = ' . $value . "\n";
+
+				call_user_func([$suiteSettings, $setterName], $value);
+			endif;
+		endforeach;
+		$this->suiteSettings = $suiteSettings;
 	}
 }
