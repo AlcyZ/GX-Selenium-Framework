@@ -49,44 +49,21 @@ abstract class TestCase
 	protected $client;
 
 	/**
-	 * @var WebDriver
-	 */
-	protected $webDriver;
-
-	/**
-	 * @var SuiteSettings
-	 */
-	protected $suiteSettings;
-
-	/**
 	 * @var bool
 	 */
 	protected $failed = false;
 
-	/**
-	 * @var FileLogger
-	 */
-	protected $fileLogger;
-
-	/**
-	 * @var SqlLogger
-	 */
-	protected $sqlLogger;
 
 	/**
 	 * Initialize the test case.
 	 *
 	 * @param TestSuite $testSuite
+	 * @param Client    $client
 	 */
 	public function __construct(TestSuite $testSuite, Client $client)
 	{
-		$this->testSuite     = $testSuite;
-		$this->webDriver     = $testSuite->getWebDriver();
-		$this->suiteSettings = $testSuite->getSuiteSettings();
-
-		$this->client     = $client;
-		$this->fileLogger = $this->testSuite->getFileLogger();
-		$this->sqlLogger  = $this->testSuite->getSqlLogger();
+		$this->testSuite = $testSuite;
+		$this->client    = $client;
 	}
 
 
@@ -98,7 +75,7 @@ abstract class TestCase
 	public function run()
 	{
 		$this->client->reset();
-		$this->sqlLogger->startCase($this);
+		$this->testSuite->getSqlLogger()->startCase($this);
 		try
 		{
 			echo "\nStart of " . $this->getCaseName() . "!\n";
@@ -120,7 +97,7 @@ abstract class TestCase
 		{
 			echo $this->getCaseName() . " successful!\n";
 		}
-		$this->sqlLogger->endCase($this);
+		$this->testSuite->getSqlLogger()->endCase($this);
 	}
 
 
@@ -210,6 +187,7 @@ abstract class TestCase
 		return $this->_prepareAndLogErrorMessage($message, $e);
 	}
 
+
 	/**
 	 * Prepares the error text and screen shot name.
 	 * Afterwards, the ::logData method is called.
@@ -226,23 +204,10 @@ abstract class TestCase
 
 			$exceptionName = array_pop(explode('\\', get_class($e)));
 
-			$screenName = $this->_getCaseName() .
-			              ' | ' .
-			              $this->_invokedBy() .
-			              ' | ' .
-			              $screenMessage .
-			              ' | ' .
-			              $exceptionName;
-			$txt        = $this->_getCaseName() .
-			              ' | ' .
-			              $this->_invokedBy() .
-			              ' | ' .
-			              $message .
-			              ' | ' .
-			              $exceptionName .
-			              "\n" .
-			              $e->getTraceAsString() .
-			              "\n";
+			$screenName = $this->_getCaseName() . ' | ' . $this->_invokedBy() . ' | ' . $screenMessage . ' | '
+			              . $exceptionName;
+			$txt        = $this->_getCaseName() . ' | ' . $this->_invokedBy() . ' | ' . $message . ' | '
+			              . $exceptionName . "\n" . $e->getTraceAsString() . "\n";
 
 		else:
 
@@ -258,6 +223,7 @@ abstract class TestCase
 		return $this->_logData($message, $txt, $screenName);
 	}
 
+
 	/**
 	 * Logs data in the database and filesystem.
 	 * A screenshot of the current screen will be created.
@@ -270,10 +236,12 @@ abstract class TestCase
 	 */
 	private function _logData($message, $txt, $screenName)
 	{
-		$screenPath = $this->fileLogger->screenshot($this->webDriver, str_replace(' ', '', $screenName));
+		$screenPath = $this->testSuite->getFileLogger()
+		                              ->screenshot($this->testSuite->getWebDriver(), str_replace(' ', '', $screenName));
 
-		$this->fileLogger->log($txt, 'errors');
-		$this->sqlLogger->caseError($message, $this->webDriver->getCurrentURL(), $screenPath);
+		$this->testSuite->getFileLogger()->log($txt, 'errors');
+		$this->testSuite->getSqlLogger()
+		                ->caseError($message, $this->testSuite->getWebDriver()->getCurrentURL(), $screenPath);
 
 		$this->addErrorMessages($screenPath, $txt)->failed = true;
 		echo "TestCaseFailed ..\n";
@@ -286,22 +254,23 @@ abstract class TestCase
 	 * Adds error messages after an error is occurred.
 	 *
 	 * @param string $screenShotUrl Path to the error screen shot.
-	 * @param string $errorMessage Error message, which is passed to the FileLogger::log method.
+	 * @param string $errorMessage  Error message, which is passed to the FileLogger::log method.
 	 *
 	 * @return $this Same instance for chained method calls.
 	 */
 	protected function addErrorMessages($screenShotUrl, $errorMessage)
 	{
-		$this->testSuite->addErrorMessage('Branch: ' . $this->suiteSettings->getBranch());
-		$this->testSuite->addErrorMessage('Build number: ' . $this->suiteSettings->getBuildNumber());
-		$this->testSuite->addErrorMessage('Suite name: ' . $this->suiteSettings->getSuiteName());
+		$this->testSuite->addErrorMessage('Branch: ' . $this->testSuite->getSuiteSettings()->getBranch());
+		$this->testSuite->addErrorMessage('Build number: ' . $this->testSuite->getSuiteSettings()->getBuildNumber());
+		$this->testSuite->addErrorMessage('Suite name: ' . $this->testSuite->getSuiteSettings()->getSuiteName());
 		$this->testSuite->addErrorMessage('Case: ' . $this->_getCaseName());
 		$this->testSuite->addErrorMessage('Test method: ' . $this->_invokedBy(null, 4));
-		$this->testSuite->addErrorMessage('Failure url: ' . $this->webDriver->getCurrentURL());
+		$this->testSuite->addErrorMessage('Failure url: ' . $this->testSuite->getWebDriver()->getCurrentURL());
 		$this->testSuite->addErrorMessage('');
 		$this->testSuite->addErrorMessage("Error Message: \n" . $errorMessage);
 		$this->testSuite->addErrorMessage('Error time: ' . date('d.m.Y H:i:s'));
-		$this->testSuite->addErrorMessage('Screenshot: ' . $this->suiteSettings->getScreenShotDirectory()
+		$this->testSuite->addErrorMessage('Screenshot: ' . $this->testSuite->getSuiteSettings()
+		                                                                   ->getScreenShotDirectory()
 		                                  . DIRECTORY_SEPARATOR . $screenShotUrl);
 		$this->testSuite->addErrorMessage('Logfile: [Functionality not developed]');
 		$this->testSuite->addErrorMessage('');
@@ -358,7 +327,7 @@ abstract class TestCase
 	 */
 	private function _invokedBy($type = null, $deepness = 2)
 	{
-		$return = $type ?: 'function';
+		$return = $type ? : 'function';
 
 		$debugBacktrace = debug_backtrace();
 		if(!array_key_exists($deepness, $debugBacktrace)):
@@ -369,6 +338,7 @@ abstract class TestCase
 
 		return $debugBacktrace[$deepness][$return];
 	}
+
 
 	/**
 	 * Run the test case.
