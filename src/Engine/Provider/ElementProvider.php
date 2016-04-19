@@ -47,19 +47,9 @@ class ElementProvider
 	private $testSuite;
 
 	/**
-	 * @var WebDriver
-	 */
-	private $webDriver;
-
-	/**
 	 * @var bool
 	 */
 	private $failed = false;
-
-	/**
-	 * @var FileLogger
-	 */
-	private $fileLogger;
 
 
 	/**
@@ -69,9 +59,7 @@ class ElementProvider
 	 */
 	public function __construct(TestSuite $testSuite)
 	{
-		$this->testSuite  = $testSuite;
-		$this->webDriver  = $testSuite->getWebDriver();
-		$this->fileLogger = $testSuite->getFileLogger();
+		$this->testSuite = $testSuite;
 	}
 
 
@@ -87,7 +75,7 @@ class ElementProvider
 	{
 		$by = lcfirst(substr(explode('::', __METHOD__)[1], 2));
 
-		return ($element) ? $this->_by($by, $id, $element) : $this->_by($by, $id, $this->webDriver);
+		return ($element) ? $this->_by($by, $id, $element) : $this->_by($by, $id, $this->testSuite->getWebDriver());
 	}
 
 
@@ -103,7 +91,8 @@ class ElementProvider
 	{
 		$by = lcfirst(substr(explode('::', __METHOD__)[1], 5));
 
-		return ($element) ? $this->_tryBy($by, $id, $element) : $this->_tryBy($by, $id, $this->webDriver);
+		return ($element) ? $this->_tryBy($by, $id, $element) : $this->_tryBy($by, $id,
+		                                                                      $this->testSuite->getWebDriver());
 	}
 
 
@@ -119,7 +108,7 @@ class ElementProvider
 	{
 		$by = lcfirst(substr(explode('::', __METHOD__)[1], 2));
 
-		return ($element) ? $this->_by($by, $name, $element) : $this->_by($by, $name, $this->webDriver);
+		return ($element) ? $this->_by($by, $name, $element) : $this->_by($by, $name, $this->testSuite->getWebDriver());
 	}
 
 
@@ -135,7 +124,8 @@ class ElementProvider
 	{
 		$by = lcfirst(substr(explode('::', __METHOD__)[1], 5));
 
-		return ($element) ? $this->_tryBy($by, $name, $element) : $this->_tryBy($by, $name, $this->webDriver);
+		return ($element) ? $this->_tryBy($by, $name, $element) : $this->_tryBy($by, $name,
+		                                                                        $this->testSuite->getWebDriver());
 	}
 
 
@@ -151,7 +141,8 @@ class ElementProvider
 	{
 		$by = lcfirst(substr(explode('::', __METHOD__)[1], 7));
 
-		return ($element) ? $this->_arrayBy($by, $name, $element) : $this->_arrayBy($by, $name, $this->webDriver);
+		return ($element) ? $this->_arrayBy($by, $name, $element) : $this->_arrayBy($by, $name,
+		                                                                            $this->testSuite->getWebDriver());
 	}
 
 
@@ -167,7 +158,8 @@ class ElementProvider
 	{
 		$by = lcfirst(substr(explode('::', __METHOD__)[1], 2));
 
-		return ($element) ? $this->_by($by, $className, $element) : $this->_by($by, $className, $this->webDriver);
+		return ($element) ? $this->_by($by, $className, $element) : $this->_by($by, $className,
+		                                                                       $this->testSuite->getWebDriver());
 	}
 
 
@@ -183,7 +175,8 @@ class ElementProvider
 	{
 		$by = lcfirst(substr(explode('::', __METHOD__)[1], 5));
 
-		return ($element) ? $this->_tryBy($by, $className, $element) : $this->_tryBy($by, $className, $this->webDriver);
+		return ($element) ? $this->_tryBy($by, $className, $element) : $this->_tryBy($by, $className,
+		                                                                             $this->testSuite->getWebDriver());
 	}
 
 
@@ -199,8 +192,8 @@ class ElementProvider
 	{
 		$by = lcfirst(substr(explode('::', __METHOD__)[1], 7));
 
-		return ($element) ? $this->_arrayBy($by, $className, $element) :
-			$this->_arrayBy($by, $className, $this->webDriver);
+		return ($element) ? $this->_arrayBy($by, $className, $element) : $this->_arrayBy($by, $className,
+		                                                                                 $this->testSuite->getWebDriver());
 	}
 
 
@@ -216,7 +209,8 @@ class ElementProvider
 	{
 		$by = lcfirst(substr(explode('::', __METHOD__)[1], 2));
 
-		return ($element) ? $this->_by($by, $linkText, $element) : $this->_by($by, $linkText, $this->webDriver);
+		return ($element) ? $this->_by($by, $linkText, $element) : $this->_by($by, $linkText,
+		                                                                      $this->testSuite->getWebDriver());
 	}
 
 
@@ -232,7 +226,8 @@ class ElementProvider
 	{
 		$by = lcfirst(substr(explode('::', __METHOD__)[1], 5));
 
-		return ($element) ? $this->_tryBy($by, $linkText, $element) : $this->_tryBy($by, $linkText, $this->webDriver);
+		return ($element) ? $this->_tryBy($by, $linkText, $element) : $this->_tryBy($by, $linkText,
+		                                                                            $this->testSuite->getWebDriver());
 	}
 
 
@@ -248,8 +243,8 @@ class ElementProvider
 	{
 		$by = lcfirst(substr(explode('::', __METHOD__)[1], 7));
 
-		return ($element) ? $this->_arrayBy($by, $linkText, $element) :
-			$this->_arrayBy($by, $linkText, $this->webDriver);
+		return ($element) ? $this->_arrayBy($by, $linkText, $element) : $this->_arrayBy($by, $linkText,
+		                                                                                $this->testSuite->getWebDriver());
 	}
 
 
@@ -265,8 +260,8 @@ class ElementProvider
 	{
 		$by = lcfirst(substr(explode('::', __METHOD__)[1], 2));
 
-		return ($element) ? $this->_by($by, $partialLinkText, $element) :
-			$this->_by($by, $partialLinkText, $this->webDriver);
+		return ($element) ? $this->_by($by, $partialLinkText, $element) : $this->_by($by, $partialLinkText,
+		                                                                             $this->testSuite->getWebDriver());
 	}
 
 
@@ -282,8 +277,8 @@ class ElementProvider
 	{
 		$by = lcfirst(substr(explode('::', __METHOD__)[1], 5));
 
-		return ($element) ? $this->_tryBy($by, $partialLinkText, $element) :
-			$this->_tryBy($by, $partialLinkText, $this->webDriver);
+		return ($element) ? $this->_tryBy($by, $partialLinkText, $element) : $this->_tryBy($by, $partialLinkText,
+		                                                                                   $this->testSuite->getWebDriver());
 	}
 
 
@@ -299,8 +294,8 @@ class ElementProvider
 	{
 		$by = lcfirst(substr(explode('::', __METHOD__)[1], 7));
 
-		return ($element) ? $this->_arrayBy($by, $partialLinkText, $element) :
-			$this->_arrayBy($by, $partialLinkText, $this->webDriver);
+		return ($element) ? $this->_arrayBy($by, $partialLinkText, $element) : $this->_arrayBy($by, $partialLinkText,
+		                                                                                       $this->testSuite->getWebDriver());
 	}
 
 
@@ -316,7 +311,8 @@ class ElementProvider
 	{
 		$by = lcfirst(substr(explode('::', __METHOD__)[1], 2));
 
-		return ($element) ? $this->_by($by, $tagName, $element) : $this->_by($by, $tagName, $this->webDriver);
+		return ($element) ? $this->_by($by, $tagName, $element) : $this->_by($by, $tagName,
+		                                                                     $this->testSuite->getWebDriver());
 	}
 
 
@@ -332,7 +328,8 @@ class ElementProvider
 	{
 		$by = lcfirst(substr(explode('::', __METHOD__)[1], 5));
 
-		return ($element) ? $this->_tryBy($by, $tagName, $element) : $this->_tryBy($by, $tagName, $this->webDriver);
+		return ($element) ? $this->_tryBy($by, $tagName, $element) : $this->_tryBy($by, $tagName,
+		                                                                           $this->testSuite->getWebDriver());
 	}
 
 
@@ -348,7 +345,8 @@ class ElementProvider
 	{
 		$by = lcfirst(substr(explode('::', __METHOD__)[1], 7));
 
-		return ($element) ? $this->_arrayBy($by, $tagName, $element) : $this->_arrayBy($by, $tagName, $this->webDriver);
+		return ($element) ? $this->_arrayBy($by, $tagName, $element) : $this->_arrayBy($by, $tagName,
+		                                                                               $this->testSuite->getWebDriver());
 	}
 
 
@@ -364,7 +362,8 @@ class ElementProvider
 	{
 		$by = lcfirst(substr(explode('::', __METHOD__)[1], 2));
 
-		return ($element) ? $this->_by($by, $cssSelector, $element) : $this->_by($by, $cssSelector, $this->webDriver);
+		return ($element) ? $this->_by($by, $cssSelector, $element) : $this->_by($by, $cssSelector,
+		                                                                         $this->testSuite->getWebDriver());
 	}
 
 
@@ -380,8 +379,8 @@ class ElementProvider
 	{
 		$by = lcfirst(substr(explode('::', __METHOD__)[1], 5));
 
-		return ($element) ? $this->_tryBy($by, $cssSelector, $element) :
-			$this->_tryBy($by, $cssSelector, $this->webDriver);
+		return ($element) ? $this->_tryBy($by, $cssSelector, $element) : $this->_tryBy($by, $cssSelector,
+		                                                                               $this->testSuite->getWebDriver());
 	}
 
 
@@ -397,8 +396,8 @@ class ElementProvider
 	{
 		$by = lcfirst(substr(explode('::', __METHOD__)[1], 7));
 
-		return ($element) ? $this->_arrayBy($by, $cssSelector, $element) :
-			$this->_arrayBy($by, $cssSelector, $this->webDriver);
+		return ($element) ? $this->_arrayBy($by, $cssSelector, $element) : $this->_arrayBy($by, $cssSelector,
+		                                                                                   $this->testSuite->getWebDriver());
 	}
 
 
@@ -414,7 +413,8 @@ class ElementProvider
 	{
 		$by = lcfirst(substr(explode('::', __METHOD__)[1], 2));
 
-		return ($element) ? $this->_by($by, $xPath, $element) : $this->_by($by, $xPath, $this->webDriver);
+		return ($element) ? $this->_by($by, $xPath, $element) : $this->_by($by, $xPath,
+		                                                                   $this->testSuite->getWebDriver());
 	}
 
 
@@ -430,7 +430,8 @@ class ElementProvider
 	{
 		$by = lcfirst(substr(explode('::', __METHOD__)[1], 5));
 
-		return ($element) ? $this->_tryBy($by, $xPath, $element) : $this->_tryBy($by, $xPath, $this->webDriver);
+		return ($element) ? $this->_tryBy($by, $xPath, $element) : $this->_tryBy($by, $xPath,
+		                                                                         $this->testSuite->getWebDriver());
 	}
 
 
@@ -446,7 +447,8 @@ class ElementProvider
 	{
 		$by = lcfirst(substr(explode('::', __METHOD__)[1], 7));
 
-		return ($element) ? $this->_arrayBy($by, $xPath, $element) : $this->_arrayBy($by, $xPath, $this->webDriver);
+		return ($element) ? $this->_arrayBy($by, $xPath, $element) : $this->_arrayBy($by, $xPath,
+		                                                                             $this->testSuite->getWebDriver());
 	}
 
 
@@ -493,6 +495,7 @@ class ElementProvider
 		return $this;
 	}
 
+
 	/**
 	 * Returns a web driver element by the given searching type.
 	 *
@@ -514,11 +517,9 @@ class ElementProvider
 		}
 		catch(NoSuchElementException $e)
 		{
-			$this->testSuite->getSuiteSettings()->getCurrentTestCase()->_exceptionError('element by "' .
-			                                                                            $by .
-			                                                                            '" with value "' .
-			                                                                            $value .
-			                                                                            '" not found', $e);
+			$this->testSuite->getSuiteSettings()->getCurrentTestCase()->_exceptionError('element by "' . $by
+			                                                                            . '" with value "' . $value
+			                                                                            . '" not found', $e);
 
 			return new WebDriverElementNull();
 		}

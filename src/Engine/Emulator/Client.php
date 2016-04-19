@@ -40,8 +40,6 @@ use GXSelenium\Engine\TestSuite;
 /**
  * Class Client
  * @package GXSelenium\Engine\Emulator
- *
- * @Todo Maybe refactor instantiation in selenium factory .. are multiple instances required (if not, refactor!)
  */
 class Client
 {
@@ -53,19 +51,10 @@ class Client
 	private $testSuite;
 
 	/**
-	 * @var WebDriver|JavaScriptExecutor
-	 */
-	private $webDriver;
-
-	/**
 	 * @var ElementProvider
 	 */
 	private $elementProvider;
 
-	/**
-	 * @var string
-	 */
-	private $baseUrl;
 
 	/**
 	 * @var bool
@@ -82,12 +71,7 @@ class Client
 	public function __construct(TestSuite $testSuite, ElementProvider $elementProvider)
 	{
 		$this->testSuite       = $testSuite;
-		$this->webDriver       = $this->testSuite->getWebDriver();
 		$this->elementProvider = $elementProvider;
-		$this->baseUrl
-		                       = $this->testSuite->getSuiteSettings()->getBaseUrl() .
-		                         '/' .
-		                         $this->testSuite->getSuiteSettings()->getWebApp();
 	}
 
 
@@ -101,12 +85,13 @@ class Client
 	 */
 	public function openBaseUrl(array $pathArray = array())
 	{
-		$url = $this->baseUrl . '/';
+		$url = $this->testSuite->getSuiteSettings()->getBaseUrl() . '/' . $this->testSuite->getSuiteSettings()
+		                                                                                  ->getWebApp() . '/';
 		foreach($pathArray as $path):
 			$url .= $path . '/';
 		endforeach;
 		$url = rtrim($url, '/');
-		$this->webDriver->get($url);
+		$this->testSuite->getWebDriver()->get($url);
 
 		return $this;
 	}
@@ -122,7 +107,7 @@ class Client
 	 */
 	public function scrollTo($xPos = 0, $yPos = 0)
 	{
-		$this->webDriver->executeScript('javascript:window.scrollTo(' . $xPos . ', ' . $yPos . ')');
+		 $this->testSuite->getWebDriver()->executeScript('javascript:window.scrollTo(' . $xPos . ', ' . $yPos . ')');
 
 		return $this;
 	}
@@ -166,7 +151,7 @@ class Client
 	 */
 	public function waitForPageLoaded($expectedUrlSnippet, $waitTimeout)
 	{
-		$this->webDriver->wait($waitTimeout)->until(function($webDriver) use ($expectedUrlSnippet)
+		 $this->testSuite->getWebDriver()->wait($waitTimeout)->until(function($webDriver) use ($expectedUrlSnippet)
 		{
 			/** @var RemoteWebDriver $webDriver */
 			return (strpos($webDriver->getCurrentURL(), $expectedUrlSnippet)) ? true : false;
@@ -224,7 +209,7 @@ class Client
 	 */
 	public function getWebDriver()
 	{
-		return $this->webDriver;
+		return  $this->testSuite->getWebDriver();
 	}
 
 	/**
