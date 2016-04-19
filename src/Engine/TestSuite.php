@@ -24,6 +24,7 @@
 namespace GXSelenium\Engine;
 
 use Facebook\WebDriver\Exception\WebDriverCurlException;
+use Facebook\WebDriver\JavaScriptExecutor;
 use Facebook\WebDriver\Remote\DesiredCapabilities;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\WebDriver;
@@ -457,7 +458,7 @@ class TestSuite
 
 
 	/**
-	 * @return WebDriver
+	 * @return WebDriver|JavaScriptExecutor
 	 */
 	public function getWebDriver()
 	{
