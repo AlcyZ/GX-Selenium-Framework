@@ -412,6 +412,13 @@ class TestSuite
 			exit("\n\e[41mFailed to initialize the remote web driver, there is may be a problem with the browser driver.\n"
 			     . $e->getMessage() . "\e[0m\n\n");
 		}
+		catch(\Exception $e)
+		{
+			$this->_initSqlLogger();
+			$this->sqlLogger->initError();
+			exit("\n\e[41mException while the web driver is instantiating.\n"
+			     . $e->getMessage() . "\e[0m\n\n");
+		}
 
 		return $this;
 	}

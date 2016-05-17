@@ -95,8 +95,8 @@ class SqlLogger implements SqlInterface
 	 */
 	public function __construct(AlcysDb $db, TestSuite $testSuite)
 	{
-		$this->db        = $db;
-		$this->testSuite = $testSuite;
+		$this->db            = $db;
+		$this->testSuite     = $testSuite;
 		$this->suiteSettings = $this->testSuite->getSuiteSettings();
 	}
 
@@ -188,18 +188,18 @@ class SqlLogger implements SqlInterface
 	{
 		$insert = $this->db->insert($this->caseErrorsTable);
 		$insert->columns([
-			'test_case_id',
-			'error_message',
-			'screenshot_url',
-			'error_url',
-			'time'
-		])->values([
-			$this->lastCaseId,
-			$message,
-			$screenshotUrl,
-			$errorUrl,
-			date('Y-m-d H:i:s')
-		])->execute();
+			                 'test_case_id',
+			                 'error_message',
+			                 'screenshot_url',
+			                 'error_url',
+			                 'time'
+		                 ])->values([
+			                            $this->lastCaseId,
+			                            $message,
+			                            $screenshotUrl,
+			                            $errorUrl,
+			                            date('Y-m-d H:i:s')
+		                            ])->execute();
 
 		return $this;
 	}
@@ -216,13 +216,41 @@ class SqlLogger implements SqlInterface
 	public function initError()
 	{
 		$insert = $this->db->insert($this->suitesTable);
-		$insert->columns($this->_getSuiteColumnsArray())->values($this->_getSuiteValuesArray(false, true))->execute();
+		$insert->columns($this->_getInitErrorColumnsArray())->values($this->_getInitErrorValuesArray())->execute();
 
 		return $this;
 	}
 
 
 	################################### helper methods for the suite table #############################################
+	protected function _getInitErrorColumnsArray()
+	{
+		return [
+			'build_number',
+			'suite_name',
+			'branch',
+			'status',
+			'begin',
+			'end',
+			'passed_time'
+		];
+	}
+
+
+	protected function _getInitErrorValuesArray()
+	{
+		return [
+			$this->suiteSettings->getBuildNumber(),
+			$this->suiteSettings->getSuiteName(),
+			$this->suiteSettings->getBranch(),
+			3, # 3 for bootstrap value 'info'
+			date('Y-m-d H:i:s'),
+			date('Y-m-d H:i:s'),
+			0.00
+		];
+	}
+
+
 	/**
 	 * Returns an array with column names for the suite table.
 	 *
