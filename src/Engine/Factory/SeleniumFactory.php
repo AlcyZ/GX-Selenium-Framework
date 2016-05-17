@@ -64,17 +64,13 @@ class SeleniumFactory
 
 
 	/**
-	 * Initialize the selenium factory.
+	 * SeleniumFactory constructor.
 	 *
-	 * @param \GXSelenium\Engine\TestSuite              $testSuite
-	 * @param \GXSelenium\Engine\Emulator\Client|null   $client
-	 * @param \GXSelenium\Engine\Logger\FileLogger|null $fileLogger
+	 * @param TestSuite $testSuite
 	 */
-	public function __construct(TestSuite $testSuite, Client $client = null, FileLogger $fileLogger = null)
+	public function __construct(TestSuite $testSuite)
 	{
-		$this->testSuite  = $testSuite;
-		$this->client     = $client;
-		$this->fileLogger = $fileLogger;
+		$this->testSuite = $testSuite;
 	}
 
 
