@@ -94,8 +94,8 @@ class TestSuite
 	 */
 	public function __construct($settings = null)
 	{
-		$this->_initTestCaseCollection()
-		     ->_initSeleniumFactory()
+		$this->_initSeleniumFactory()
+		     ->_initTestCaseCollection()
 		     ->_initSuiteSettings($settings)
 		     ->_initWebDriver()
 		     ->_initSqlLogger()
