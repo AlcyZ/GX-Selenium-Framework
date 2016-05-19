@@ -149,7 +149,7 @@ class TestSuite
 	 */
 	public function pushTestCase($caseName)
 	{
-		$this->cases[] = rtrim($caseName, 'Case');
+		$this->cases[] = rtrim($caseName);
 
 		return $this;
 	}
