@@ -78,4 +78,15 @@ interface SqlInterface
 	 * @return $this Same instance for chained method calls.
 	 */
 	public function caseError($message, $errorUrl, $screenshotUrl);
+
+
+	/**
+	 * Adds a new log entry for a failed web driver initialization.
+	 *
+	 * @Todo Maybe add log entry in case table for error message.
+	 *
+	 * @return $this Same instance for chained method calls.
+	 * @throws \Exception
+	 */
+	public function initError();
 }

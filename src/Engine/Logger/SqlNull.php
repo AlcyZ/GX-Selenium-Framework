@@ -93,4 +93,18 @@ class SqlNull implements SqlInterface
 	{
 		return $this;
 	}
+
+
+	/**
+	 * Adds a new log entry for a failed web driver initialization.
+	 *
+	 * @Todo Maybe add log entry in case table for error message.
+	 *
+	 * @return $this Same instance for chained method calls.
+	 * @throws \Exception
+	 */
+	public function initError()
+	{
+		return $this;
+	}
 }
