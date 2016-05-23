@@ -111,6 +111,16 @@ class SuiteSettings
 	private $windowsMaximized = true;
 
 	/**
+	 * @var int
+	 */
+	private $implicitlyWait = 5;
+
+	/**
+	 * @var int
+	 */
+	private $pageLoadTimeout = 5;
+
+	/**
 	 * @var string
 	 */
 	private $loggingDirectoryName = '';
@@ -436,6 +446,42 @@ class SuiteSettings
 	public function setWindowsMaximized($windowsMaximized)
 	{
 		$this->windowsMaximized = $windowsMaximized;
+	}
+
+
+	/**
+	 * @return int
+	 */
+	public function getImplicitlyWait()
+	{
+		return $this->implicitlyWait;
+	}
+
+
+	/**
+	 * @param int $implicitlyWait
+	 */
+	public function setImplicitlyWait($implicitlyWait)
+	{
+		$this->implicitlyWait = $implicitlyWait;
+	}
+
+
+	/**
+	 * @return int
+	 */
+	public function getPageLoadTimeout()
+	{
+		return $this->pageLoadTimeout;
+	}
+
+
+	/**
+	 * @param int $pageLoadTimeout
+	 */
+	public function setPageLoadTimeout($pageLoadTimeout)
+	{
+		$this->pageLoadTimeout = $pageLoadTimeout;
 	}
 
 

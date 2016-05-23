@@ -122,11 +122,11 @@ class TestSuite
 	 */
 	public function run()
 	{
-		if($this->suiteSettings->isWindowsMaximized()):
-			$this->webDriver->manage()->window()->maximize();
-		endif;
+		$this->_applyMaximizedWindowSetting()
+		     ->_applyImplicitlyWaitTimeoutSetting()
+		     ->_applyPageLoadTimeoutSetting()
+		     ->_addCasesToCollection()->sqlLogger->startSuite();
 
-		$this->_addCasesToCollection()->sqlLogger->startSuite();
 		foreach($this->testCaseCollection as $testCase):
 			/** @var TestCase $testCase */
 			$this->suiteSettings->setCurrentTestCase($testCase);
@@ -262,8 +262,8 @@ class TestSuite
 		endif;
 
 		$subject = '[SeleniumTest] Test fehlgeschlagen, Branch: ' . $this->suiteSettings->getBranch();
-		$header  = 'From: ' . $from . "\r\n" . 'Reply-To: ' . $reply . "\r\n"
-		           . 'Content-Type: text/plain; charset=UTF-8"';
+		$header  =
+			'From: ' . $from . "\r\n" . 'Reply-To: ' . $reply . "\r\n" . 'Content-Type: text/plain; charset=UTF-8"';
 		mail($to, $subject, $this->errorMessages, $header);
 		echo "Error E-Mail send!\n";
 		$this->errorMailSend = true;
@@ -405,8 +405,9 @@ class TestSuite
 		try
 		{
 			if(null === $this->webDriver):
-				$this->webDriver = RemoteWebDriver::create($this->suiteSettings->getSeleniumHost(),
-				                                           $this->suiteSettings->getCapabilities());
+				$this->webDriver =
+					RemoteWebDriver::create($this->suiteSettings->getSeleniumHost(),
+					                        $this->suiteSettings->getCapabilities());
 			endif;
 		}
 		catch(WebDriverCurlException $e)
@@ -420,8 +421,7 @@ class TestSuite
 		{
 			$this->_initSqlLogger();
 			$this->sqlLogger->initError();
-			exit("\n\e[41mException while the web driver is instantiating.\n"
-			     . $e->getMessage() . "\e[0m\n\n");
+			exit("\n\e[41mException while the web driver is instantiating.\n" . $e->getMessage() . "\e[0m\n\n");
 		}
 
 		return $this;
@@ -458,6 +458,53 @@ class TestSuite
 	}
 
 
+	################################### helper methods to apply settings ###############################################
+	/**
+	 * Checks if the maximized window setting is set. If true, apply it.
+	 *
+	 * @return $this|TestSuite Same instance for chained method calls.
+	 */
+	private function _applyMaximizedWindowSetting()
+	{
+		if($this->suiteSettings->isWindowsMaximized()):
+			echo 'Maximize web driver window!' . "\n";
+			$this->webDriver->manage()->window()->maximize();
+		endif;
+
+		return $this;
+	}
+	
+
+	/**
+	 * Applies the implicitly wait timeout setting.
+	 *
+	 * @return $this|TestSuite Same instance for chained method calls.
+	 */
+	private function _applyImplicitlyWaitTimeoutSetting()
+	{
+		$implicitlyWait = $this->suiteSettings->getImplicitlyWait();
+		echo 'Set implicitly wait setting to ' . $implicitlyWait . ' seconds.';
+		$this->webDriver->manage()->timeouts()->implicitlyWait($implicitlyWait);
+
+		return $this;
+	}
+	
+
+	/**
+	 * Applies the page load timeout setting.
+	 *
+	 * @return $this|TestSuite Same instance for chained method calls.
+	 */
+	private function _applyPageLoadTimeoutSetting()
+	{
+		$pageLoadTimeout = $this->suiteSettings->getPageLoadTimeout();
+		echo 'Set page load timeout setting to ' . $pageLoadTimeout . ' seconds.';
+		$this->webDriver->manage()->timeouts()->pageLoadTimeout($pageLoadTimeout);
+
+		return $this;
+	}
+	
+	
 	########################################## getter and setter #######################################################
 	/**
 	 * @return SuiteSettings
