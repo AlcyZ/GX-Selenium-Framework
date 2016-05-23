@@ -139,6 +139,7 @@ class TestSuite
 			$this->_sendErrorMail();
 		endif;
 
+		$this->__destruct();
 		return $this;
 	}
 
