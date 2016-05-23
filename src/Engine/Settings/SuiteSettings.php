@@ -121,6 +121,11 @@ class SuiteSettings
 	private $pageLoadTimeout = 5;
 
 	/**
+	 * @var int
+	 */
+	private $scriptTimeout = 5;
+
+	/**
 	 * @var string
 	 */
 	private $loggingDirectoryName = '';
@@ -482,6 +487,24 @@ class SuiteSettings
 	public function setPageLoadTimeout($pageLoadTimeout)
 	{
 		$this->pageLoadTimeout = $pageLoadTimeout;
+	}
+
+
+	/**
+	 * @return int
+	 */
+	public function getScriptTimeout()
+	{
+		return $this->scriptTimeout;
+	}
+
+
+	/**
+	 * @param int $scriptTimeout
+	 */
+	public function setScriptTimeout($scriptTimeout)
+	{
+		$this->scriptTimeout = $scriptTimeout;
 	}
 
 

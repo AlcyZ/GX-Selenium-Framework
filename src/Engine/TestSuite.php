@@ -125,6 +125,7 @@ class TestSuite
 		$this->_applyMaximizedWindowSetting()
 		     ->_applyImplicitlyWaitTimeoutSetting()
 		     ->_applyPageLoadTimeoutSetting()
+		     ->_applyScriptTimeoutSetting()
 		     ->_addCasesToCollection()->sqlLogger->startSuite();
 
 		foreach($this->testCaseCollection as $testCase):
@@ -504,6 +505,20 @@ class TestSuite
 		return $this;
 	}
 	
+	
+	/**
+	 * Applies the script timeout setting.
+	 *
+	 * @return $this|TestSuite Same instance for chained method calls.
+	 */
+	private function _applyScriptTimeoutSetting()
+	{
+		$scriptTimeout = $this->suiteSettings->getScriptTimeout();
+		echo 'Set script timeout setting to ' . $scriptTimeout . ' seconds.' . "\n";
+		$this->webDriver->manage()->timeouts()->setScriptTimeout($scriptTimeout);
+
+		return $this;
+	}
 	
 	########################################## getter and setter #######################################################
 	/**
