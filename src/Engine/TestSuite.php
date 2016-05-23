@@ -483,7 +483,7 @@ class TestSuite
 	private function _applyImplicitlyWaitTimeoutSetting()
 	{
 		$implicitlyWait = $this->suiteSettings->getImplicitlyWait();
-		echo 'Set implicitly wait setting to ' . $implicitlyWait . ' seconds.';
+		echo 'Set implicitly wait setting to ' . $implicitlyWait . ' seconds.' . "\n";
 		$this->webDriver->manage()->timeouts()->implicitlyWait($implicitlyWait);
 
 		return $this;
@@ -498,7 +498,7 @@ class TestSuite
 	private function _applyPageLoadTimeoutSetting()
 	{
 		$pageLoadTimeout = $this->suiteSettings->getPageLoadTimeout();
-		echo 'Set page load timeout setting to ' . $pageLoadTimeout . ' seconds.';
+		echo 'Set page load timeout setting to ' . $pageLoadTimeout . ' seconds.' . "\n";
 		$this->webDriver->manage()->timeouts()->pageLoadTimeout($pageLoadTimeout);
 
 		return $this;
