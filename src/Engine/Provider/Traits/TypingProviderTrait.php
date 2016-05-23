@@ -24,6 +24,8 @@
 
 namespace GXSelenium\Engine\Provider\Traits;
 
+use Facebook\WebDriver\Exception\InvalidElementStateException;
+use Facebook\WebDriver\Exception\StaleElementReferenceException;
 use Facebook\WebDriver\WebDriverElement;
 use GXSelenium\Engine\Provider\ElementProvider;
 
@@ -48,7 +50,35 @@ trait TypingProviderTrait
 		{
 			return $this;
 		}
-		($clear) ? $element->clear() : null;
+
+		if($clear):
+			$condition = true;
+			$counter   = 0;
+			while($condition):
+				try
+				{
+					$element->clear();
+					$condition = false;
+				}
+				catch(InvalidElementStateException $e)
+				{
+					echo InvalidElementStateException::class . ' thrown.';
+					if($counter > 50):
+						$condition = false;
+					endif;
+					$counter++;
+				}
+				catch(StaleElementReferenceException $e)
+				{
+					echo StaleElementReferenceException::class . ' thrown.';
+					if($counter > 50):
+						$condition = false;
+					endif;
+					$counter++;
+				}
+			endwhile;
+		endif;
+
 		$this->_logTyping($element, $value)->sendKeys($value);
 
 		return $this;
