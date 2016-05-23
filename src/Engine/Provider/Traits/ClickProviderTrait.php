@@ -58,7 +58,7 @@ trait ClickProviderTrait
 			}
 			catch(\Exception $e)
 			{
-				echo 'Exception of type "' . get_class($e) . '" thrown. Retry to click, number: ' . $counter;
+				echo 'Exception of type "' . get_class($e) . '" thrown. Retry to click, number: ' . $counter . "\n";
 				$counter++;
 
 				if($counter > 20):
@@ -70,7 +70,7 @@ trait ClickProviderTrait
 		return $this;
 	}
 
-	
+
 	/**
 	 * Click at an element by the given id.
 	 *
