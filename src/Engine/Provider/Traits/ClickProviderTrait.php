@@ -48,12 +48,29 @@ trait ClickProviderTrait
 			return $this;
 		endif;
 
-		$this->_logClick($element)->click();
+		$condition = true;
+		$counter   = 1;
+		while($condition):
+			try
+			{
+				$this->_logClick($element)->click();
+				$condition = false;
+			}
+			catch(\Exception $e)
+			{
+				echo 'Exception of type "' . get_class($e) . '" thrown. Retry to click, number: ' . $counter;
+				$counter++;
+
+				if($counter > 20):
+					$condition = false;
+				endif;
+			}
+		endwhile;
 
 		return $this;
 	}
 
-
+	
 	/**
 	 * Click at an element by the given id.
 	 *
@@ -63,14 +80,11 @@ trait ClickProviderTrait
 	 */
 	public function clickId($id)
 	{
-		if($this->isFailed()):
-			return $this;
-		endif;
-
-		$this->_logClick($this->getElementProvider()->byId($id))->click();
+		$this->click($this->getElementProvider()->byId($id));
 
 		return $this;
 	}
+
 
 	/**
 	 * Try to click at an element by the given id.
@@ -81,11 +95,7 @@ trait ClickProviderTrait
 	 */
 	public function tryClickId($id)
 	{
-		if($this->isFailed()):
-			return $this;
-		endif;
-
-		$this->_logClick($this->getElementProvider()->tryById($id))->click();
+		$this->click($this->getElementProvider()->tryById($id));
 
 		return $this;
 	}
@@ -100,14 +110,11 @@ trait ClickProviderTrait
 	 */
 	public function clickName($name)
 	{
-		if($this->isFailed()):
-			return $this;
-		endif;
-
-		$this->_logClick($this->getElementProvider()->byName($name))->click();
+		$this->click($this->getElementProvider()->byName($name));
 
 		return $this;
 	}
+
 
 	/**
 	 * Try to click at an element by the given name attribute.
@@ -118,11 +125,7 @@ trait ClickProviderTrait
 	 */
 	public function tryClickName($name)
 	{
-		if($this->isFailed()):
-			return $this;
-		endif;
-
-		$this->_logClick($this->getElementProvider()->tryByName($name))->click();
+		$this->click($this->getElementProvider()->tryByName($name));
 
 		return $this;
 	}
@@ -137,14 +140,11 @@ trait ClickProviderTrait
 	 */
 	public function clickClassName($className)
 	{
-		if($this->isFailed()):
-			return $this;
-		endif;
-
-		$this->_logClick($this->getElementProvider()->byClassName($className))->click();
+		$this->click($this->getElementProvider()->byClassName($className));
 
 		return $this;
 	}
+
 
 	/**
 	 * Try to click at an element by the given class name.
@@ -155,11 +155,7 @@ trait ClickProviderTrait
 	 */
 	public function tryClickClassName($className)
 	{
-		if($this->isFailed()):
-			return $this;
-		endif;
-
-		$this->_logClick($this->getElementProvider()->tryByClassName($className))->click();
+		$this->click($this->getElementProvider()->tryByClassName($className));
 
 		return $this;
 	}
@@ -174,14 +170,11 @@ trait ClickProviderTrait
 	 */
 	public function clickLinkText($linkText)
 	{
-		if($this->isFailed()):
-			return $this;
-		endif;
-
-		$this->_logClick($this->getElementProvider()->byLinkText($linkText))->click();
+		$this->click($this->getElementProvider()->byLinkText($linkText));
 
 		return $this;
 	}
+
 
 	/**
 	 * Try to click at an element by the given link text.
@@ -192,11 +185,7 @@ trait ClickProviderTrait
 	 */
 	public function tryClickLinkText($linkText)
 	{
-		if($this->isFailed()):
-			return $this;
-		endif;
-
-		$this->_logClick($this->getElementProvider()->tryByLinkText($linkText))->click();
+		$this->click($this->getElementProvider()->tryByLinkText($linkText));
 
 		return $this;
 	}
@@ -211,14 +200,11 @@ trait ClickProviderTrait
 	 */
 	public function clickPartialLinkText($partialLinkText)
 	{
-		if($this->isFailed()):
-			return $this;
-		endif;
-
-		$this->_logClick($this->getElementProvider()->byPartialLinkText($partialLinkText))->click();
+		$this->click($this->getElementProvider()->byPartialLinkText($partialLinkText));
 
 		return $this;
 	}
+
 
 	/**
 	 * Try to click at an element by the given partial link text.
@@ -229,11 +215,7 @@ trait ClickProviderTrait
 	 */
 	public function tryClickPartialLinkText($partialLinkText)
 	{
-		if($this->isFailed()):
-			return $this;
-		endif;
-
-		$this->_logClick($this->getElementProvider()->tryByPartialLinkText($partialLinkText))->click();
+		$this->click($this->getElementProvider()->tryByPartialLinkText($partialLinkText));
 
 		return $this;
 	}
@@ -248,14 +230,11 @@ trait ClickProviderTrait
 	 */
 	public function clickTagName($tagName)
 	{
-		if($this->isFailed()):
-			return $this;
-		endif;
-
-		$this->_logClick($this->getElementProvider()->byTagName($tagName))->click();
+		$this->click($this->getElementProvider()->byTagName($tagName));
 
 		return $this;
 	}
+
 
 	/**
 	 * Try to click at an element by the given tag name.
@@ -266,11 +245,7 @@ trait ClickProviderTrait
 	 */
 	public function tryClickTagName($tagName)
 	{
-		if($this->isFailed()):
-			return $this;
-		endif;
-
-		$this->_logClick($this->getElementProvider()->tryByTagName($tagName))->click();
+		$this->click($this->getElementProvider()->tryByTagName($tagName));
 
 		return $this;
 	}
@@ -285,14 +260,11 @@ trait ClickProviderTrait
 	 */
 	public function clickByCssSelector($cssSelector)
 	{
-		if($this->isFailed()):
-			return $this;
-		endif;
-
-		$this->_logClick($this->getElementProvider()->byCssSelector($cssSelector))->click();
+		$this->click($this->getElementProvider()->byCssSelector($cssSelector));
 
 		return $this;
 	}
+
 
 	/**
 	 * Try to click at an element by the given css selector.
@@ -303,11 +275,7 @@ trait ClickProviderTrait
 	 */
 	public function tryClickByCssSelector($cssSelector)
 	{
-		if($this->isFailed()):
-			return $this;
-		endif;
-
-		$this->_logClick($this->getElementProvider()->tryByCssSelector($cssSelector))->click();
+		$this->click($this->getElementProvider()->tryByCssSelector($cssSelector));
 
 		return $this;
 	}
@@ -322,14 +290,11 @@ trait ClickProviderTrait
 	 */
 	public function clickByXpath($xPath)
 	{
-		if($this->isFailed()):
-			return $this;
-		endif;
-
-		$this->_logClick($this->getElementProvider()->byXpath($xPath))->click();
+		$this->click($this->getElementProvider()->byXpath($xPath));
 
 		return $this;
 	}
+
 
 	/**
 	 * Try to click at an element by the given xpath.
@@ -340,11 +305,7 @@ trait ClickProviderTrait
 	 */
 	public function tryClickByXpath($xPath)
 	{
-		if($this->isFailed()):
-			return $this;
-		endif;
-
-		$this->_logClick($this->getElementProvider()->tryByXpath($xPath))->click();
+		$this->click($this->getElementProvider()->tryByXpath($xPath));
 
 		return $this;
 	}
@@ -376,18 +337,8 @@ trait ClickProviderTrait
 		$tagName = $element->getTagName();
 		$tagText = $element->getText();
 
-		$txt
-			= '<' .
-			  $tagName .
-			  $idValue .
-			  $classValue .
-			  $disabledValue .
-			  $hrefValue .
-			  '>' .
-			  $tagText .
-			  '</' .
-			  $tagName .
-			  '>';
+		$txt = '<' . $tagName . $idValue . $classValue . $disabledValue . $hrefValue . '>' . $tagText . '</' . $tagName
+		       . '>';
 		echo "Click\t|\t" . $txt . "\n";
 
 		return $element;
