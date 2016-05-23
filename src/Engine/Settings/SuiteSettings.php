@@ -106,6 +106,11 @@ class SuiteSettings
 	private $scrollYOffset = 0;
 
 	/**
+	 * @var bool
+	 */
+	private $windowsMaximized = true;
+
+	/**
 	 * @var string
 	 */
 	private $loggingDirectoryName = '';
@@ -413,6 +418,24 @@ class SuiteSettings
 	public function setScrollYOffset($scrollYOffset)
 	{
 		$this->scrollYOffset = $scrollYOffset;
+	}
+
+
+	/**
+	 * @return boolean
+	 */
+	public function isWindowsMaximized()
+	{
+		return $this->windowsMaximized;
+	}
+
+
+	/**
+	 * @param boolean $windowsMaximized
+	 */
+	public function setWindowsMaximized($windowsMaximized)
+	{
+		$this->windowsMaximized = $windowsMaximized;
 	}
 
 

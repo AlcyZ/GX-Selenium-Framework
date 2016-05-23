@@ -95,8 +95,8 @@ class TestSuite
 	public function __construct($settings = null)
 	{
 		$this->_initSeleniumFactory()
-		     ->_initTestCaseCollection()
 		     ->_initSuiteSettings($settings)
+		     ->_initTestCaseCollection()
 		     ->_initWebDriver()
 		     ->_initSqlLogger()
 		     ->_initFileLogger();
@@ -122,6 +122,10 @@ class TestSuite
 	 */
 	public function run()
 	{
+		if($this->suiteSettings->isWindowsMaximized()):
+			$this->webDriver->manage()->window()->maximize();
+		endif;
+
 		$this->_addCasesToCollection()->sqlLogger->startSuite();
 		foreach($this->testCaseCollection as $testCase):
 			/** @var TestCase $testCase */
