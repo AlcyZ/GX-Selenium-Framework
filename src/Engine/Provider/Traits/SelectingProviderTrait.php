@@ -485,7 +485,7 @@ trait SelectingProviderTrait
 				if($counter >= 50):
 					throw $e;
 				else:
-					echo 'StaleElementReferenceException thrown, retry to select number: ' . $counter;
+					echo 'StaleElementReferenceException thrown, retry to select number: ' . $counter . "\n";
 					$counter++;
 				endif;
 			}
