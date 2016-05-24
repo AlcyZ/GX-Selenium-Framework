@@ -24,6 +24,7 @@
 
 namespace GXSelenium\Engine\Provider\Traits;
 
+use Facebook\WebDriver\Exception\UnknownServerException;
 use Facebook\WebDriver\Remote\RemoteWebElement;
 use Facebook\WebDriver\WebDriverElement;
 use GXSelenium\Engine\NullObjects\WebDriverElementNull;
@@ -38,34 +39,59 @@ trait ClickProviderTrait
 	/**
 	 * Click at the arguments web driver element.
 	 *
-	 * @param WebDriverElement $element Expected element.
+	 * @param WebDriverElement $element         Expected element.
+	 * @param bool             $retry           If Set, retry to click element after thrown exception.
+	 * @param bool             $ignoreException If true, the case proceed after max amount of thrown exceptions (20).
 	 *
 	 * @return $this Same instance for chained method calls.
+	 * @throws \Exception
+	 * @throws \Facebook\WebDriver\Exception\UnknownServerException
 	 */
-	public function click(WebDriverElement $element)
+	public function click(WebDriverElement $element, $retry = false, $ignoreException = false)
 	{
 		if($this->isFailed()):
 			return $this;
 		endif;
 
-		$condition = true;
-		$counter   = 1;
-		while($condition):
-			try
-			{
-				$this->_logClick($element)->click();
-				$condition = false;
-			}
-			catch(\Exception $e)
-			{
-				echo 'Exception of type "' . get_class($e) . '" thrown. Retry to click, number: ' . $counter . "\n";
-				$counter++;
-
-				if($counter > 20):
+		$this->_logClick($element);
+		if($retry):
+			$counter   = 0;
+			$condition = true;
+			while($condition):
+				try
+				{
+					$element->click();
 					$condition = false;
-				endif;
-			}
-		endwhile;
+				}
+				catch(UnknownServerException $e)
+				{
+					if($counter >= 20):
+						if(!$ignoreException):
+							throw $e;
+						endif;
+						$condition = false;
+					else:
+						echo '"UnknownServerException" thrown. Retry to click, number: ' . $counter . "\n";
+						$counter++;
+					endif;
+				}
+				catch(\Exception $e)
+				{
+					if($counter >= 20):
+						if(!$ignoreException):
+							throw $e;
+						endif;
+						$condition = false;
+					else:
+						echo 'Exception of type "' . get_class($e) . '" thrown. Retry to click, number: ' . $counter
+						     . "\n";
+						$counter++;
+					endif;
+				}
+			endwhile;
+		else:
+			$element->click();
+		endif;
 
 		return $this;
 	}
@@ -74,13 +100,15 @@ trait ClickProviderTrait
 	/**
 	 * Click at an element by the given id.
 	 *
-	 * @param string $id Id of expected element.
+	 * @param string $id              Id of expected element.
+	 * @param bool   $retry           If Set, retry to click element after thrown exception.
+	 * @param bool   $ignoreException If true, the case proceed after max amount of thrown exceptions (20).
 	 *
 	 * @return $this Same instance for chained method calls.
 	 */
-	public function clickId($id)
+	public function clickId($id, $retry = false, $ignoreException = false)
 	{
-		$this->click($this->getElementProvider()->byId($id));
+		$this->click($this->getElementProvider()->byId($id), $retry, $ignoreException);
 
 		return $this;
 	}
@@ -89,13 +117,15 @@ trait ClickProviderTrait
 	/**
 	 * Try to click at an element by the given id.
 	 *
-	 * @param string $id Id of expected element.
+	 * @param string $id              Id of expected element.
+	 * @param bool   $retry           If Set, retry to click element after thrown exception.
+	 * @param bool   $ignoreException If true, the case proceed after max amount of thrown exceptions (20).
 	 *
 	 * @return $this Same instance for chained method calls.
 	 */
-	public function tryClickId($id)
+	public function tryClickId($id, $retry = false, $ignoreException = false)
 	{
-		$this->click($this->getElementProvider()->tryById($id));
+		$this->click($this->getElementProvider()->tryById($id), $retry, $ignoreException);
 
 		return $this;
 	}
@@ -104,13 +134,15 @@ trait ClickProviderTrait
 	/**
 	 * Click at an element by the given name attribute.
 	 *
-	 * @param string $name Name attribute of expected element.
+	 * @param string $name            Name attribute of expected element.
+	 * @param bool   $retry           If Set, retry to click element after thrown exception.
+	 * @param bool   $ignoreException If true, the case proceed after max amount of thrown exceptions (20).
 	 *
 	 * @return $this Same instance for chained method calls.
 	 */
-	public function clickName($name)
+	public function clickName($name, $retry = false, $ignoreException = false)
 	{
-		$this->click($this->getElementProvider()->byName($name));
+		$this->click($this->getElementProvider()->byName($name), $retry, $ignoreException);
 
 		return $this;
 	}
@@ -119,13 +151,15 @@ trait ClickProviderTrait
 	/**
 	 * Try to click at an element by the given name attribute.
 	 *
-	 * @param string $name Name attribute of expected element.
+	 * @param string $name            Name attribute of expected element.
+	 * @param bool   $retry           If Set, retry to click element after thrown exception.
+	 * @param bool   $ignoreException If true, the case proceed after max amount of thrown exceptions (20).
 	 *
 	 * @return $this Same instance for chained method calls.
 	 */
-	public function tryClickName($name)
+	public function tryClickName($name, $retry = false, $ignoreException = false)
 	{
-		$this->click($this->getElementProvider()->tryByName($name));
+		$this->click($this->getElementProvider()->tryByName($name), $retry, $ignoreException);
 
 		return $this;
 	}
@@ -134,13 +168,15 @@ trait ClickProviderTrait
 	/**
 	 * Click at an element by the given class name.
 	 *
-	 * @param string $className Class name of expected element.
+	 * @param string $className       Class name of expected element.
+	 * @param bool   $retry           If Set, retry to click element after thrown exception.
+	 * @param bool   $ignoreException If true, the case proceed after max amount of thrown exceptions (20).
 	 *
 	 * @return $this Same instance for chained method calls.
 	 */
-	public function clickClassName($className)
+	public function clickClassName($className, $retry = false, $ignoreException = false)
 	{
-		$this->click($this->getElementProvider()->byClassName($className));
+		$this->click($this->getElementProvider()->byClassName($className), $retry, $ignoreException);
 
 		return $this;
 	}
@@ -149,13 +185,15 @@ trait ClickProviderTrait
 	/**
 	 * Try to click at an element by the given class name.
 	 *
-	 * @param string $className Class name of expected element.
+	 * @param string $className       Class name of expected element.
+	 * @param bool   $retry           If Set, retry to click element after thrown exception.
+	 * @param bool   $ignoreException If true, the case proceed after max amount of thrown exceptions (20).
 	 *
 	 * @return $this Same instance for chained method calls.
 	 */
-	public function tryClickClassName($className)
+	public function tryClickClassName($className, $retry = false, $ignoreException = false)
 	{
-		$this->click($this->getElementProvider()->tryByClassName($className));
+		$this->click($this->getElementProvider()->tryByClassName($className), $retry, $ignoreException);
 
 		return $this;
 	}
@@ -164,13 +202,15 @@ trait ClickProviderTrait
 	/**
 	 * Click at an element by the given link text.
 	 *
-	 * @param string $linkText Link text of expected element.
+	 * @param string $linkText        Link text of expected element.
+	 * @param bool   $retry           If Set, retry to click element after thrown exception.
+	 * @param bool   $ignoreException If true, the case proceed after max amount of thrown exceptions (20).
 	 *
 	 * @return $this Same instance for chained method calls.
 	 */
-	public function clickLinkText($linkText)
+	public function clickLinkText($linkText, $retry = false, $ignoreException = false)
 	{
-		$this->click($this->getElementProvider()->byLinkText($linkText));
+		$this->click($this->getElementProvider()->byLinkText($linkText), $retry, $ignoreException);
 
 		return $this;
 	}
@@ -179,13 +219,15 @@ trait ClickProviderTrait
 	/**
 	 * Try to click at an element by the given link text.
 	 *
-	 * @param string $linkText Link text of expected element.
+	 * @param string $linkText        Link text of expected element.
+	 * @param bool   $retry           If Set, retry to click element after thrown exception.
+	 * @param bool   $ignoreException If true, the case proceed after max amount of thrown exceptions (20).
 	 *
 	 * @return $this Same instance for chained method calls.
 	 */
-	public function tryClickLinkText($linkText)
+	public function tryClickLinkText($linkText, $retry = false, $ignoreException = false)
 	{
-		$this->click($this->getElementProvider()->tryByLinkText($linkText));
+		$this->click($this->getElementProvider()->tryByLinkText($linkText), $retry, $ignoreException);
 
 		return $this;
 	}
@@ -195,12 +237,14 @@ trait ClickProviderTrait
 	 * Click at an element by the given partial link text.
 	 *
 	 * @param string $partialLinkText Partial link text of expected element.
+	 * @param bool   $retry           If Set, retry to click element after thrown exception.
+	 * @param bool   $ignoreException If true, the case proceed after max amount of thrown exceptions (20).
 	 *
 	 * @return $this Same instance for chained method calls.
 	 */
-	public function clickPartialLinkText($partialLinkText)
+	public function clickPartialLinkText($partialLinkText, $retry = false, $ignoreException = false)
 	{
-		$this->click($this->getElementProvider()->byPartialLinkText($partialLinkText));
+		$this->click($this->getElementProvider()->byPartialLinkText($partialLinkText), $retry, $ignoreException);
 
 		return $this;
 	}
@@ -210,12 +254,14 @@ trait ClickProviderTrait
 	 * Try to click at an element by the given partial link text.
 	 *
 	 * @param string $partialLinkText Partial link text of expected element.
+	 * @param bool   $retry           If Set, retry to click element after thrown exception.
+	 * @param bool   $ignoreException If true, the case proceed after max amount of thrown exceptions (20).
 	 *
 	 * @return $this Same instance for chained method calls.
 	 */
-	public function tryClickPartialLinkText($partialLinkText)
+	public function tryClickPartialLinkText($partialLinkText, $retry = false, $ignoreException = false)
 	{
-		$this->click($this->getElementProvider()->tryByPartialLinkText($partialLinkText));
+		$this->click($this->getElementProvider()->tryByPartialLinkText($partialLinkText), $retry, $ignoreException);
 
 		return $this;
 	}
@@ -224,13 +270,15 @@ trait ClickProviderTrait
 	/**
 	 * Click at an element by the given tag name.
 	 *
-	 * @param string $tagName Tag name of expected element.
+	 * @param string $tagName         Tag name of expected element.
+	 * @param bool   $retry           If Set, retry to click element after thrown exception.
+	 * @param bool   $ignoreException If true, the case proceed after max amount of thrown exceptions (20).
 	 *
 	 * @return $this Same instance for chained method calls.
 	 */
-	public function clickTagName($tagName)
+	public function clickTagName($tagName, $retry = false, $ignoreException = false)
 	{
-		$this->click($this->getElementProvider()->byTagName($tagName));
+		$this->click($this->getElementProvider()->byTagName($tagName), $retry, $ignoreException);
 
 		return $this;
 	}
@@ -239,13 +287,15 @@ trait ClickProviderTrait
 	/**
 	 * Try to click at an element by the given tag name.
 	 *
-	 * @param string $tagName Tag name of expected element.
+	 * @param string $tagName         Tag name of expected element.
+	 * @param bool   $retry           If Set, retry to click element after thrown exception.
+	 * @param bool   $ignoreException If true, the case proceed after max amount of thrown exceptions (20).
 	 *
 	 * @return $this Same instance for chained method calls.
 	 */
-	public function tryClickTagName($tagName)
+	public function tryClickTagName($tagName, $retry = false, $ignoreException = false)
 	{
-		$this->click($this->getElementProvider()->tryByTagName($tagName));
+		$this->click($this->getElementProvider()->tryByTagName($tagName), $retry, $ignoreException);
 
 		return $this;
 	}
@@ -254,13 +304,15 @@ trait ClickProviderTrait
 	/**
 	 * Click at an element by the given css selector.
 	 *
-	 * @param string $cssSelector Css selector of expected element.
+	 * @param string $cssSelector     Css selector of expected element.
+	 * @param bool   $retry           If Set, retry to click element after thrown exception.
+	 * @param bool   $ignoreException If true, the case proceed after max amount of thrown exceptions (20).
 	 *
 	 * @return $this Same instance for chained method calls.
 	 */
-	public function clickByCssSelector($cssSelector)
+	public function clickByCssSelector($cssSelector, $retry = false, $ignoreException = false)
 	{
-		$this->click($this->getElementProvider()->byCssSelector($cssSelector));
+		$this->click($this->getElementProvider()->byCssSelector($cssSelector), $retry, $ignoreException);
 
 		return $this;
 	}
@@ -269,13 +321,15 @@ trait ClickProviderTrait
 	/**
 	 * Try to click at an element by the given css selector.
 	 *
-	 * @param string $cssSelector Css selector of expected element.
+	 * @param string $cssSelector     Css selector of expected element.
+	 * @param bool   $retry           If Set, retry to click element after thrown exception.
+	 * @param bool   $ignoreException If true, the case proceed after max amount of thrown exceptions (20).
 	 *
 	 * @return $this Same instance for chained method calls.
 	 */
-	public function tryClickByCssSelector($cssSelector)
+	public function tryClickByCssSelector($cssSelector, $retry = false, $ignoreException = false)
 	{
-		$this->click($this->getElementProvider()->tryByCssSelector($cssSelector));
+		$this->click($this->getElementProvider()->tryByCssSelector($cssSelector), $retry, $ignoreException);
 
 		return $this;
 	}
@@ -284,13 +338,15 @@ trait ClickProviderTrait
 	/**
 	 * Click at an element by the given xpath.
 	 *
-	 * @param string $xPath Xpath of expected element.
+	 * @param string $xPath           Xpath of expected element.
+	 * @param bool   $retry           If Set, retry to click element after thrown exception.
+	 * @param bool   $ignoreException If true, the case proceed after max amount of thrown exceptions (20).
 	 *
 	 * @return $this Same instance for chained method calls.
 	 */
-	public function clickByXpath($xPath)
+	public function clickByXpath($xPath, $retry = false, $ignoreException = false)
 	{
-		$this->click($this->getElementProvider()->byXpath($xPath));
+		$this->click($this->getElementProvider()->byXpath($xPath), $retry, $ignoreException);
 
 		return $this;
 	}
@@ -299,13 +355,15 @@ trait ClickProviderTrait
 	/**
 	 * Try to click at an element by the given xpath.
 	 *
-	 * @param string $xPath Xpath of expected element.
+	 * @param string $xPath           Xpath of expected element.
+	 * @param bool   $retry           If Set, retry to click element after thrown exception.
+	 * @param bool   $ignoreException If true, the case proceed after max amount of thrown exceptions (20).
 	 *
 	 * @return $this Same instance for chained method calls.
 	 */
-	public function tryClickByXpath($xPath)
+	public function tryClickByXpath($xPath, $retry = false, $ignoreException = false)
 	{
-		$this->click($this->getElementProvider()->tryByXpath($xPath));
+		$this->click($this->getElementProvider()->tryByXpath($xPath), $retry, $ignoreException);
 
 		return $this;
 	}
@@ -337,8 +395,9 @@ trait ClickProviderTrait
 		$tagName = $element->getTagName();
 		$tagText = $element->getText();
 
-		$txt = '<' . $tagName . $idValue . $classValue . $disabledValue . $hrefValue . '>' . $tagText . '</' . $tagName
-		       . '>';
+		$txt =
+			'<' . $tagName . $idValue . $classValue . $disabledValue . $hrefValue . '>' . $tagText . '</' . $tagName
+			. '>';
 		echo "Click\t|\t" . $txt . "\n";
 
 		return $element;
