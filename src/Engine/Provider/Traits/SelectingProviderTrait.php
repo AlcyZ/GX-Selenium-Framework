@@ -24,6 +24,7 @@
 
 namespace GXSelenium\Engine\Provider\Traits;
 
+use Facebook\WebDriver\Exception\StaleElementReferenceException;
 use Facebook\WebDriver\WebDriverElement;
 use Facebook\WebDriver\WebDriverSelect;
 use GXSelenium\Engine\Provider\ElementProvider;
@@ -45,11 +46,6 @@ trait SelectingProviderTrait
 	 */
 	public function indexByElement(WebDriverElement $element, $index)
 	{
-		if($this->isFailed())
-		{
-			return $this;
-		}
-
 		return $this->_select($element, 'index', $index);
 	}
 
@@ -65,11 +61,6 @@ trait SelectingProviderTrait
 	 */
 	public function indexById($id, $index, WebDriverElement $element = null)
 	{
-		if($this->isFailed())
-		{
-			return $this;
-		}
-
 		return $this->_select($this->getElementProvider()->byId($id, $element), 'index', $index);
 	}
 
@@ -85,11 +76,6 @@ trait SelectingProviderTrait
 	 */
 	public function indexByName($name, $index, WebDriverElement $element = null)
 	{
-		if($this->isFailed())
-		{
-			return $this;
-		}
-
 		return $this->_select($this->getElementProvider()->byName($name, $element), 'index', $index);
 	}
 
@@ -105,11 +91,6 @@ trait SelectingProviderTrait
 	 */
 	public function indexByClassName($className, $index, WebDriverElement $element = null)
 	{
-		if($this->isFailed())
-		{
-			return $this;
-		}
-
 		return $this->_select($this->getElementProvider()->byClassName($className, $element), 'index', $index);
 	}
 
@@ -125,11 +106,6 @@ trait SelectingProviderTrait
 	 */
 	public function indexByLinkText($linkText, $index, WebDriverElement $element = null)
 	{
-		if($this->isFailed())
-		{
-			return $this;
-		}
-
 		return $this->_select($this->getElementProvider()->byLinkText($linkText, $element), 'index', $index);
 	}
 
@@ -145,13 +121,7 @@ trait SelectingProviderTrait
 	 */
 	public function indexByPartialLinkText($partialLinkText, $index, WebDriverElement $element = null)
 	{
-		if($this->isFailed())
-		{
-			return $this;
-		}
-
-		return $this->_select($this->getElementProvider()->byPartialLinkText($partialLinkText, $element),
-		                      'index',
+		return $this->_select($this->getElementProvider()->byPartialLinkText($partialLinkText, $element), 'index',
 		                      $index);
 	}
 
@@ -167,11 +137,6 @@ trait SelectingProviderTrait
 	 */
 	public function indexByTagName($tagName, $index, WebDriverElement $element = null)
 	{
-		if($this->isFailed())
-		{
-			return $this;
-		}
-
 		return $this->_select($this->getElementProvider()->byTagName($tagName, $element), 'index', $index);
 	}
 
@@ -187,11 +152,6 @@ trait SelectingProviderTrait
 	 */
 	public function indexByCssSelector($cssSelector, $index, WebDriverElement $element = null)
 	{
-		if($this->isFailed())
-		{
-			return $this;
-		}
-
 		return $this->_select($this->getElementProvider()->byCssSelector($cssSelector, $element), 'index', $index);
 	}
 
@@ -207,11 +167,6 @@ trait SelectingProviderTrait
 	 */
 	public function indexByXpath($xpath, $index, WebDriverElement $element = null)
 	{
-		if($this->isFailed())
-		{
-			return $this;
-		}
-
 		return $this->_select($this->getElementProvider()->byXpath($xpath, $element), 'index', $index);
 	}
 
@@ -227,11 +182,6 @@ trait SelectingProviderTrait
 	 */
 	public function valueByElement(WebDriverElement $element, $value)
 	{
-		if($this->isFailed())
-		{
-			return $this;
-		}
-
 		return $this->_select($element, 'value', $value);
 	}
 
@@ -247,11 +197,6 @@ trait SelectingProviderTrait
 	 */
 	public function valueById($id, $index, WebDriverElement $element = null)
 	{
-		if($this->isFailed())
-		{
-			return $this;
-		}
-
 		return $this->_select($this->getElementProvider()->byId($id, $element), 'value', $index);
 	}
 
@@ -267,11 +212,6 @@ trait SelectingProviderTrait
 	 */
 	public function valueByName($name, $index, WebDriverElement $element = null)
 	{
-		if($this->isFailed())
-		{
-			return $this;
-		}
-
 		return $this->_select($this->getElementProvider()->byName($name, $element), 'value', $index);
 	}
 
@@ -287,11 +227,6 @@ trait SelectingProviderTrait
 	 */
 	public function valueByClassName($className, $index, WebDriverElement $element = null)
 	{
-		if($this->isFailed())
-		{
-			return $this;
-		}
-
 		return $this->_select($this->getElementProvider()->byClassName($className, $element), 'value', $index);
 	}
 
@@ -307,11 +242,6 @@ trait SelectingProviderTrait
 	 */
 	public function valueByLinkText($linkText, $index, WebDriverElement $element = null)
 	{
-		if($this->isFailed())
-		{
-			return $this;
-		}
-
 		return $this->_select($this->getElementProvider()->byLinkText($linkText, $element), 'value', $index);
 	}
 
@@ -327,13 +257,7 @@ trait SelectingProviderTrait
 	 */
 	public function valueByPartialLinkText($partialLinkText, $index, WebDriverElement $element = null)
 	{
-		if($this->isFailed())
-		{
-			return $this;
-		}
-
-		return $this->_select($this->getElementProvider()->byPartialLinkText($partialLinkText, $element),
-		                      'value',
+		return $this->_select($this->getElementProvider()->byPartialLinkText($partialLinkText, $element), 'value',
 		                      $index);
 	}
 
@@ -349,11 +273,6 @@ trait SelectingProviderTrait
 	 */
 	public function valueByTagName($tagName, $index, WebDriverElement $element = null)
 	{
-		if($this->isFailed())
-		{
-			return $this;
-		}
-
 		return $this->_select($this->getElementProvider()->byTagName($tagName, $element), 'value', $index);
 	}
 
@@ -369,11 +288,6 @@ trait SelectingProviderTrait
 	 */
 	public function valueByCssSelector($cssSelector, $index, WebDriverElement $element = null)
 	{
-		if($this->isFailed())
-		{
-			return $this;
-		}
-
 		return $this->_select($this->getElementProvider()->byCssSelector($cssSelector, $element), 'value', $index);
 	}
 
@@ -389,11 +303,6 @@ trait SelectingProviderTrait
 	 */
 	public function valueByXpath($xpath, $index, WebDriverElement $element = null)
 	{
-		if($this->isFailed())
-		{
-			return $this;
-		}
-
 		return $this->_select($this->getElementProvider()->byXpath($xpath, $element), 'value', $index);
 	}
 
@@ -408,11 +317,6 @@ trait SelectingProviderTrait
 	 */
 	public function visibleTextByElement(WebDriverElement $element, $value)
 	{
-		if($this->isFailed())
-		{
-			return $this;
-		}
-
 		return $this->_select($element, 'visibleText', $value);
 	}
 
@@ -428,11 +332,6 @@ trait SelectingProviderTrait
 	 */
 	public function visibleTextById($id, $index, WebDriverElement $element = null)
 	{
-		if($this->isFailed())
-		{
-			return $this;
-		}
-
 		return $this->_select($this->getElementProvider()->byId($id, $element), 'visibleText', $index);
 	}
 
@@ -448,11 +347,6 @@ trait SelectingProviderTrait
 	 */
 	public function visibleTextByName($name, $index, WebDriverElement $element = null)
 	{
-		if($this->isFailed())
-		{
-			return $this;
-		}
-
 		return $this->_select($this->getElementProvider()->byName($name, $element), 'visibleText', $index);
 	}
 
@@ -468,11 +362,6 @@ trait SelectingProviderTrait
 	 */
 	public function visibleTextByClassName($className, $index, WebDriverElement $element = null)
 	{
-		if($this->isFailed())
-		{
-			return $this;
-		}
-
 		return $this->_select($this->getElementProvider()->byClassName($className, $element), 'visibleText', $index);
 	}
 
@@ -488,11 +377,6 @@ trait SelectingProviderTrait
 	 */
 	public function visibleTextByLinkText($linkText, $index, WebDriverElement $element = null)
 	{
-		if($this->isFailed())
-		{
-			return $this;
-		}
-
 		return $this->_select($this->getElementProvider()->byLinkText($linkText, $element), 'visibleText', $index);
 	}
 
@@ -508,13 +392,7 @@ trait SelectingProviderTrait
 	 */
 	public function visibleTextByPartialLinkText($partialLinkText, $index, WebDriverElement $element = null)
 	{
-		if($this->isFailed())
-		{
-			return $this;
-		}
-
-		return $this->_select($this->getElementProvider()->byPartialLinkText($partialLinkText, $element),
-		                      'visibleText',
+		return $this->_select($this->getElementProvider()->byPartialLinkText($partialLinkText, $element), 'visibleText',
 		                      $index);
 	}
 
@@ -530,11 +408,6 @@ trait SelectingProviderTrait
 	 */
 	public function visibleTextByTagName($tagName, $index, WebDriverElement $element = null)
 	{
-		if($this->isFailed())
-		{
-			return $this;
-		}
-
 		return $this->_select($this->getElementProvider()->byTagName($tagName, $element), 'visibleText', $index);
 	}
 
@@ -550,13 +423,7 @@ trait SelectingProviderTrait
 	 */
 	public function visibleTextByCssSelector($cssSelector, $index, WebDriverElement $element = null)
 	{
-		if($this->isFailed())
-		{
-			return $this;
-		}
-
-		return $this->_select($this->getElementProvider()->byCssSelector($cssSelector, $element),
-		                      'visibleText',
+		return $this->_select($this->getElementProvider()->byCssSelector($cssSelector, $element), 'visibleText',
 		                      $index);
 	}
 
@@ -572,11 +439,6 @@ trait SelectingProviderTrait
 	 */
 	public function visibleTextByXpath($xpath, $index, WebDriverElement $element = null)
 	{
-		if($this->isFailed())
-		{
-			return $this;
-		}
-
 		return $this->_select($this->getElementProvider()->byXpath($xpath, $element), 'visibleText', $index);
 	}
 
@@ -588,24 +450,46 @@ trait SelectingProviderTrait
 	 * @param string           $type    Select whether by index, value or visible text.
 	 * @param string|int       $value   Value of whether index, value or visible text.
 	 *
-	 * @return SelectingProviderTrait|$this Same instance for chained method calls.
+	 * @return $this|\GXSelenium\Engine\Provider\Traits\SelectingProviderTrait Same instance for chained method calls.
+	 * @throws \Facebook\WebDriver\Exception\StaleElementReferenceException
 	 */
 	private function _select(WebDriverElement $element, $type, $value)
 	{
-		// Removed condition: "if($this->isFailed()) return $this"
+		if($this->isFailed()):
+			return $this;
+		endif;
+
 		$driverSelect = $this->_createWebDriverSelect($element);
-		switch($type)
-		{
-			case 'index':
-				$driverSelect->selectByIndex((int)$value);
-				break;
-			case 'value':
-				$driverSelect->selectByValue((string)$value);
-				break;
-			case 'visibleText':
-				$driverSelect->selectByVisibleText((string)$value);
-				break;
-		}
+
+		$condition = true;
+		$counter   = 1;
+		while($condition):
+			try
+			{
+				switch($type)
+				{
+					case 'index':
+						$driverSelect->selectByIndex((int)$value);
+						break;
+					case 'value':
+						$driverSelect->selectByValue((string)$value);
+						break;
+					case 'visibleText':
+						$driverSelect->selectByVisibleText((string)$value);
+						break;
+				}
+				$condition = false;
+			}
+			catch(StaleElementReferenceException $e)
+			{
+				if($counter >= 50):
+					throw $e;
+				else:
+					echo 'StaleElementReferenceException thrown, retry to select number: ' . $counter;
+					$counter++;
+				endif;
+			}
+		endwhile;
 
 		return $this;
 	}
