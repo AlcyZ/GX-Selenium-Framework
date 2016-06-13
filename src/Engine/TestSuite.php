@@ -108,12 +108,24 @@ class TestSuite
 	 */
 	public function __destruct()
 	{
+		return $this->_closeWebDriver();
+	}
+
+	/**
+	 * Closes the WebDriver session.
+	 *
+	 * @return $this
+	 */
+	private function _closeWebDriver()
+	{
 		if($this->webDriver instanceof RemoteWebDriver):
+			echo 'Close WebDriver session' . "\n";
 			$this->webDriver->quit();
 			$this->webDriver = null;
 		endif;
-	}
 
+		return $this;
+	}
 
 	/**
 	 * Starts and runs the test suite.
@@ -139,7 +151,7 @@ class TestSuite
 			$this->_sendErrorMail();
 		endif;
 
-		$this->__destruct();
+		$this->_closeWebDriver();
 		return $this;
 	}
 
