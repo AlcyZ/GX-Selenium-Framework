@@ -145,7 +145,7 @@ abstract class TestCase
 	 */
 	public function getCaseName()
 	{
-		return array_pop(explode('\\', get_class($this)));
+		return get_class($this);
 	}
 
 
