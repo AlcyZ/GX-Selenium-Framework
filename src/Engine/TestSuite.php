@@ -120,7 +120,7 @@ class TestSuite
 	{
 		if($this->webDriver instanceof RemoteWebDriver):
 			echo 'Close WebDriver session' . "\n";
-			$this->webDriver->quit();
+			$this->webDriver->close()->quit();
 			$this->webDriver = null;
 		endif;
 
