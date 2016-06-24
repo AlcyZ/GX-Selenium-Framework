@@ -145,7 +145,7 @@ abstract class TestCase
 	 */
 	public function getCaseName()
 	{
-		return array_pop(explode('\\', get_class($this)));
+		return get_class($this);
 	}
 
 
@@ -207,7 +207,7 @@ abstract class TestCase
 			$screenName = $this->_getCaseName() . ' | ' . $this->_invokedBy() . ' | ' . $screenMessage . ' | '
 			              . $exceptionName;
 			$txt        = $this->_getCaseName() . ' | ' . $this->_invokedBy() . ' | ' . $message . ' | '
-			              . $exceptionName . "\n" . $e->getTraceAsString() . "\n";
+			              . $exceptionName . "\n" . $e->getMessage() . "\n" . $e->getTraceAsString() . "\n";
 
 		else:
 

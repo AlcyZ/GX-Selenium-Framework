@@ -98,9 +98,7 @@ class SeleniumFactory
 	 */
 	public function createTestCase($testCaseName)
 	{
-		$namespace = $this->testSuite->getSuiteSettings()->getCasesNamespace();
-		$caseName  = ucfirst($testCaseName) . 'Case';
-		$testCase  = $namespace . '\\' . $caseName;
+		$testCase  = ucfirst($testCaseName) . 'Case';
 
 		if(!class_exists($testCase)):
 			throw new \UnexpectedValueException('Class "' . $testCase . '" not found!');

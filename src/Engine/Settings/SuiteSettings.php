@@ -88,11 +88,6 @@ class SuiteSettings
 	/**
 	 * @var string
 	 */
-	private $casesNamespace = '';
-
-	/**
-	 * @var string
-	 */
 	private $seleniumHost = 'http://localhost:4444/wd/hub';
 
 	/**
@@ -361,24 +356,6 @@ class SuiteSettings
 	public function setWebApp($webApp)
 	{
 		$this->webApp = $webApp;
-	}
-
-
-	/**
-	 * @return string
-	 */
-	public function getCasesNamespace()
-	{
-		return $this->casesNamespace;
-	}
-
-
-	/**
-	 * @param string $casesNamespace
-	 */
-	public function setCasesNamespace($casesNamespace)
-	{
-		$this->casesNamespace = $casesNamespace;
 	}
 
 
