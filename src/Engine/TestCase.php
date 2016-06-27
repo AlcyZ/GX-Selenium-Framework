@@ -205,12 +205,12 @@ abstract class TestCase
 		if($e):
 
 			$exceptionArray = explode('\\', get_class($e));
-			$exceptionName = $exceptionArray[count($exceptionArray) - 1];
+			$exceptionName  = $exceptionArray[count($exceptionArray) - 1];
 
-			$screenName = $this->_getCaseName() . ' | ' . $this->_invokedBy() . ' | ' . $screenMessage . ' | '
+			$screenName = $this->getCaseName() . ' | ' . $this->_invokedBy() . ' | ' . $screenMessage . ' | '
 			              . $exceptionName;
-			$txt        = $this->_getCaseName() . ' | ' . $this->_invokedBy() . ' | ' . $message . ' | '
-			              . $exceptionName . "\n" . $e->getMessage() . "\n" . $e->getTraceAsString() . "\n";
+			$txt        = $this->getCaseName() . ' | ' . $this->_invokedBy() . ' | ' . $message . ' | ' . $exceptionName
+			              . "\n" . $e->getMessage() . "\n" . $e->getTraceAsString() . "\n";
 
 		else:
 
@@ -218,8 +218,8 @@ abstract class TestCase
 			debug_print_backtrace();
 			$backtrace = ob_get_clean();
 
-			$screenName = $this->_getCaseName() . ' | ' . $this->_invokedBy() . ' | ' . $screenMessage;
-			$txt        = $this->_getCaseName() . ' | ' . $this->_invokedBy() . ' | ' . $message . "\n" . $backtrace;
+			$screenName = $this->getCaseName() . ' | ' . $this->_invokedBy() . ' | ' . $screenMessage;
+			$txt        = $this->getCaseName() . ' | ' . $this->_invokedBy() . ' | ' . $message . "\n" . $backtrace;
 
 		endif;
 
@@ -326,12 +326,33 @@ abstract class TestCase
 	/**
 	 * Method to output messages in the running console.
 	 *
-	 * @param string $message Message to display.
+	 * @param string $message                  Message to display.
+	 * @param bool   $camelCaseToHumanReadable Converts camel case message to human readable messages.
 	 */
-	protected function output($message)
+	protected function output($message, $camelCaseToHumanReadable = false)
 	{
+		if($camelCaseToHumanReadable)
+		{
+			echo $this->camelToSentence($message) . "\n";
+
+			return;
+		}
 		echo $message . "\n";
 	}
+	
+
+	/**
+	 * Converts a camel case string to an human readable string. (Whitespaces instead of camel case)
+	 *
+	 * @param string $camelCaseString Input string in camel case format.
+	 *
+	 * @return string Converted string without camel cases.
+	 */
+	protected function camelToSentence($camelCaseString)
+	{
+		return strtolower(preg_replace(['/([a-z\d])([A-Z])/', '/([^_])([A-Z][a-z])/'], '$1 $2', $camelCaseString));
+	}
+
 
 	/**
 	 * Returns the method which call the method of current scope without arguments.
