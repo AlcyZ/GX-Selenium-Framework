@@ -145,7 +145,9 @@ abstract class TestCase
 	 */
 	public function getCaseName()
 	{
-		return get_class($this);
+		$classNamespaceArray = explode('\\', get_class($this));
+
+		return $classNamespaceArray[count($classNamespaceArray) - 1];
 	}
 
 
@@ -308,11 +310,15 @@ abstract class TestCase
 	/**
 	 * Returns the name of the current case.
 	 *
+	 * @Todo: Remove this method in future and refactor all usages! Duplicated with public ::getCaseName method.
+	 * @deprecated
 	 * @return string
 	 */
 	protected function _getCaseName()
 	{
-		return array_pop(explode('\\', get_class($this)));
+		$classNamespaceArray = explode('\\', get_class($this));
+
+		return $classNamespaceArray[count($classNamespaceArray) - 1];
 	}
 
 
