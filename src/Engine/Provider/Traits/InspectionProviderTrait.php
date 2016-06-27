@@ -24,6 +24,9 @@
 
 namespace GXSelenium\Engine\Provider\Traits;
 
+use Facebook\WebDriver\Exception\StaleElementReferenceException;
+use Facebook\WebDriver\Remote\RemoteWebDriver;
+use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\WebDriverElement;
 use GXSelenium\Engine\Provider\ElementProvider;
 
@@ -33,6 +36,102 @@ use GXSelenium\Engine\Provider\ElementProvider;
  */
 trait InspectionProviderTrait
 {
+	/**
+	 * Client expects that an element is displayed.
+	 * Returns true when the element is displayed and false otherwise.
+	 * Retry the process two times or until the attempts argument count
+	 * is reached when a stale element reference exception is thrown.
+	 * Recommended usage in web driver waits.
+	 *
+	 * @param WebDriverBy $by       Expected element (WebDriverBy instance, access via static methods)
+	 * @param int|null    $attempts (Optional) Attempts until the method will fail and return false.
+	 *
+	 * @return bool
+	 */
+	public function expectsToBeDisplayed(WebDriverBy $by, $attempts = null)
+	{
+		$attempts = $attempts ? : 0;
+
+		return $this->_expectsToBe('isDisplayed', $by, $attempts);
+	}
+	
+	
+	/**
+	 * Client expects that an element is selected.
+	 * Returns true when the element is selected and false otherwise.
+	 * Retry the process two times or until the attempts argument count
+	 * is reached when a stale element reference exception is thrown.
+	 * Recommended usage in web driver waits.
+	 *
+	 * @param WebDriverBy $by       Expected element (WebDriverBy instance, access via static methods)
+	 * @param int|null    $attempts (Optional) Attempts until the method will fail and return false.
+	 *
+	 * @return bool
+	 */
+	public function expectsToBeEnabled(WebDriverBy $by, $attempts = null)
+	{
+		$attempts = $attempts ? : 0;
+
+		return $this->_expectsToBe('isEnabled', $by, $attempts);
+	}
+	
+
+	/**
+	 * Client expects that an element is selected.
+	 * Returns true when the element is selected and false otherwise.
+	 * Retry the process two times or until the attempts argument count
+	 * is reached when a stale element reference exception is thrown.
+	 * Recommended usage in web driver waits.
+	 *
+	 * @param WebDriverBy $by       Expected element (WebDriverBy instance, access via static methods)
+	 * @param int|null    $attempts (Optional) Attempts until the method will fail and return false.
+	 *
+	 * @return bool
+	 */
+	public function expectsToBeSelected(WebDriverBy $by, $attempts)
+	{
+		$attempts = $attempts ? : 0;
+
+		return $this->_expectsToBe('isSelected', $by, $attempts);
+	}
+
+
+	/**
+	 * Wrapper method for the inspection expectations.
+	 * Handles the expectations of displayed, enabled or selected elements.
+	 * Recommended usage in web driver waits.
+	 *
+	 * @param WebDriverBy $by       Expected element (WebDriverBy instance, access via static methods)
+	 * @param string      $type     Inspection type, whether isDisplayed, isEnabled or isSelected is allowed.
+	 * @param int         $attempts Attempts until the method will fail and return false.
+	 *
+	 * @return bool
+	 */
+	private function _expectsToBe($type, WebDriverBy $by, $attempts)
+	{
+		if($type !== 'isDisplayed' && $type !== 'isEnabled' && $type !== 'isSelected'):
+			throw new \InvalidArgumentException('the $type argument has to be whether "isDisplayed", "isEnabled" or '
+			                                    . '"isSelected"');
+		endif;
+
+		$result = false;
+		while($attempts < 2):
+			try
+			{
+				$element = $this->getWebDriver()->findElement($by);
+				call_user_func([$element, $type]);
+				$result = true;
+				break;
+			}
+			catch(StaleElementReferenceException $e)
+			{
+			}
+			$attempts++;
+		endwhile;
+
+		return $result;
+	}
+
 	########################################### element is displayed ###################################################
 	/**
 	 * Check if an element is displayed by the given id.
@@ -498,6 +597,14 @@ trait InspectionProviderTrait
 	 * @return ElementProvider
 	 */
 	abstract public function getElementProvider();
+
+
+	/**
+	 * Returns the web driver instance.
+	 *
+	 * @return RemoteWebDriver
+	 */
+	abstract public function getWebDriver();
 
 
 	/**

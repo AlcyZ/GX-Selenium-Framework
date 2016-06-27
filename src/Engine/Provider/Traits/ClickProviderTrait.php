@@ -24,8 +24,11 @@
 
 namespace GXSelenium\Engine\Provider\Traits;
 
+use Facebook\WebDriver\Exception\StaleElementReferenceException;
 use Facebook\WebDriver\Exception\UnknownServerException;
+use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\Remote\RemoteWebElement;
+use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\WebDriverElement;
 use GXSelenium\Engine\NullObjects\WebDriverElementNull;
 use GXSelenium\Engine\Provider\ElementProvider;
@@ -36,6 +39,40 @@ use GXSelenium\Engine\Provider\ElementProvider;
  */
 trait ClickProviderTrait
 {
+	/**
+	 * Expects that the client clicks an expected element.
+	 * Retry the process two times or until the attempts argument count
+	 * is reached when a stale element reference exception is thrown.
+	 * Returns false when the client was unable to click the element.
+	 *
+	 * @param \Facebook\WebDriver\WebDriverBy $by
+	 * @param null                            $attempts
+	 *
+	 * @return bool
+	 */
+	public function expectClick(WebDriverBy $by, $attempts = null)
+	{
+		$result   = false;
+		$attempts = $attempts ? : 2;
+
+		while($attempts < 2):
+			try
+			{
+				$element = $this->getWebDriver()->findElement($by);
+				$this->_logClick($element)->click();
+				$result = true;
+				break;
+			}
+			catch(StaleElementReferenceException $e)
+			{
+			}
+			$attempts++;
+		endwhile;
+
+		return $result;
+	}
+
+
 	/**
 	 * Click at the arguments web driver element.
 	 *
@@ -395,9 +432,8 @@ trait ClickProviderTrait
 		$tagName = $element->getTagName();
 		$tagText = $element->getText();
 
-		$txt =
-			'<' . $tagName . $idValue . $classValue . $disabledValue . $hrefValue . '>' . $tagText . '</' . $tagName
-			. '>';
+		$txt = '<' . $tagName . $idValue . $classValue . $disabledValue . $hrefValue . '>' . $tagText . '</' . $tagName
+		       . '>';
 		echo "Click\t|\t" . $txt . "\n";
 
 		return $element;
@@ -410,6 +446,14 @@ trait ClickProviderTrait
 	 * @return ElementProvider
 	 */
 	abstract public function getElementProvider();
+
+
+	/**
+	 * Returns the web driver instance.
+	 *
+	 * @return RemoteWebDriver
+	 */
+	abstract public function getWebDriver();
 
 
 	/**
