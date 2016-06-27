@@ -71,6 +71,42 @@ trait ClickProviderTrait
 
 		return $result;
 	}
+	
+
+	/**
+	 * Expects that the client clicks an expected element.
+	 * Retry the process two times or until the attempts argument count
+	 * is reached when a stale element reference exception is thrown.
+	 * Returns false when the client was unable to click the element.
+	 * 
+	 * @param \Facebook\WebDriver\WebDriverBy $parentBy
+	 * @param \Facebook\WebDriver\WebDriverBy $by
+	 * @param null                            $attempts
+	 *
+	 * @return bool
+	 */
+	public function expectClickInside(WebDriverBy $parentBy, WebDriverBy $by, $attempts = null)
+	{
+		$result   = false;
+		$attempts = $attempts ? : 0;
+
+		while($attempts < 2):
+			try
+			{
+				$parent  = $this->getWebDriver()->findElement($parentBy);
+				$element = $parent->findElement($by);
+				$this->_logClick($element)->click();
+				$result = true;
+				break;
+			}
+			catch(StaleElementReferenceException $e)
+			{
+			}
+			$attempts++;
+		endwhile;
+
+		return $result;
+	}
 
 
 	/**
