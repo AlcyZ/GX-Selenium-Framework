@@ -321,7 +321,17 @@ abstract class TestCase
 
 		return $classNamespaceArray[count($classNamespaceArray) - 1];
 	}
+	
 
+	/**
+	 * Method to output messages in the running console.
+	 *
+	 * @param string $message Message to display.
+	 */
+	protected function output($message)
+	{
+		echo $message . "\n";
+	}
 
 	/**
 	 * Returns the method which call the method of current scope without arguments.
