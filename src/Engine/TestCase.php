@@ -204,7 +204,8 @@ abstract class TestCase
 		$screenMessage = implode('', array_map('ucfirst', explode(' ', $message)));
 		if($e):
 
-			$exceptionName = array_pop(explode('\\', get_class($e)));
+			$exceptionArray = explode('\\', get_class($e));
+			$exceptionName = $exceptionArray[count($exceptionArray) - 1];
 
 			$screenName = $this->_getCaseName() . ' | ' . $this->_invokedBy() . ' | ' . $screenMessage . ' | '
 			              . $exceptionName;
