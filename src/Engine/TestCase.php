@@ -333,11 +333,11 @@ abstract class TestCase
 	{
 		if($camelCaseToHumanReadable)
 		{
-			echo $this->camelToSentence($message) . "\n";
+			echo $this->camelToSentence($message) . ' …' . "\n";
 
 			return;
 		}
-		echo $message . "\n";
+		echo $message . ' …' . "\n";
 	}
 	
 
