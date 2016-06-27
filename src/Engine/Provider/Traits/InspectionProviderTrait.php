@@ -119,8 +119,7 @@ trait InspectionProviderTrait
 			try
 			{
 				$element = $this->getWebDriver()->findElement($by);
-				call_user_func([$element, $type]);
-				$result = true;
+				$result = call_user_func([$element, $type]);
 				break;
 			}
 			catch(StaleElementReferenceException $e)
