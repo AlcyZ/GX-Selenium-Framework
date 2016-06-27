@@ -57,6 +57,27 @@ trait InspectionProviderTrait
 	
 	
 	/**
+	 * Client expects that an element is displayed.
+	 * Returns true when the element is displayed and false otherwise.
+	 * Retry the process two times or until the attempts argument count
+	 * is reached when a stale element reference exception is thrown.
+	 * Recommended usage in web driver waits.
+	 *
+	 * @param WebDriverBy $parentBy Expected container element (WebDriverBy instance, access via static methods)
+	 * @param WebDriverBy $by       Expected element (WebDriverBy instance, access via static methods)
+	 * @param int|null    $attempts (Optional) Attempts until the method will fail and return false.
+	 *
+	 * @return bool
+	 */
+	public function expectsToBeDisplayedInside(WebDriverBy $parentBy, WebDriverBy $by, $attempts = null)
+	{
+		$attempts = $attempts ? : 0;
+
+		return $this->_expectsToBeInside('isDisplayed', $parentBy, $by, $attempts);
+	}
+
+	
+	/**
 	 * Client expects that an element is selected.
 	 * Returns true when the element is selected and false otherwise.
 	 * Retry the process two times or until the attempts argument count
@@ -73,6 +94,27 @@ trait InspectionProviderTrait
 		$attempts = $attempts ? : 0;
 
 		return $this->_expectsToBe('isEnabled', $by, $attempts);
+	}
+
+
+	/**
+	 * Client expects that an element is enabled.
+	 * Returns true when the element is enabled and false otherwise.
+	 * Retry the process two times or until the attempts argument count
+	 * is reached when a stale element reference exception is thrown.
+	 * Recommended usage in web driver waits.
+	 *
+	 * @param WebDriverBy $parentBy Expected container element (WebDriverBy instance, access via static methods)
+	 * @param WebDriverBy $by       Expected element (WebDriverBy instance, access via static methods)
+	 * @param int|null    $attempts (Optional) Attempts until the method will fail and return false.
+	 *
+	 * @return bool
+	 */
+	public function expectsToBeEnabledInside(WebDriverBy $parentBy, WebDriverBy $by, $attempts = null)
+	{
+		$attempts = $attempts ? : 0;
+
+		return $this->_expectsToBeInside('isDisplayed', $parentBy, $by, $attempts);
 	}
 	
 
@@ -93,6 +135,27 @@ trait InspectionProviderTrait
 		$attempts = $attempts ? : 0;
 
 		return $this->_expectsToBe('isSelected', $by, $attempts);
+	}
+
+
+	/**
+	 * Client expects that an element is selected.
+	 * Returns true when the element is selected and false otherwise.
+	 * Retry the process two times or until the attempts argument count
+	 * is reached when a stale element reference exception is thrown.
+	 * Recommended usage in web driver waits.
+	 *
+	 * @param WebDriverBy $parentBy Expected container element (WebDriverBy instance, access via static methods)
+	 * @param WebDriverBy $by       Expected element (WebDriverBy instance, access via static methods)
+	 * @param int|null    $attempts (Optional) Attempts until the method will fail and return false.
+	 *
+	 * @return bool
+	 */
+	public function expectsToBeSelectedInside(WebDriverBy $parentBy, WebDriverBy $by, $attempts = null)
+	{
+		$attempts = $attempts ? : 0;
+
+		return $this->_expectsToBeInside('isDisplayed', $parentBy, $by, $attempts);
 	}
 
 
@@ -119,7 +182,33 @@ trait InspectionProviderTrait
 			try
 			{
 				$element = $this->getWebDriver()->findElement($by);
-				$result = call_user_func([$element, $type]);
+				$result  = call_user_func([$element, $type]);
+				break;
+			}
+			catch(StaleElementReferenceException $e)
+			{
+			}
+			$attempts++;
+		endwhile;
+
+		return $result;
+	}
+	
+	
+	private function _expectsToBeInside($type, WebDriverBy $parentBy, WebDriverBy $by, $attempts)
+	{
+		if($type !== 'isDisplayed' && $type !== 'isEnabled' && $type !== 'isSelected'):
+			throw new \InvalidArgumentException('the $type argument has to be whether "isDisplayed", "isEnabled" or '
+			                                    . '"isSelected"');
+		endif;
+
+		$result = false;
+		while($attempts < 2):
+			try
+			{
+				$container = $this->getWebDriver()->findElement($parentBy);
+				$element   = $container->findElement($by);
+				$result    = call_user_func([$element, $type]);
 				break;
 			}
 			catch(StaleElementReferenceException $e)
