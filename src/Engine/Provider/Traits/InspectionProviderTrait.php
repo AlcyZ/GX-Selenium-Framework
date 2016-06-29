@@ -44,13 +44,15 @@ trait InspectionProviderTrait
 	 * Recommended usage in web driver waits.
 	 *
 	 * @param WebDriverBy $by       Expected element (WebDriverBy instance, access via static methods)
-	 * @param int|null    $attempts (Optional) Attempts until the method will fail and return false.
+	 * @param int         $attempts (Optional) Attempts until the method will fail and return false.
 	 *
 	 * @return bool
 	 */
-	public function expectsToBeDisplayed(WebDriverBy $by, $attempts = null)
+	public function expectsToBeDisplayed(WebDriverBy $by, $attempts = 2)
 	{
-		$attempts = $attempts ? : 0;
+		if($this->isFailed()):
+			return false;
+		endif;
 
 		return $this->_expectsToBe('isDisplayed', $by, $attempts);
 	}
@@ -65,13 +67,15 @@ trait InspectionProviderTrait
 	 *
 	 * @param WebDriverBy $parentBy Expected container element (WebDriverBy instance, access via static methods)
 	 * @param WebDriverBy $by       Expected element (WebDriverBy instance, access via static methods)
-	 * @param int|null    $attempts (Optional) Attempts until the method will fail and return false.
+	 * @param int         $attempts (Optional) Attempts until the method will fail and return false.
 	 *
 	 * @return bool
 	 */
-	public function expectsToBeDisplayedInside(WebDriverBy $parentBy, WebDriverBy $by, $attempts = null)
+	public function expectsToBeDisplayedInside(WebDriverBy $parentBy, WebDriverBy $by, $attempts = 2)
 	{
-		$attempts = $attempts ? : 0;
+		if($this->isFailed()):
+			return false;
+		endif;
 
 		return $this->_expectsToBeInside('isDisplayed', $parentBy, $by, $attempts);
 	}
@@ -85,13 +89,15 @@ trait InspectionProviderTrait
 	 * Recommended usage in web driver waits.
 	 *
 	 * @param WebDriverBy $by       Expected element (WebDriverBy instance, access via static methods)
-	 * @param int|null    $attempts (Optional) Attempts until the method will fail and return false.
+	 * @param int         $attempts (Optional) Attempts until the method will fail and return false.
 	 *
 	 * @return bool
 	 */
-	public function expectsToBeEnabled(WebDriverBy $by, $attempts = null)
+	public function expectsToBeEnabled(WebDriverBy $by, $attempts = 2)
 	{
-		$attempts = $attempts ? : 0;
+		if($this->isFailed()):
+			return false;
+		endif;
 
 		return $this->_expectsToBe('isEnabled', $by, $attempts);
 	}
@@ -106,13 +112,15 @@ trait InspectionProviderTrait
 	 *
 	 * @param WebDriverBy $parentBy Expected container element (WebDriverBy instance, access via static methods)
 	 * @param WebDriverBy $by       Expected element (WebDriverBy instance, access via static methods)
-	 * @param int|null    $attempts (Optional) Attempts until the method will fail and return false.
+	 * @param int         $attempts (Optional) Attempts until the method will fail and return false.
 	 *
 	 * @return bool
 	 */
-	public function expectsToBeEnabledInside(WebDriverBy $parentBy, WebDriverBy $by, $attempts = null)
+	public function expectsToBeEnabledInside(WebDriverBy $parentBy, WebDriverBy $by, $attempts = 2)
 	{
-		$attempts = $attempts ? : 0;
+		if($this->isFailed()):
+			return false;
+		endif;
 
 		return $this->_expectsToBeInside('isEnabled', $parentBy, $by, $attempts);
 	}
@@ -126,13 +134,15 @@ trait InspectionProviderTrait
 	 * Recommended usage in web driver waits.
 	 *
 	 * @param WebDriverBy $by       Expected element (WebDriverBy instance, access via static methods)
-	 * @param int|null    $attempts (Optional) Attempts until the method will fail and return false.
+	 * @param int         $attempts (Optional) Attempts until the method will fail and return false.
 	 *
 	 * @return bool
 	 */
-	public function expectsToBeSelected(WebDriverBy $by, $attempts)
+	public function expectsToBeSelected(WebDriverBy $by, $attempts = 2)
 	{
-		$attempts = $attempts ? : 0;
+		if($this->isFailed()):
+			return false;
+		endif;
 
 		return $this->_expectsToBe('isSelected', $by, $attempts);
 	}
@@ -147,13 +157,15 @@ trait InspectionProviderTrait
 	 *
 	 * @param WebDriverBy $parentBy Expected container element (WebDriverBy instance, access via static methods)
 	 * @param WebDriverBy $by       Expected element (WebDriverBy instance, access via static methods)
-	 * @param int|null    $attempts (Optional) Attempts until the method will fail and return false.
+	 * @param int         $attempts (Optional) Attempts until the method will fail and return false.
 	 *
 	 * @return bool
 	 */
-	public function expectsToBeSelectedInside(WebDriverBy $parentBy, WebDriverBy $by, $attempts = null)
+	public function expectsToBeSelectedInside(WebDriverBy $parentBy, WebDriverBy $by, $attempts = 2)
 	{
-		$attempts = $attempts ? : 0;
+		if($this->isFailed()):
+			return false;
+		endif;;
 
 		return $this->_expectsToBeInside('isSelected', $parentBy, $by, $attempts);
 	}
@@ -172,13 +184,17 @@ trait InspectionProviderTrait
 	 */
 	private function _expectsToBe($type, WebDriverBy $by, $attempts)
 	{
+		if($this->isFailed()):
+			return false;
+		endif;
 		if($type !== 'isDisplayed' && $type !== 'isEnabled' && $type !== 'isSelected'):
 			throw new \InvalidArgumentException('the $type argument has to be whether "isDisplayed", "isEnabled" or '
 			                                    . '"isSelected"');
 		endif;
 
-		$result = false;
-		while($attempts < 2):
+		$result  = false;
+		$attempt = 0;
+		while($attempt < $attempts):
 			try
 			{
 				$element = $this->getWebDriver()->findElement($by);
@@ -187,8 +203,30 @@ trait InspectionProviderTrait
 			}
 			catch(StaleElementReferenceException $e)
 			{
+				if(!empty($element)):
+					$text = ($attempt + 1) . '. attempt to inspect an element '
+					        . $this->_getClickingElementsHtml($element) . ' failed';
+				else:
+					$text = ($attempt + 1) . '. attempt to inspect an element which is not found failed';
+				endif;
+				$text .= "\n";
+				$ex = get_class($e) . ' thrown and caught' . "\n";
+				echo $text . $ex;
 			}
-			$attempts++;
+				// Todo: specify exception with more data.
+			catch(\Exception $e)
+			{
+				if(!empty($element)):
+					$text = ($attempt + 1) . '. attempt to inspect an element '
+					        . $this->_getClickingElementsHtml($element) . ' failed';
+				else:
+					$text = ($attempt + 1) . '. attempt to inspect an element which is not found failed';
+				endif;
+				$text .= "\n";
+				$ex = get_class($e) . ' thrown and caught' . "\n";
+				echo $text . $ex;
+			}
+			$attempt++;
 		endwhile;
 
 		return $result;
@@ -197,13 +235,17 @@ trait InspectionProviderTrait
 	
 	private function _expectsToBeInside($type, WebDriverBy $parentBy, WebDriverBy $by, $attempts)
 	{
+		if($this->isFailed()):
+			return false;
+		endif;
 		if($type !== 'isDisplayed' && $type !== 'isEnabled' && $type !== 'isSelected'):
 			throw new \InvalidArgumentException('the $type argument has to be whether "isDisplayed", "isEnabled" or '
 			                                    . '"isSelected"');
 		endif;
 
-		$result = false;
-		while($attempts < 2):
+		$result  = false;
+		$attempt = 0;
+		while($attempt < $attempts):
 			try
 			{
 				$container = $this->getWebDriver()->findElement($parentBy);
@@ -213,8 +255,30 @@ trait InspectionProviderTrait
 			}
 			catch(StaleElementReferenceException $e)
 			{
+				if(!empty($element)):
+					$text = ($attempt + 1) . '. attempt to inspect an element '
+					        . $this->_getClickingElementsHtml($element) . ' failed';
+				else:
+					$text = ($attempt + 1) . '. attempt to inspect an element which is not found failed';
+				endif;
+				$text .= "\n";
+				$ex = get_class($e) . ' thrown and caught' . "\n";
+				echo $text . $ex;
 			}
-			$attempts++;
+				// Todo: specify exception with more data.
+			catch(\Exception $e)
+			{
+				if(!empty($element)):
+					$text = ($attempt + 1) . '. attempt to inspect an element '
+					        . $this->_getClickingElementsHtml($element) . ' failed';
+				else:
+					$text = ($attempt + 1) . '. attempt to inspect an element which is not found failed';
+				endif;
+				$text .= "\n";
+				$ex = get_class($e) . ' thrown and caught' . "\n";
+				echo $text . $ex;
+			}
+			$attempt++;
 		endwhile;
 
 		return $result;
