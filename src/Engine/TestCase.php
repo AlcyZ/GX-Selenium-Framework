@@ -26,6 +26,7 @@ namespace GXSelenium\Engine;
 
 use Facebook\WebDriver\Exception\ElementNotVisibleException;
 use Facebook\WebDriver\Exception\InvalidSelectorException;
+use Facebook\WebDriver\Exception\WebDriverCurlException;
 use Facebook\WebDriver\WebDriver;
 use GXSelenium\Engine\Emulator\Client;
 use GXSelenium\Engine\Logger\FileLogger;
@@ -239,9 +240,18 @@ abstract class TestCase
 	 */
 	private function _logData($message, $txt, $screenName)
 	{
-		$screenPath = $this->testSuite->getFileLogger()
-		                              ->screenshot($this->testSuite->getWebDriver(), str_replace(' ', '', $screenName));
-
+		try
+		{
+			$screenPath = $this->testSuite->getFileLogger()
+			                              ->screenshot($this->testSuite->getWebDriver(),
+			                                           str_replace(' ', '', $screenName));
+		}
+		catch(WebDriverCurlException $e)
+		{
+			$txt .= 'Failed to take a screen shot, additional error information:' . "\nMessage:\t" . $e->getMessage()
+			       . "\nStack Trace:\t" . $e->getTraceAsString() . "\n";
+			$screenPath = '';
+		}
 		$this->testSuite->getFileLogger()->log($txt, 'errors');
 		$this->testSuite->getSqlLogger()
 		                ->caseError($message, $this->testSuite->getWebDriver()->getCurrentURL(), $screenPath);
