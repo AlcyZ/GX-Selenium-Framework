@@ -114,7 +114,7 @@ trait InspectionProviderTrait
 	{
 		$attempts = $attempts ? : 0;
 
-		return $this->_expectsToBeInside('isDisplayed', $parentBy, $by, $attempts);
+		return $this->_expectsToBeInside('isEnabled', $parentBy, $by, $attempts);
 	}
 	
 
@@ -155,7 +155,7 @@ trait InspectionProviderTrait
 	{
 		$attempts = $attempts ? : 0;
 
-		return $this->_expectsToBeInside('isDisplayed', $parentBy, $by, $attempts);
+		return $this->_expectsToBeInside('isSelected', $parentBy, $by, $attempts);
 	}
 
 
