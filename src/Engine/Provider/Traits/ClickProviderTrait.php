@@ -27,7 +27,6 @@ namespace GXSelenium\Engine\Provider\Traits;
 use Facebook\WebDriver\Exception\StaleElementReferenceException;
 use Facebook\WebDriver\Exception\UnknownServerException;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
-use Facebook\WebDriver\Remote\RemoteWebElement;
 use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\WebDriverElement;
 use GXSelenium\Engine\NullObjects\WebDriverElementNull;
@@ -45,17 +44,20 @@ trait ClickProviderTrait
 	 * is reached when a stale element reference exception is thrown.
 	 * Returns false when the client was unable to click the element.
 	 *
-	 * @param \Facebook\WebDriver\WebDriverBy $by
-	 * @param null                            $attempts
+	 * @param WebDriverBy $by       WebDriverBy instance to detect the expected element.
+	 * @param int         $attempts Amount of retries until the operation will fail.
 	 *
 	 * @return bool
 	 */
-	public function expectClick(WebDriverBy $by, $attempts = null)
+	public function expectClick(WebDriverBy $by, $attempts = 2)
 	{
-		$result   = false;
-		$attempts = $attempts ? : 2;
+		if($this->failed()):
+			return $this;
+		endif;
+		$result  = false;
+		$attempt = 0;
 
-		while($attempts < 2):
+		while($attempt < $attempts):
 			try
 			{
 				$element = $this->getWebDriver()->findElement($by);
@@ -66,8 +68,30 @@ trait ClickProviderTrait
 			}
 			catch(StaleElementReferenceException $e)
 			{
+				if(!empty($element)):
+					$text = ($attempt + 1) . '. attempt to click on element '
+					        . $this->_getClickingElementsHtml($element) . ' failed';
+				else:
+					$text = ($attempt + 1) . '. attempt to click on an element which is not found failed';
+				endif;
+				$text .= "\n";
+				$ex = get_class($e) . ' thrown and caught' . "\n";
+				echo $text . $ex;
 			}
-			$attempts++;
+				// Todo: specify exception with more data.
+			catch(\Exception $e)
+			{
+				if(!empty($element)):
+					$text = ($attempt + 1) . '. attempt to click on element '
+					        . $this->_getClickingElementsHtml($element) . ' failed';
+				else:
+					$text = ($attempt + 1) . '. attempt to click on an element which is not found failed';
+				endif;
+				$text .= "\n";
+				$ex = get_class($e) . ' thrown and caught' . "\n";
+				echo $text . $ex;
+			}
+			$attempt++;
 		endwhile;
 
 		return $result;
@@ -79,19 +103,22 @@ trait ClickProviderTrait
 	 * Retry the process two times or until the attempts argument count
 	 * is reached when a stale element reference exception is thrown.
 	 * Returns false when the client was unable to click the element.
-	 * 
-	 * @param \Facebook\WebDriver\WebDriverBy $parentBy
-	 * @param \Facebook\WebDriver\WebDriverBy $by
-	 * @param null                            $attempts
+	 *
+	 * @param WebDriverBy $parentBy WebDriverBy instance to detect the expected parent element.
+	 * @param WebDriverBy $by       WebDriverBy instance to detect the expected element.
+	 * @param int         $attempts Amount of retries until the operation will fail.
 	 *
 	 * @return bool
 	 */
-	public function expectClickInside(WebDriverBy $parentBy, WebDriverBy $by, $attempts = null)
+	public function expectClickInside(WebDriverBy $parentBy, WebDriverBy $by, $attempts = 2)
 	{
-		$result   = false;
-		$attempts = $attempts ? : 0;
+		if($this->failed()):
+			return $this;
+		endif;
+		$result  = false;
+		$attempt = 0;
 
-		while($attempts < 2):
+		while($attempt < $attempts):
 			try
 			{
 				$parent  = $this->getWebDriver()->findElement($parentBy);
@@ -103,8 +130,30 @@ trait ClickProviderTrait
 			}
 			catch(StaleElementReferenceException $e)
 			{
+				if(!empty($element)):
+					$text = ($attempt + 1) . '. attempt to click on element ' . $this->_getElementsHtml($element)
+					        . ' failed';
+				else:
+					$text = ($attempt + 1) . '. attempt to click on an element which is not found failed';
+				endif;
+				$text .= "\n";
+				$ex = get_class($e) . ' thrown and caught' . "\n";
+				echo $text . $ex;
 			}
-			$attempts++;
+				// Todo: specify exception with more data.
+			catch(\Exception $e)
+			{
+				if(!empty($element)):
+					$text = ($attempt + 1) . '. attempt to click on element ' . $this->_getElementsHtml($element)
+					        . ' failed';
+				else:
+					$text = ($attempt + 1) . '. attempt to click on an element which is not found failed';
+				endif;
+				$text .= "\n";
+				$ex = get_class($e) . ' thrown and caught' . "\n";
+				echo $text . $ex;
+			}
+			$attempt++;
 		endwhile;
 
 		return $result;
@@ -118,6 +167,7 @@ trait ClickProviderTrait
 	 * @param bool             $retry           If Set, retry to click element after thrown exception.
 	 * @param bool             $ignoreException If true, the case proceed after max amount of thrown exceptions (20).
 	 *
+	 * @deprecated Will be removed in future versions. Use expectClick to improve the stability of your test cases.
 	 * @return $this Same instance for chained method calls.
 	 * @throws \Exception
 	 * @throws \Facebook\WebDriver\Exception\UnknownServerException
@@ -170,20 +220,45 @@ trait ClickProviderTrait
 
 		return $this;
 	}
+	
+
+	/**
+	 * Expects that the client clicks on an element by the given id.
+	 *
+	 * @param string $id       Id of expected element.
+	 * @param int    $attempts Amount of retries until the operation will fail.
+	 *
+	 * @return bool True when click was successful, false otherwise.
+	 */
+	public function expectClickId($id, $attempts = 2)
+	{
+		if($this->isFailed()):
+			return false;
+		endif;
+		$by = WebDriverBy::id($id);
+
+		return $this->expectClick($by, $attempts);
+	}
 
 
 	/**
 	 * Click at an element by the given id.
 	 *
-	 * @param string $id              Id of expected element.
-	 * @param bool   $retry           If Set, retry to click element after thrown exception.
-	 * @param bool   $ignoreException If true, the case proceed after max amount of thrown exceptions (20).
+	 * @param string $id       Id of expected element.
+	 * @param int    $attempts Amount of retries until the operation will fail.
 	 *
 	 * @return $this Same instance for chained method calls.
 	 */
-	public function clickId($id, $retry = false, $ignoreException = false)
+	public function clickId($id, $attempts = 2)
 	{
-		$this->click($this->getElementProvider()->byId($id), $retry, $ignoreException);
+		if($this->isFailed()):
+			return $this;
+		endif;
+
+		$result = $this->expectClickId($id, $attempts);
+		if(!$result):
+			$this->error('Failed to click on element by id "' . $id . '"');
+		endif;
 
 		return $this;
 	}
@@ -196,6 +271,7 @@ trait ClickProviderTrait
 	 * @param bool   $retry           If Set, retry to click element after thrown exception.
 	 * @param bool   $ignoreException If true, the case proceed after max amount of thrown exceptions (20).
 	 *
+	 * @deprecated Method will be removed in future versions. Use expectClick[WebDriverBy] to improve the test stability
 	 * @return $this Same instance for chained method calls.
 	 */
 	public function tryClickId($id, $retry = false, $ignoreException = false)
@@ -207,17 +283,43 @@ trait ClickProviderTrait
 
 
 	/**
+	 * Expects that the client clicks on an element by the given name.
+	 *
+	 * @param string $name     Name of expected element.
+	 * @param int    $attempts Amount of retries until the operation will fail.
+	 *
+	 * @return bool True when click was successful, false otherwise.
+	 */
+	public function expectClickName($name, $attempts = 2)
+	{
+		if($this->isFailed()):
+			return false;
+		endif;
+
+		$by = WebDriverBy::name($name);
+
+		return $this->expectClick($by, $attempts);
+	}
+
+
+	/**
 	 * Click at an element by the given name attribute.
 	 *
-	 * @param string $name            Name attribute of expected element.
-	 * @param bool   $retry           If Set, retry to click element after thrown exception.
-	 * @param bool   $ignoreException If true, the case proceed after max amount of thrown exceptions (20).
+	 * @param string $name     Name attribute of expected element.
+	 * @param int    $attempts Amount of retries until the operation will fail.
 	 *
 	 * @return $this Same instance for chained method calls.
 	 */
-	public function clickName($name, $retry = false, $ignoreException = false)
+	public function clickName($name, $attempts = 2)
 	{
-		$this->click($this->getElementProvider()->byName($name), $retry, $ignoreException);
+		if($this->isFailed()):
+			return $this;
+		endif;
+
+		$result = $this->expectClickName($name, $attempts);
+		if(!$result):
+			$this->error('Failed to click on element by name "' . $name . '"');
+		endif;
 
 		return $this;
 	}
@@ -230,6 +332,7 @@ trait ClickProviderTrait
 	 * @param bool   $retry           If Set, retry to click element after thrown exception.
 	 * @param bool   $ignoreException If true, the case proceed after max amount of thrown exceptions (20).
 	 *
+	 * @deprecated Method will be removed in future versions. Use expectClick[WebDriverBy] to improve the test stability
 	 * @return $this Same instance for chained method calls.
 	 */
 	public function tryClickName($name, $retry = false, $ignoreException = false)
@@ -241,17 +344,43 @@ trait ClickProviderTrait
 
 
 	/**
+	 * Expects that the client clicks on an element by the given class name.
+	 *
+	 * @param string $className Class name of expected element.
+	 * @param int    $attempts  Amount of retries until the operation will fail.
+	 *
+	 * @return bool True when click was successful, false otherwise.
+	 */
+	public function expectClickClassName($className, $attempts = 2)
+	{
+		if($this->isFailed()):
+			return false;
+		endif;
+
+		$by = WebDriverBy::className($className);
+
+		return $this->expectClick($by, $attempts);
+	}
+
+
+	/**
 	 * Click at an element by the given class name.
 	 *
-	 * @param string $className       Class name of expected element.
-	 * @param bool   $retry           If Set, retry to click element after thrown exception.
-	 * @param bool   $ignoreException If true, the case proceed after max amount of thrown exceptions (20).
+	 * @param string $className Class name of expected element.
+	 * @param int    $attempts  Amount of retries until the operation will fail.
 	 *
 	 * @return $this Same instance for chained method calls.
 	 */
-	public function clickClassName($className, $retry = false, $ignoreException = false)
+	public function clickClassName($className, $attempts = 2)
 	{
-		$this->click($this->getElementProvider()->byClassName($className), $retry, $ignoreException);
+		if($this->isFailed()):
+			return $this;
+		endif;
+
+		$result = $this->expectClickClassName($className, $attempts);
+		if(!$result):
+			$this->error('Failed to click on element by class name "' . $className . '"');
+		endif;
 
 		return $this;
 	}
@@ -264,6 +393,7 @@ trait ClickProviderTrait
 	 * @param bool   $retry           If Set, retry to click element after thrown exception.
 	 * @param bool   $ignoreException If true, the case proceed after max amount of thrown exceptions (20).
 	 *
+	 * @deprecated Method will be removed in future versions. Use expectClick[WebDriverBy] to improve the test stability
 	 * @return $this Same instance for chained method calls.
 	 */
 	public function tryClickClassName($className, $retry = false, $ignoreException = false)
@@ -272,20 +402,46 @@ trait ClickProviderTrait
 
 		return $this;
 	}
+	
+	
+	/**
+	 * Expects that the client clicks on an element by the given link text.
+	 *
+	 * @param string $linkText Link text of expected element.
+	 * @param int    $attempts Amount of retries until the operation will fail.
+	 *
+	 * @return bool True when click was successful, false otherwise.
+	 */
+	public function expectClickLinkText($linkText, $attempts = 2)
+	{
+		if($this->isFailed()):
+			return false;
+		endif;
+		
+		$by = WebDriverBy::linkText($linkText);
+		
+		return $this->expectClick($by, $attempts);
+	}
 
 
 	/**
 	 * Click at an element by the given link text.
 	 *
-	 * @param string $linkText        Link text of expected element.
-	 * @param bool   $retry           If Set, retry to click element after thrown exception.
-	 * @param bool   $ignoreException If true, the case proceed after max amount of thrown exceptions (20).
+	 * @param string $linkText Link text of expected element.
+	 * @param int    $attempts Amount of retries until the operation will fail.
 	 *
 	 * @return $this Same instance for chained method calls.
 	 */
-	public function clickLinkText($linkText, $retry = false, $ignoreException = false)
+	public function clickLinkText($linkText, $attempts = 2)
 	{
-		$this->click($this->getElementProvider()->byLinkText($linkText), $retry, $ignoreException);
+		if($this->isFailed()):
+			return $this;
+		endif;
+
+		$result = $this->expectClickLinkText($linkText, $attempts);
+		if(!$result):
+			$this->error('Failed to click on element by link text "' . $linkText . '"');
+		endif;
 
 		return $this;
 	}
@@ -298,6 +454,7 @@ trait ClickProviderTrait
 	 * @param bool   $retry           If Set, retry to click element after thrown exception.
 	 * @param bool   $ignoreException If true, the case proceed after max amount of thrown exceptions (20).
 	 *
+	 * @deprecated Method will be removed in future versions. Use expectClick[WebDriverBy] to improve the test stability
 	 * @return $this Same instance for chained method calls.
 	 */
 	public function tryClickLinkText($linkText, $retry = false, $ignoreException = false)
@@ -309,17 +466,43 @@ trait ClickProviderTrait
 
 
 	/**
+	 * Expects that the client clicks on an element by the given partial link text.
+	 *
+	 * @param string $partialLinkText Partial link text of expected element.
+	 * @param int    $attempts        Amount of retries until the operation will fail.
+	 *
+	 * @return bool True when click was successful, false otherwise.
+	 */
+	public function expectClickPartialLinkText($partialLinkText, $attempts = 2)
+	{
+		if($this->isFailed()):
+			return false;
+		endif;
+
+		$by = WebDriverBy::partialLinkText($partialLinkText);
+
+		return $this->expectClick($by, $attempts);
+	}
+
+
+	/**
 	 * Click at an element by the given partial link text.
 	 *
 	 * @param string $partialLinkText Partial link text of expected element.
-	 * @param bool   $retry           If Set, retry to click element after thrown exception.
-	 * @param bool   $ignoreException If true, the case proceed after max amount of thrown exceptions (20).
+	 * @param int    $attempts        Amount of retries until the operation will fail.
 	 *
 	 * @return $this Same instance for chained method calls.
 	 */
-	public function clickPartialLinkText($partialLinkText, $retry = false, $ignoreException = false)
+	public function clickPartialLinkText($partialLinkText, $attempts = 2)
 	{
-		$this->click($this->getElementProvider()->byPartialLinkText($partialLinkText), $retry, $ignoreException);
+		if($this->isFailed()):
+			return $this;
+		endif;
+
+		$result = $this->expectClickPartialLinkText($partialLinkText, $attempts);
+		if(!$result):
+			$this->error('Failed to click on element by partial link text "' . $partialLinkText . '"');
+		endif;
 
 		return $this;
 	}
@@ -332,6 +515,7 @@ trait ClickProviderTrait
 	 * @param bool   $retry           If Set, retry to click element after thrown exception.
 	 * @param bool   $ignoreException If true, the case proceed after max amount of thrown exceptions (20).
 	 *
+	 * @deprecated Method will be removed in future versions. Use expectClick[WebDriverBy] to improve the test stability
 	 * @return $this Same instance for chained method calls.
 	 */
 	public function tryClickPartialLinkText($partialLinkText, $retry = false, $ignoreException = false)
@@ -340,20 +524,46 @@ trait ClickProviderTrait
 
 		return $this;
 	}
+	
+	
+	/**
+	 * Expects that the client clicks on an element by the given tag name.
+	 *
+	 * @param string $tagName  Tag name of expected element.
+	 * @param int    $attempts Amount of retries until the operation will fail.
+	 *
+	 * @return bool True when click was successful, false otherwise.
+	 */
+	public function expectClickTagName($tagName, $attempts = 2)
+	{
+		if($this->isFailed()):
+			return false;
+		endif;
+		
+		$by = WebDriverBy::tagName($tagName);
+		
+		return $this->expectClick($by, $attempts);
+	}
 
 
 	/**
 	 * Click at an element by the given tag name.
 	 *
-	 * @param string $tagName         Tag name of expected element.
-	 * @param bool   $retry           If Set, retry to click element after thrown exception.
-	 * @param bool   $ignoreException If true, the case proceed after max amount of thrown exceptions (20).
+	 * @param string $tagName  Tag name of expected element.
+	 * @param int    $attempts Amount of retries until the operation will fail.
 	 *
 	 * @return $this Same instance for chained method calls.
 	 */
-	public function clickTagName($tagName, $retry = false, $ignoreException = false)
+	public function clickTagName($tagName, $attempts = 2)
 	{
-		$this->click($this->getElementProvider()->byTagName($tagName), $retry, $ignoreException);
+		if($this->isFailed()):
+			return $this;
+		endif;
+
+		$result = $this->expectClickTagName($tagName, $attempts);
+		if(!$result):
+			$this->error('Failed to click on element by attempts "' . $attempts . '"');
+		endif;
 
 		return $this;
 	}
@@ -366,6 +576,7 @@ trait ClickProviderTrait
 	 * @param bool   $retry           If Set, retry to click element after thrown exception.
 	 * @param bool   $ignoreException If true, the case proceed after max amount of thrown exceptions (20).
 	 *
+	 * @deprecated Method will be removed in future versions. Use expectClick[WebDriverBy] to improve the test stability
 	 * @return $this Same instance for chained method calls.
 	 */
 	public function tryClickTagName($tagName, $retry = false, $ignoreException = false)
@@ -374,20 +585,46 @@ trait ClickProviderTrait
 
 		return $this;
 	}
+	
+	
+	/**
+	 * Expects that the client clicks on an element by the given css selector.
+	 *
+	 * @param string $cssSelector Css selector of expected element.
+	 * @param int    $attempts    Amount of retries until the operation will fail.
+	 *
+	 * @return bool True when click was successful, false otherwise.
+	 */
+	public function expectClickCssSelector($cssSelector, $attempts = 2)
+	{
+		if($this->isFailed()):
+			return false;
+		endif;
+		
+		$by = WebDriverBy::cssSelector($cssSelector);
+		
+		return $this->expectClick($by, $attempts);
+	}
 
 
 	/**
 	 * Click at an element by the given css selector.
 	 *
-	 * @param string $cssSelector     Css selector of expected element.
-	 * @param bool   $retry           If Set, retry to click element after thrown exception.
-	 * @param bool   $ignoreException If true, the case proceed after max amount of thrown exceptions (20).
+	 * @param string $cssSelector Css selector of expected element.
+	 * @param int    $attempts    Amount of retries until the operation will fail.
 	 *
 	 * @return $this Same instance for chained method calls.
 	 */
-	public function clickByCssSelector($cssSelector, $retry = false, $ignoreException = false)
+	public function clickByCssSelector($cssSelector, $attempts = 2)
 	{
-		$this->click($this->getElementProvider()->byCssSelector($cssSelector), $retry, $ignoreException);
+		if($this->isFailed()):
+			return $this;
+		endif;
+
+		$result = $this->expectClickCssSelector($cssSelector, $attempts);
+		if(!$result):
+			$this->error('Failed to click on element by css selector "' . $attempts . '"');
+		endif;
 
 		return $this;
 	}
@@ -400,6 +637,7 @@ trait ClickProviderTrait
 	 * @param bool   $retry           If Set, retry to click element after thrown exception.
 	 * @param bool   $ignoreException If true, the case proceed after max amount of thrown exceptions (20).
 	 *
+	 * @deprecated Method will be removed in future versions. Use expectClick[WebDriverBy] to improve the test stability
 	 * @return $this Same instance for chained method calls.
 	 */
 	public function tryClickByCssSelector($cssSelector, $retry = false, $ignoreException = false)
@@ -411,17 +649,43 @@ trait ClickProviderTrait
 
 
 	/**
+	 * Expects that the client clicks on an element by the given xpath.
+	 *
+	 * @param string $xpath    Xpath of expected element.
+	 * @param int    $attempts Amount of retries until the operation will fail.
+	 *
+	 * @return bool True when click was successful, false otherwise.
+	 */
+	public function expectClickXpath($xpath, $attempts = 2)
+	{
+		if($this->isFailed()):
+			return false;
+		endif;
+
+		$by = WebDriverBy::xpath($xpath);
+
+		return $this->expectClick($by, $attempts);
+	}
+
+
+	/**
 	 * Click at an element by the given xpath.
 	 *
-	 * @param string $xPath           Xpath of expected element.
-	 * @param bool   $retry           If Set, retry to click element after thrown exception.
-	 * @param bool   $ignoreException If true, the case proceed after max amount of thrown exceptions (20).
+	 * @param string $xPath    Xpath of expected element.
+	 * @param int    $attempts Amount of retries until the operation will fail.
 	 *
 	 * @return $this Same instance for chained method calls.
 	 */
-	public function clickByXpath($xPath, $retry = false, $ignoreException = false)
+	public function clickByXpath($xPath, $attempts = 2)
 	{
-		$this->click($this->getElementProvider()->byXpath($xPath), $retry, $ignoreException);
+		if($this->isFailed()):
+			return $this;
+		endif;
+
+		$result = $this->expectClickXpath($xPath, $attempts);
+		if(!$result):
+			$this->error('Failed to click on element by xpath "' . $xPath . '"');
+		endif;
 
 		return $this;
 	}
@@ -434,6 +698,7 @@ trait ClickProviderTrait
 	 * @param bool   $retry           If Set, retry to click element after thrown exception.
 	 * @param bool   $ignoreException If true, the case proceed after max amount of thrown exceptions (20).
 	 *
+	 * @deprecated Method will be removed in future versions. Use expectClick[WebDriverBy] to improve the test stability
 	 * @return $this Same instance for chained method calls.
 	 */
 	public function tryClickByXpath($xPath, $retry = false, $ignoreException = false)
@@ -456,6 +721,24 @@ trait ClickProviderTrait
 		if($element instanceof WebDriverElementNull || $this->isFailed()):
 			return $element;
 		endif;
+		echo "Click\t|\t" . $this->_getClickingElementsHtml($element) . "\n";
+
+		return $element;
+	}
+	
+
+	/**
+	 * Returns the html of the expected element.
+	 *
+	 * @param WebDriverElement $element
+	 *
+	 * @return string
+	 */
+	private function _getClickingElementsHtml(WebDriverElement $element)
+	{
+		if($element instanceof WebDriverElementNull || $this->isFailed()):
+			return $element;
+		endif;
 
 		$id       = ($element->getAttribute('id') !== '') ? $element->getAttribute('id') : null;
 		$class    = ($element->getAttribute('class') !== '') ? $element->getAttribute('class') : null;
@@ -470,11 +753,8 @@ trait ClickProviderTrait
 		$tagName = $element->getTagName();
 		$tagText = $element->getText();
 
-		$txt = '<' . $tagName . $idValue . $classValue . $disabledValue . $hrefValue . '>' . $tagText . '</' . $tagName
+		return '<' . $tagName . $idValue . $classValue . $disabledValue . $hrefValue . '>' . $tagText . '</' . $tagName
 		       . '>';
-		echo "Click\t|\t" . $txt . "\n";
-
-		return $element;
 	}
 
 
