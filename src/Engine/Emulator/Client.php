@@ -151,20 +151,35 @@ class Client
 	 */
 	public function waitForPageLoaded($expectedUrlSnippet, $waitTimeout)
 	{
-		 $this->testSuite->getWebDriver()->wait($waitTimeout)->until(function($webDriver) use ($expectedUrlSnippet)
-		{
-			/** @var RemoteWebDriver $webDriver */
-			return (strpos($webDriver->getCurrentURL(), $expectedUrlSnippet)) ? true : false;
-		});
+		 $this->testSuite->getWebDriver()->wait($waitTimeout)->until(function ($webDriver) use ($expectedUrlSnippet)
+		 {
+			 /** @var RemoteWebDriver $webDriver */
+			 return (strpos($webDriver->getCurrentURL(), $expectedUrlSnippet)) ? true : false;
+		 });
 
 		return $this;
 	}
 
 
-    /**
-     * Sets the failed property to true.
-     *
-     * @return $this|Client Same instance for chained method calls.
+	/**
+	 * Logs an error and do a screen shot of the current screen.
+	 *
+	 * @param string $message Message to log.
+	 *
+	 * @return $this|Client Same instance for chained method calls.
+	 */
+	public function error($message)
+	{
+		$this->testSuite->getSuiteSettings()->getCurrentTestCase()->_error($message);
+
+		return $this;
+	} 
+
+
+	/**
+	 * Sets the failed property to true.
+	 *
+	 * @return $this|Client Same instance for chained method calls.
      */
     public function failed()
     {
