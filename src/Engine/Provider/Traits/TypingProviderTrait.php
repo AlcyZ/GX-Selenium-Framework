@@ -52,6 +52,9 @@ trait TypingProviderTrait
 	 */
 	public function expectType(WebDriverBy $by, $value, $clear = false, $attempts = 2)
 	{
+		if($this->isFailed()):
+			return false;
+		endif;
 		$result  = false;
 		$attempt = 0;
 
@@ -70,7 +73,7 @@ trait TypingProviderTrait
 			catch(\Exception $e)
 			{
 				if(!empty($element)):
-					$text = ($attempt + 1) . '. attempt to type on element ' . $this->_getElementsHtml($element)
+					$text = ($attempt + 1) . '. attempt to type on element ' . $this->_getTypingElementsHtml($element)
 					        . ' failed';
 				else:
 					$text = ($attempt + 1) . '. attempt to type on an element which is not found failed';
@@ -98,6 +101,10 @@ trait TypingProviderTrait
 	 */
 	public function type(WebDriverElement $element, $value, $clear)
 	{
+		if($this->isFailed()):
+			return $this;
+		endif;
+
 		if($this->isFailed())
 		{
 			return $this;
@@ -144,17 +151,20 @@ trait TypingProviderTrait
 	 * @param string $value Value that should be typed on the element.
 	 * @param bool   $clear Clear the element before typing when true.
 	 *
-	 * @deprecated Will be removed in future versions. Use expectTypeId to improve the stability of your test cases.
 	 * @return $this Same instance for chained method calls.
 	 */
 	public function typeId($id, $value, $clear = true)
 	{
-		if($this->isFailed())
-		{
+		if($this->isFailed()):
 			return $this;
-		}
+		endif;
 
-		return $this->type($this->getElementProvider()->byId($id), $value, $clear);
+		$result = $this->expectTypeId($id, $value, $clear);
+		if(!$result):
+			$this->error('Failed to type on element by id "' . $id . '"');
+		endif;
+
+		return $this;
 	}
 	
 
@@ -171,7 +181,7 @@ trait TypingProviderTrait
 	public function expectTypeId($id, $value, $clear = true, $attempts = 2)
 	{
 		if($this->isFailed()):
-			return $this;
+			return false;
 		endif;
 		$by = WebDriverBy::id($id);
 
@@ -186,17 +196,20 @@ trait TypingProviderTrait
 	 * @param string $value Value that should be typed on the element.
 	 * @param bool   $clear Clear the element before typing when true.
 	 *
-	 * @deprecated Will be removed in future versions. Use expectTypeName to improve the stability of your test cases.
 	 * @return $this Same instance for chained method calls.
 	 */
 	public function typeName($name, $value, $clear = true)
 	{
-		if($this->isFailed())
-		{
+		if($this->isFailed()):
 			return $this;
-		}
+		endif;
 
-		return $this->type($this->getElementProvider()->byName($name), $value, $clear);
+		$result = $this->expectTypeName($name, $value, $clear);
+		if(!$result):
+			$this->error('Failed to type on element by name "' . $name . '"');
+		endif;
+
+		return $this;
 	}
 
 
@@ -213,7 +226,7 @@ trait TypingProviderTrait
 	public function expectTypeName($name, $value, $clear = true, $attempts = 2)
 	{
 		if($this->isFailed()):
-			return $this;
+			return false;
 		endif;
 		$by = WebDriverBy::name($name);
 
@@ -228,18 +241,20 @@ trait TypingProviderTrait
 	 * @param string $value     Value that should be typed on the element.
 	 * @param bool   $clear     Clear the element before typing when true.
 	 *
-	 * @deprecated Will be removed in future versions. Use expectTypeClassName to improve the stability of your test
-	 *             cases.
 	 * @return $this Same instance for chained method calls.
 	 */
 	public function typeClassName($className, $value, $clear = true)
 	{
-		if($this->isFailed())
-		{
+		if($this->isFailed()):
 			return $this;
-		}
+		endif;
 
-		return $this->type($this->getElementProvider()->byClassName($className), $value, $clear);
+		$result = $this->expectTypeClassName($className, $value, $clear);
+		if(!$result):
+			$this->error('Failed to type on element by class name "' . $className . '"');
+		endif;
+
+		return $this;
 	}
 
 
@@ -256,7 +271,7 @@ trait TypingProviderTrait
 	public function expectTypeClassName($className, $value, $clear = true, $attempts = 2)
 	{
 		if($this->isFailed()):
-			return $this;
+			return false;
 		endif;
 		$by = WebDriverBy::className($className);
 
@@ -271,18 +286,20 @@ trait TypingProviderTrait
 	 * @param string $value    Value that should be typed on the element.
 	 * @param bool   $clear    Clear the element before typing when true.
 	 *
-	 * @deprecated Will be removed in future versions. Use expectTypeLinkText to improve the stability of your test
-	 *             cases.
 	 * @return $this Same instance for chained method calls.
 	 */
 	public function typeLinkText($linkText, $value, $clear = true)
 	{
-		if($this->isFailed())
-		{
+		if($this->isFailed()):
 			return $this;
-		}
+		endif;
 
-		return $this->type($this->getElementProvider()->byLinkText($linkText), $value, $clear);
+		$result = $this->expectTypeLinkText($linkText, $value, $clear);
+		if(!$result):
+			$this->error('Failed to type on element by link text "' . $linkText . '"');
+		endif;
+
+		return $this;
 	}
 
 
@@ -299,7 +316,7 @@ trait TypingProviderTrait
 	public function expectTypeLinkText($linkText, $value, $clear = true, $attempts = 2)
 	{
 		if($this->isFailed()):
-			return $this;
+			return false;
 		endif;
 		$by = WebDriverBy::linkText($linkText);
 
@@ -314,18 +331,20 @@ trait TypingProviderTrait
 	 * @param string $value           Value that should be typed on the element.
 	 * @param bool   $clear           Clear the element before typing when true.
 	 *
-	 * @deprecated Will be removed in future versions. Use expectTypePartialLinkText to improve the stability of your
-	 *             test cases.
 	 * @return $this Same instance for chained method calls.
 	 */
 	public function typePartialLinkText($partialLinkText, $value, $clear = true)
 	{
-		if($this->isFailed())
-		{
+		if($this->isFailed()):
 			return $this;
-		}
+		endif;
 
-		return $this->type($this->getElementProvider()->byPartialLinkText($partialLinkText), $value, $clear);
+		$result = $this->expectTypePartialLinkText($partialLinkText, $value, $clear);
+		if(!$result):
+			$this->error('Failed to type on element by partial link text "' . $partialLinkText . '"');
+		endif;
+
+		return $this;
 	}
 
 
@@ -342,7 +361,7 @@ trait TypingProviderTrait
 	public function expectTypePartialLinkText($partialLinkText, $value, $clear = true, $attempts = 2)
 	{
 		if($this->isFailed()):
-			return $this;
+			return false;
 		endif;
 		$by = WebDriverBy::partialLinkText($partialLinkText);
 
@@ -357,18 +376,20 @@ trait TypingProviderTrait
 	 * @param string $value   Value that should be typed on the element.
 	 * @param bool   $clear   Clear the element before typing when true.
 	 *
-	 * @deprecated Will be removed in future versions. Use expectTypeTagName to improve the stability of your test
-	 *             cases.
 	 * @return $this Same instance for chained method calls.
 	 */
 	public function typeTagName($tagName, $value, $clear = true)
 	{
-		if($this->isFailed())
-		{
+		if($this->isFailed()):
 			return $this;
-		}
+		endif;
 
-		return $this->type($this->getElementProvider()->byTagName($tagName), $value, $clear);
+		$result = $this->expectTypeTagName($tagName, $value, $clear);
+		if(!$result):
+			$this->error('Failed to type on element by tag name "' . $tagName . '"');
+		endif;
+
+		return $this;
 	}
 
 
@@ -385,7 +406,7 @@ trait TypingProviderTrait
 	public function expectTypeTagName($tagName, $value, $clear = true, $attempts = 2)
 	{
 		if($this->isFailed()):
-			return $this;
+			return false;
 		endif;
 		$by = WebDriverBy::tagName($tagName);
 
@@ -400,18 +421,20 @@ trait TypingProviderTrait
 	 * @param string $value       Value that should be typed on the element.
 	 * @param bool   $clear       Clear the element before typing when true.
 	 *
-	 * @deprecated Will be removed in future versions. Use expectTypeCssSelector to improve the stability of your test
-	 *             cases.
 	 * @return $this Same instance for chained method calls.
 	 */
 	public function typeCssSelector($cssSelector, $value, $clear = true)
 	{
-		if($this->isFailed())
-		{
+		if($this->isFailed()):
 			return $this;
-		}
+		endif;
 
-		return $this->type($this->getElementProvider()->byCssSelector($cssSelector), $value, $clear);
+		$result = $this->expectTypeCssSelector($cssSelector, $value, $clear);
+		if(!$result):
+			$this->error('Failed to type on element by css selector "' . $cssSelector . '"');
+		endif;
+
+		return $this;
 	}
 
 
@@ -428,7 +451,7 @@ trait TypingProviderTrait
 	public function expectTypeCssSelector($cssSelector, $value, $clear = true, $attempts = 2)
 	{
 		if($this->isFailed()):
-			return $this;
+			return false;
 		endif;
 		$by = WebDriverBy::cssSelector($cssSelector);
 
@@ -443,17 +466,20 @@ trait TypingProviderTrait
 	 * @param string $value Value that should be typed on the element.
 	 * @param bool   $clear Clear the element before typing when true.
 	 *
-	 * @deprecated Will be removed in future versions. Use expectTypeXpath to improve the stability of your test cases.
 	 * @return $this Same instance for chained method calls.
 	 */
 	public function typeXpath($xpath, $value, $clear = true)
 	{
-		if($this->isFailed())
-		{
+		if($this->isFailed()):
 			return $this;
-		}
+		endif;
 
-		return $this->type($this->getElementProvider()->byXpath($xpath), $value, $clear);
+		$result = $this->expectTypeXpath($xpath, $value, $clear);
+		if(!$result):
+			$this->error('Failed to type on element by xpath "' . $xpath . '"');
+		endif;
+
+		return $this;
 	}
 
 
@@ -470,7 +496,7 @@ trait TypingProviderTrait
 	public function expectTypeXpath($xpath, $value, $clear = true, $attempts = 2)
 	{
 		if($this->isFailed()):
-			return $this;
+			return false;
 		endif;
 		$by = WebDriverBy::xpath($xpath);
 
@@ -489,7 +515,7 @@ trait TypingProviderTrait
 	 */
 	private function _logTyping(WebDriverElement $element, $txt, $clear = false)
 	{
-		$tag = $this->_getElementsHtml($element);
+		$tag = $this->_getTypingElementsHtml($element);
 
 		if($clear):
 			echo "Clear\t|\t" . $tag;
@@ -507,7 +533,7 @@ trait TypingProviderTrait
 	 *
 	 * @return string
 	 */
-	private function _getElementsHtml(WebDriverElement $element)
+	private function _getTypingElementsHtml(WebDriverElement $element)
 	{
 		$id          = ($element->getAttribute('id') !== '') ? $element->getAttribute('id') : null;
 		$class       = ($element->getAttribute('class') !== '') ? $element->getAttribute('class') : null;
