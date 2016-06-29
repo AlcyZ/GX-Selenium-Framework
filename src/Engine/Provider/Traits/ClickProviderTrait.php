@@ -59,6 +59,7 @@ trait ClickProviderTrait
 			try
 			{
 				$element = $this->getWebDriver()->findElement($by);
+				$this->scrollToElement($element);
 				$this->_logClick($element)->click();
 				$result = true;
 				break;
@@ -95,6 +96,7 @@ trait ClickProviderTrait
 			{
 				$parent  = $this->getWebDriver()->findElement($parentBy);
 				$element = $parent->findElement($by);
+				$this->scrollToElement($element);
 				$this->_logClick($element)->click();
 				$result = true;
 				break;
