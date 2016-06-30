@@ -35,6 +35,7 @@ use GXSelenium\Engine\Provider\Traits\InspectionProviderTrait;
 use GXSelenium\Engine\Provider\Traits\MouseTrait;
 use GXSelenium\Engine\Provider\Traits\SelectingProviderTrait;
 use GXSelenium\Engine\Provider\Traits\TypingProviderTrait;
+use GXSelenium\Engine\Provider\Traits\WaitProviderTrait;
 use GXSelenium\Engine\TestCase;
 use GXSelenium\Engine\TestSuite;
 
@@ -44,7 +45,7 @@ use GXSelenium\Engine\TestSuite;
  */
 class Client
 {
-	use ClickProviderTrait, InspectionProviderTrait, SelectingProviderTrait, TypingProviderTrait, MouseTrait;
+	use ClickProviderTrait, InspectionProviderTrait, SelectingProviderTrait, TypingProviderTrait, MouseTrait, WaitProviderTrait;
 
 	/**
 	 * @var TestSuite
@@ -179,7 +180,23 @@ class Client
 
 		return $this;
 	}
-	
+
+
+	/**
+	 * Logs an exception error and do a screen shot of the current screen.
+	 *
+	 * @param string     $message Message to log.
+	 * @param \Exception $e
+	 *
+	 * @return $this|\GXSelenium\Engine\Emulator\Client Same instance for chained method calls.
+	 */
+	public function exceptionError($message, \Exception $e)
+	{
+		$this->testSuite->getSuiteSettings()->getCurrentTestCase()->_exceptionError($message, $e);
+
+		return $this;
+	}
+
 
 	/**
 	 * Displays a message on the console.
