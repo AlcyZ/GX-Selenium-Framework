@@ -27,5 +27,6 @@
       "cp -r ./../../logs_temp/* ./logs/.",
       "rm -rf ./../../logs_temp"
     ]
+    
   }
 }
