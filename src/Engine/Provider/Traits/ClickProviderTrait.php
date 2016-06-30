@@ -51,7 +51,7 @@ trait ClickProviderTrait
 	 */
 	public function expectClick(WebDriverBy $by, $attempts = 2)
 	{
-		if($this->failed()):
+		if($this->isFailed()):
 			return $this;
 		endif;
 		$result  = false;
@@ -112,7 +112,7 @@ trait ClickProviderTrait
 	 */
 	public function expectClickInside(WebDriverBy $parentBy, WebDriverBy $by, $attempts = 2)
 	{
-		if($this->failed()):
+		if($this->isFailed()):
 			return $this;
 		endif;
 		$result  = false;
