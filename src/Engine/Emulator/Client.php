@@ -35,6 +35,7 @@ use GXSelenium\Engine\Provider\Traits\InspectionProviderTrait;
 use GXSelenium\Engine\Provider\Traits\MouseTrait;
 use GXSelenium\Engine\Provider\Traits\SelectingProviderTrait;
 use GXSelenium\Engine\Provider\Traits\TypingProviderTrait;
+use GXSelenium\Engine\TestCase;
 use GXSelenium\Engine\TestSuite;
 
 /**
@@ -91,6 +92,7 @@ class Client
 			$url .= $path . '/';
 		endforeach;
 		$url = rtrim($url, '/');
+		$this->output('Open url|' . "\t" . $url);
 		$this->testSuite->getWebDriver()->get($url);
 
 		return $this;
@@ -107,7 +109,7 @@ class Client
 	 */
 	public function scrollTo($xPos = 0, $yPos = 0)
 	{
-		 $this->testSuite->getWebDriver()->executeScript('javascript:window.scrollTo(' . $xPos . ', ' . $yPos . ')');
+		$this->testSuite->getWebDriver()->executeScript('javascript:window.scrollTo(' . $xPos . ', ' . $yPos . ')');
 
 		return $this;
 	}
@@ -151,11 +153,11 @@ class Client
 	 */
 	public function waitForPageLoaded($expectedUrlSnippet, $waitTimeout)
 	{
-		 $this->testSuite->getWebDriver()->wait($waitTimeout)->until(function ($webDriver) use ($expectedUrlSnippet)
-		 {
-			 /** @var RemoteWebDriver $webDriver */
-			 return (strpos($webDriver->getCurrentURL(), $expectedUrlSnippet)) ? true : false;
-		 });
+		$this->testSuite->getWebDriver()->wait($waitTimeout)->until(function ($webDriver) use ($expectedUrlSnippet)
+		{
+			/** @var RemoteWebDriver $webDriver */
+			return (strpos($webDriver->getCurrentURL(), $expectedUrlSnippet)) ? true : false;
+		});
 
 		return $this;
 	}
@@ -173,20 +175,38 @@ class Client
 		$this->testSuite->getSuiteSettings()->getCurrentTestCase()->_error($message);
 
 		return $this;
-	} 
+	}
+	
+
+	/**
+	 * Displays a message on the console.
+	 * Delegates to the test case output method.
+	 *
+	 * @see TestCase::output
+	 *
+	 * @param string $message Message to display on the console.
+	 *
+	 * @return $this|Client Same instance for chained method calls.
+	 */
+	public function output($message)
+	{
+		$this->testSuite->getSuiteSettings()->getCurrentTestCase()->output($message);
+
+		return $this;
+	}
 
 
 	/**
 	 * Sets the failed property to true.
 	 *
 	 * @return $this|Client Same instance for chained method calls.
-     */
-    public function failed()
-    {
-	    $this->testSuite->setFailed(true);
-        if ($this->failed):
-            return $this;
-        endif;
+	 */
+	public function failed()
+	{
+		$this->testSuite->setFailed(true);
+		if($this->failed):
+			return $this;
+		endif;
 
 		echo "Client deactivated ..\n";
 		$this->failed = true;
@@ -224,8 +244,9 @@ class Client
 	 */
 	public function getWebDriver()
 	{
-		return  $this->testSuite->getWebDriver();
+		return $this->testSuite->getWebDriver();
 	}
+
 
 	/**
 	 * Resets the internal failed property of the client.
@@ -257,6 +278,7 @@ class Client
 	{
 		return new WebDriverSelect($element);
 	}
+
 
 	/**
 	 * Returns true when the test case is failed.
