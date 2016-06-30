@@ -68,28 +68,18 @@ trait ClickProviderTrait
 			}
 			catch(StaleElementReferenceException $e)
 			{
-				if(!empty($element)):
-					$text = ($attempt + 1) . '. attempt to click on element '
-					        . $this->_getClickingElementsHtml($element) . ' failed';
-				else:
-					$text = ($attempt + 1) . '. attempt to click on an element which is not found failed';
-				endif;
+				$text = ($attempt + 1) . '. attempt to click on an failed';
 				$text .= "\n";
-				$ex = get_class($e) . ' thrown and caught' . "\n";
-				echo $text . $ex;
+				$ex = get_class($e) . ' thrown and caught';
+				$this->output($text . $ex);
 			}
 				// Todo: specify exception with more data.
 			catch(\Exception $e)
 			{
-				if(!empty($element)):
-					$text = ($attempt + 1) . '. attempt to click on element '
-					        . $this->_getClickingElementsHtml($element) . ' failed';
-				else:
-					$text = ($attempt + 1) . '. attempt to click on an element which is not found failed';
-				endif;
+				$text = ($attempt + 1) . '. attempt to click on an element failed';
 				$text .= "\n";
-				$ex = get_class($e) . ' thrown and caught' . "\n";
-				echo $text . $ex;
+				$ex = get_class($e) . ' thrown and caught';
+				$this->output($text . $ex);
 			}
 			$attempt++;
 		endwhile;
