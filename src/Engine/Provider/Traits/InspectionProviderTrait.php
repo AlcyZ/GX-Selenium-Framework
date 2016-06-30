@@ -56,8 +56,8 @@ trait InspectionProviderTrait
 
 		return $this->_expectsToBe('isDisplayed', $by, $attempts);
 	}
-	
-	
+
+
 	/**
 	 * Client expects that an element is displayed.
 	 * Returns true when the element is displayed and false otherwise.
@@ -78,6 +78,190 @@ trait InspectionProviderTrait
 		endif;
 
 		return $this->_expectsToBeInside('isDisplayed', $parentBy, $by, $attempts);
+	}
+	
+
+	/**
+	 * Client expects that an element is displayed by the given id.
+	 * Returns true when the element is displayed and false otherwise.
+	 * Retry the process two times or until the attempts argument count
+	 * is reached when a stale element reference exception is thrown.
+	 * Recommended usage in web driver waits.
+	 *
+	 * @param string $id       Id of expected element.
+	 * @param int    $attempts (Optional) Attempts until the method will fail and return false.
+	 *
+	 * @return bool
+	 */
+	public function expectsToBeDisplayedById($id, $attempts = 2)
+	{
+		if($this->isFailed()):
+			return false;
+		endif;
+		$by = WebDriverBy::id($id);
+
+		return $this->expectsToBeDisplayed($by, $attempts);
+	}
+	
+
+	/**
+	 * Client expects that an element is displayed by the given class name.
+	 * Returns true when the element is displayed and false otherwise.
+	 * Retry the process two times or until the attempts argument count
+	 * is reached when a stale element reference exception is thrown.
+	 * Recommended usage in web driver waits.
+	 *
+	 * @param string $className Class name of expected element.
+	 * @param int    $attempts  (Optional) Attempts until the method will fail and return false.
+	 *
+	 * @return bool
+	 */
+	public function expectsToBeDisplayedByClassName($className, $attempts = 2)
+	{
+		if($this->isFailed()):
+			return false;
+		endif;
+		$by = WebDriverBy::className($className);
+
+		return $this->expectsToBeDisplayed($by, $attempts);
+	}
+
+
+	/**
+	 * Client expects that an element is displayed by the given css selector.
+	 * Returns true when the element is displayed and false otherwise.
+	 * Retry the process two times or until the attempts argument count
+	 * is reached when a stale element reference exception is thrown.
+	 * Recommended usage in web driver waits.
+	 *
+	 * @param string $cssSelector Css selector of expected element.
+	 * @param int    $attempts    (Optional) Attempts until the method will fail and return false.
+	 *
+	 * @return bool
+	 */
+	public function expectsToBeDisplayedByCssSelector($cssSelector, $attempts = 2)
+	{
+		if($this->isFailed()):
+			return false;
+		endif;
+		$by = WebDriverBy::cssSelector($cssSelector);
+
+		return $this->expectsToBeDisplayed($by, $attempts);
+	}
+
+
+	/**
+	 * Client expects that an element is displayed by the given name.
+	 * Returns true when the element is displayed and false otherwise.
+	 * Retry the process two times or until the attempts argument count
+	 * is reached when a stale element reference exception is thrown.
+	 * Recommended usage in web driver waits.
+	 *
+	 * @param string $name     Name of expected element.
+	 * @param int    $attempts (Optional) Attempts until the method will fail and return false.
+	 *
+	 * @return bool
+	 */
+	public function expectsToBeDisplayedByName($name, $attempts = 2)
+	{
+		if($this->isFailed()):
+			return false;
+		endif;
+		$by = WebDriverBy::name($name);
+
+		return $this->expectsToBeDisplayed($by, $attempts);
+	}
+
+
+	/**
+	 * Client expects that an element is displayed by the given link text.
+	 * Returns true when the element is displayed and false otherwise.
+	 * Retry the process two times or until the attempts argument count
+	 * is reached when a stale element reference exception is thrown.
+	 * Recommended usage in web driver waits.
+	 *
+	 * @param string $linkText Link text of expected element.
+	 * @param int    $attempts (Optional) Attempts until the method will fail and return false.
+	 *
+	 * @return bool
+	 */
+	public function expectsToBeDisplayedByLinkText($linkText, $attempts = 2)
+	{
+		if($this->isFailed()):
+			return false;
+		endif;
+		$by = WebDriverBy::linkText($linkText);
+
+		return $this->expectsToBeDisplayed($by, $attempts);
+	}
+
+
+	/**
+	 * Client expects that an element is displayed by the given partial link text.
+	 * Returns true when the element is displayed and false otherwise.
+	 * Retry the process two times or until the attempts argument count
+	 * is reached when a stale element reference exception is thrown.
+	 * Recommended usage in web driver waits.
+	 *
+	 * @param string $partialLinkText Partial link text of expected element.
+	 * @param int    $attempts        (Optional) Attempts until the method will fail and return false.
+	 *
+	 * @return bool
+	 */
+	public function expectsToBeDisplayedByPartialLinkText($partialLinkText, $attempts = 2)
+	{
+		if($this->isFailed()):
+			return false;
+		endif;
+		$by = WebDriverBy::partialLinkText($partialLinkText);
+
+		return $this->expectsToBeDisplayed($by, $attempts);
+	}
+
+
+	/**
+	 * Client expects that an element is displayed by the given tag name.
+	 * Returns true when the element is displayed and false otherwise.
+	 * Retry the process two times or until the attempts argument count
+	 * is reached when a stale element reference exception is thrown.
+	 * Recommended usage in web driver waits.
+	 *
+	 * @param string $tagName  Tag name of expected element.
+	 * @param int    $attempts (Optional) Attempts until the method will fail and return false.
+	 *
+	 * @return bool
+	 */
+	public function expectsToBeDisplayedByTagName($tagName, $attempts = 2)
+	{
+		if($this->isFailed()):
+			return false;
+		endif;
+		$by = WebDriverBy::tagName($tagName);
+
+		return $this->expectsToBeDisplayed($by, $attempts);
+	}
+
+
+	/**
+	 * Client expects that an element is displayed by the given xpath.
+	 * Returns true when the element is displayed and false otherwise.
+	 * Retry the process two times or until the attempts argument count
+	 * is reached when a stale element reference exception is thrown.
+	 * Recommended usage in web driver waits.
+	 *
+	 * @param string $xpath    Xpath of expected element.
+	 * @param int    $attempts (Optional) Attempts until the method will fail and return false.
+	 *
+	 * @return bool
+	 */
+	public function expectsToBeDisplayedByXpath($xpath, $attempts = 2)
+	{
+		if($this->isFailed()):
+			return false;
+		endif;
+		$by = WebDriverBy::xpath($xpath);
+
+		return $this->expectsToBeDisplayed($by, $attempts);
 	}
 
 	
@@ -124,6 +308,190 @@ trait InspectionProviderTrait
 
 		return $this->_expectsToBeInside('isEnabled', $parentBy, $by, $attempts);
 	}
+
+
+	/**
+	 * Client expects that an element is enabled by the given id.
+	 * Returns true when the element is enabled and false otherwise.
+	 * Retry the process two times or until the attempts argument count
+	 * is reached when a stale element reference exception is thrown.
+	 * Recommended usage in web driver waits.
+	 *
+	 * @param string $id       Id of expected element.
+	 * @param int    $attempts (Optional) Attempts until the method will fail and return false.
+	 *
+	 * @return bool
+	 */
+	public function expectsToBeEnabledById($id, $attempts = 2)
+	{
+		if($this->isFailed()):
+			return false;
+		endif;
+		$by = WebDriverBy::id($id);
+
+		return $this->expectsToBeEnabled($by, $attempts);
+	}
+
+
+	/**
+	 * Client expects that an element is enabled by the given class name.
+	 * Returns true when the element is enabled and false otherwise.
+	 * Retry the process two times or until the attempts argument count
+	 * is reached when a stale element reference exception is thrown.
+	 * Recommended usage in web driver waits.
+	 *
+	 * @param string $className Class name of expected element.
+	 * @param int    $attempts  (Optional) Attempts until the method will fail and return false.
+	 *
+	 * @return bool
+	 */
+	public function expectsToBeEnabledByClassName($className, $attempts = 2)
+	{
+		if($this->isFailed()):
+			return false;
+		endif;
+		$by = WebDriverBy::className($className);
+
+		return $this->expectsToBeEnabled($by, $attempts);
+	}
+
+
+	/**
+	 * Client expects that an element is enabled by the given css selector.
+	 * Returns true when the element is enabled and false otherwise.
+	 * Retry the process two times or until the attempts argument count
+	 * is reached when a stale element reference exception is thrown.
+	 * Recommended usage in web driver waits.
+	 *
+	 * @param string $cssSelector Css selector of expected element.
+	 * @param int    $attempts    (Optional) Attempts until the method will fail and return false.
+	 *
+	 * @return bool
+	 */
+	public function expectsToBeEnabledByCssSelector($cssSelector, $attempts = 2)
+	{
+		if($this->isFailed()):
+			return false;
+		endif;
+		$by = WebDriverBy::cssSelector($cssSelector);
+
+		return $this->expectsToBeEnabled($by, $attempts);
+	}
+
+
+	/**
+	 * Client expects that an element is enabled by the given name.
+	 * Returns true when the element is enabled and false otherwise.
+	 * Retry the process two times or until the attempts argument count
+	 * is reached when a stale element reference exception is thrown.
+	 * Recommended usage in web driver waits.
+	 *
+	 * @param string $name     Name of expected element.
+	 * @param int    $attempts (Optional) Attempts until the method will fail and return false.
+	 *
+	 * @return bool
+	 */
+	public function expectsToBeEnabledByName($name, $attempts = 2)
+	{
+		if($this->isFailed()):
+			return false;
+		endif;
+		$by = WebDriverBy::name($name);
+
+		return $this->expectsToBeEnabled($by, $attempts);
+	}
+
+
+	/**
+	 * Client expects that an element is enabled by the given link text.
+	 * Returns true when the element is enabled and false otherwise.
+	 * Retry the process two times or until the attempts argument count
+	 * is reached when a stale element reference exception is thrown.
+	 * Recommended usage in web driver waits.
+	 *
+	 * @param string $linkText Link text of expected element.
+	 * @param int    $attempts (Optional) Attempts until the method will fail and return false.
+	 *
+	 * @return bool
+	 */
+	public function expectsToBeEnabledByLinkText($linkText, $attempts = 2)
+	{
+		if($this->isFailed()):
+			return false;
+		endif;
+		$by = WebDriverBy::linkText($linkText);
+
+		return $this->expectsToBeEnabled($by, $attempts);
+	}
+
+
+	/**
+	 * Client expects that an element is enabled by the given partial link text.
+	 * Returns true when the element is enabled and false otherwise.
+	 * Retry the process two times or until the attempts argument count
+	 * is reached when a stale element reference exception is thrown.
+	 * Recommended usage in web driver waits.
+	 *
+	 * @param string $partialLinkText Partial link text of expected element.
+	 * @param int    $attempts        (Optional) Attempts until the method will fail and return false.
+	 *
+	 * @return bool
+	 */
+	public function expectsToBeEnabledByPartialLinkText($partialLinkText, $attempts = 2)
+	{
+		if($this->isFailed()):
+			return false;
+		endif;
+		$by = WebDriverBy::partialLinkText($partialLinkText);
+
+		return $this->expectsToBeEnabled($by, $attempts);
+	}
+
+
+	/**
+	 * Client expects that an element is enabled by the given tag name.
+	 * Returns true when the element is enabled and false otherwise.
+	 * Retry the process two times or until the attempts argument count
+	 * is reached when a stale element reference exception is thrown.
+	 * Recommended usage in web driver waits.
+	 *
+	 * @param string $tagName  Tag name of expected element.
+	 * @param int    $attempts (Optional) Attempts until the method will fail and return false.
+	 *
+	 * @return bool
+	 */
+	public function expectsToBeEnabledByTagName($tagName, $attempts = 2)
+	{
+		if($this->isFailed()):
+			return false;
+		endif;
+		$by = WebDriverBy::tagName($tagName);
+
+		return $this->expectsToBeEnabled($by, $attempts);
+	}
+
+
+	/**
+	 * Client expects that an element is enabled by the given xpath.
+	 * Returns true when the element is enabled and false otherwise.
+	 * Retry the process two times or until the attempts argument count
+	 * is reached when a stale element reference exception is thrown.
+	 * Recommended usage in web driver waits.
+	 *
+	 * @param string $xpath    Xpath of expected element.
+	 * @param int    $attempts (Optional) Attempts until the method will fail and return false.
+	 *
+	 * @return bool
+	 */
+	public function expectsToBeEnabledByXpath($xpath, $attempts = 2)
+	{
+		if($this->isFailed()):
+			return false;
+		endif;
+		$by = WebDriverBy::xpath($xpath);
+
+		return $this->expectsToBeEnabled($by, $attempts);
+	}
 	
 
 	/**
@@ -168,6 +536,190 @@ trait InspectionProviderTrait
 		endif;;
 
 		return $this->_expectsToBeInside('isSelected', $parentBy, $by, $attempts);
+	}
+
+
+	/**
+	 * Client expects that an element is selected by the given id.
+	 * Returns true when the element is selected and false otherwise.
+	 * Retry the process two times or until the attempts argument count
+	 * is reached when a stale element reference exception is thrown.
+	 * Recommended usage in web driver waits.
+	 *
+	 * @param string $id       Id of expected element.
+	 * @param int    $attempts (Optional) Attempts until the method will fail and return false.
+	 *
+	 * @return bool
+	 */
+	public function expectsToBeSelectedById($id, $attempts = 2)
+	{
+		if($this->isFailed()):
+			return false;
+		endif;
+		$by = WebDriverBy::id($id);
+
+		return $this->expectsToBeSelected($by, $attempts);
+	}
+
+
+	/**
+	 * Client expects that an element is selected by the given class name.
+	 * Returns true when the element is selected and false otherwise.
+	 * Retry the process two times or until the attempts argument count
+	 * is reached when a stale element reference exception is thrown.
+	 * Recommended usage in web driver waits.
+	 *
+	 * @param string $className Class name of expected element.
+	 * @param int    $attempts  (Optional) Attempts until the method will fail and return false.
+	 *
+	 * @return bool
+	 */
+	public function expectsToBeSelectedByClassName($className, $attempts = 2)
+	{
+		if($this->isFailed()):
+			return false;
+		endif;
+		$by = WebDriverBy::className($className);
+
+		return $this->expectsToBeSelected($by, $attempts);
+	}
+
+
+	/**
+	 * Client expects that an element is selected by the given css selector.
+	 * Returns true when the element is selected and false otherwise.
+	 * Retry the process two times or until the attempts argument count
+	 * is reached when a stale element reference exception is thrown.
+	 * Recommended usage in web driver waits.
+	 *
+	 * @param string $cssSelector Css selector of expected element.
+	 * @param int    $attempts    (Optional) Attempts until the method will fail and return false.
+	 *
+	 * @return bool
+	 */
+	public function expectsToBeSelectedByCssSelector($cssSelector, $attempts = 2)
+	{
+		if($this->isFailed()):
+			return false;
+		endif;
+		$by = WebDriverBy::cssSelector($cssSelector);
+
+		return $this->expectsToBeSelected($by, $attempts);
+	}
+
+
+	/**
+	 * Client expects that an element is selected by the given name.
+	 * Returns true when the element is selected and false otherwise.
+	 * Retry the process two times or until the attempts argument count
+	 * is reached when a stale element reference exception is thrown.
+	 * Recommended usage in web driver waits.
+	 *
+	 * @param string $name     Name of expected element.
+	 * @param int    $attempts (Optional) Attempts until the method will fail and return false.
+	 *
+	 * @return bool
+	 */
+	public function expectsToBeSelectedByName($name, $attempts = 2)
+	{
+		if($this->isFailed()):
+			return false;
+		endif;
+		$by = WebDriverBy::name($name);
+
+		return $this->expectsToBeSelected($by, $attempts);
+	}
+
+
+	/**
+	 * Client expects that an element is selected by the given link text.
+	 * Returns true when the element is selected and false otherwise.
+	 * Retry the process two times or until the attempts argument count
+	 * is reached when a stale element reference exception is thrown.
+	 * Recommended usage in web driver waits.
+	 *
+	 * @param string $linkText Link text of expected element.
+	 * @param int    $attempts (Optional) Attempts until the method will fail and return false.
+	 *
+	 * @return bool
+	 */
+	public function expectsToBeSelectedByLinkText($linkText, $attempts = 2)
+	{
+		if($this->isFailed()):
+			return false;
+		endif;
+		$by = WebDriverBy::linkText($linkText);
+
+		return $this->expectsToBeSelected($by, $attempts);
+	}
+
+
+	/**
+	 * Client expects that an element is selected by the given partial link text.
+	 * Returns true when the element is selected and false otherwise.
+	 * Retry the process two times or until the attempts argument count
+	 * is reached when a stale element reference exception is thrown.
+	 * Recommended usage in web driver waits.
+	 *
+	 * @param string $partialLinkText Partial link text of expected element.
+	 * @param int    $attempts        (Optional) Attempts until the method will fail and return false.
+	 *
+	 * @return bool
+	 */
+	public function expectsToBeSelectedByPartialLinkText($partialLinkText, $attempts = 2)
+	{
+		if($this->isFailed()):
+			return false;
+		endif;
+		$by = WebDriverBy::partialLinkText($partialLinkText);
+
+		return $this->expectsToBeSelected($by, $attempts);
+	}
+
+
+	/**
+	 * Client expects that an element is selected by the given tag name.
+	 * Returns true when the element is selected and false otherwise.
+	 * Retry the process two times or until the attempts argument count
+	 * is reached when a stale element reference exception is thrown.
+	 * Recommended usage in web driver waits.
+	 *
+	 * @param string $tagName  Tag name of expected element.
+	 * @param int    $attempts (Optional) Attempts until the method will fail and return false.
+	 *
+	 * @return bool
+	 */
+	public function expectsToBeSelectedByTagName($tagName, $attempts = 2)
+	{
+		if($this->isFailed()):
+			return false;
+		endif;
+		$by = WebDriverBy::tagName($tagName);
+
+		return $this->expectsToBeSelected($by, $attempts);
+	}
+
+
+	/**
+	 * Client expects that an element is selected by the given xpath.
+	 * Returns true when the element is selected and false otherwise.
+	 * Retry the process two times or until the attempts argument count
+	 * is reached when a stale element reference exception is thrown.
+	 * Recommended usage in web driver waits.
+	 *
+	 * @param string $xpath    Xpath of expected element.
+	 * @param int    $attempts (Optional) Attempts until the method will fail and return false.
+	 *
+	 * @return bool
+	 */
+	public function expectsToBeSelectedByXpath($xpath, $attempts = 2)
+	{
+		if($this->isFailed()):
+			return false;
+		endif;
+		$by = WebDriverBy::xpath($xpath);
+
+		return $this->expectsToBeSelected($by, $attempts);
 	}
 
 
@@ -232,7 +784,18 @@ trait InspectionProviderTrait
 		return $result;
 	}
 	
-	
+
+	/**
+	 * Wrapper method for the inspection expectations.
+	 * Handles the expectations of displayed, enabled or selected elements.
+	 * Recommended usage in web driver waits.
+	 *
+	 * @param WebDriverBy $parentBy Expected container element (WebDriverBy instance, access via static methods)
+	 * @param WebDriverBy $by       Expected element (WebDriverBy instance, access via static methods)
+	 * @param int         $attempts (Optional) Attempts until the method will fail and return false.
+	 *
+	 * @return bool
+	 */
 	private function _expectsToBeInside($type, WebDriverBy $parentBy, WebDriverBy $by, $attempts)
 	{
 		if($this->isFailed()):
@@ -291,6 +854,7 @@ trait InspectionProviderTrait
 	 * @param string                $id      Id of expected element.
 	 * @param WebDriverElement|null $element (Optional) Container element to search in.
 	 *
+	 * @deprecated Method will be removed in future version. Use expectsToBe[type]by[WebDriverBy] to improve stability.
 	 * @return bool True if the expected element is displayed, false otherwise.
 	 */
 	public function isDisplayedById($id, WebDriverElement $element = null)
@@ -310,6 +874,7 @@ trait InspectionProviderTrait
 	 * @param string                $name    Name attribute of expected element.
 	 * @param WebDriverElement|null $element (Optional) Container element to search in.
 	 *
+	 * @deprecated Method will be removed in future version. Use expectsToBe[type]by[WebDriverBy] to improve stability.
 	 * @return bool True if the expected element is displayed, false otherwise.
 	 */
 	public function isDisplayedByName($name, WebDriverElement $element = null)
@@ -329,6 +894,7 @@ trait InspectionProviderTrait
 	 * @param string                $className Class name of expected element.
 	 * @param WebDriverElement|null $element   (Optional) Container element to search in.
 	 *
+	 * @deprecated Method will be removed in future version. Use expectsToBe[type]by[WebDriverBy] to improve stability.
 	 * @return bool True if the expected element is displayed, false otherwise.
 	 */
 	public function isDisplayedByClassName($className, WebDriverElement $element = null)
@@ -348,6 +914,7 @@ trait InspectionProviderTrait
 	 * @param string                $linkText Link text of expected element.
 	 * @param WebDriverElement|null $element  (Optional) Container element to search in.
 	 *
+	 * @deprecated Method will be removed in future version. Use expectsToBe[type]by[WebDriverBy] to improve stability.
 	 * @return bool True if the expected element is displayed, false otherwise.
 	 */
 	public function isDisplayedByLinkText($linkText, WebDriverElement $element = null)
@@ -367,6 +934,7 @@ trait InspectionProviderTrait
 	 * @param string                $partialLinkText Partial link text of expected element.
 	 * @param WebDriverElement|null $element         (Optional) Container element to search in.
 	 *
+	 * @deprecated Method will be removed in future version. Use expectsToBe[type]by[WebDriverBy] to improve stability.
 	 * @return bool True if the expected element is displayed, false otherwise.
 	 */
 	public function isDisplayedByPartialLinkText($partialLinkText, WebDriverElement $element = null)
@@ -386,6 +954,7 @@ trait InspectionProviderTrait
 	 * @param string                $tagName Tag name of expected element.
 	 * @param WebDriverElement|null $element (Optional) Container element to search in.
 	 *
+	 * @deprecated Method will be removed in future version. Use expectsToBe[type]by[WebDriverBy] to improve stability.
 	 * @return bool True if the expected element is displayed, false otherwise.
 	 */
 	public function isDisplayedByTagName($tagName, WebDriverElement $element = null)
@@ -405,6 +974,7 @@ trait InspectionProviderTrait
 	 * @param string                $cssSelector Css selector of expected element.
 	 * @param WebDriverElement|null $element     (Optional) Container element to search in.
 	 *
+	 * @deprecated Method will be removed in future version. Use expectsToBe[type]by[WebDriverBy] to improve stability.
 	 * @return bool True if the expected element is displayed, false otherwise.
 	 */
 	public function isDisplayedByCssSelector($cssSelector, WebDriverElement $element = null)
@@ -424,6 +994,7 @@ trait InspectionProviderTrait
 	 * @param string                $xpath   Xpath of expected element.
 	 * @param WebDriverElement|null $element (Optional) Container element to search in.
 	 *
+	 * @deprecated Method will be removed in future version. Use expectsToBe[type]by[WebDriverBy] to improve stability.
 	 * @return bool True if the expected element is displayed, false otherwise.
 	 */
 	public function isDisplayedByXpath($xpath, WebDriverElement $element = null)
@@ -444,6 +1015,7 @@ trait InspectionProviderTrait
 	 * @param string                $id      Id of expected element.
 	 * @param WebDriverElement|null $element (Optional) Container element to search in.
 	 *
+	 * @deprecated Method will be removed in future version. Use expectsToBe[type]by[WebDriverBy] to improve stability.
 	 * @return bool True if the expected element is selected, false otherwise.
 	 */
 	public function isSelectedById($id, WebDriverElement $element = null)
@@ -463,6 +1035,7 @@ trait InspectionProviderTrait
 	 * @param string                $name    Name attribute of expected element.
 	 * @param WebDriverElement|null $element (Optional) Container element to search in.
 	 *
+	 * @deprecated Method will be removed in future version. Use expectsToBe[type]by[WebDriverBy] to improve stability.
 	 * @return bool True if the expected element is selected, false otherwise.
 	 */
 	public function isSelectedByName($name, WebDriverElement $element = null)
@@ -482,6 +1055,7 @@ trait InspectionProviderTrait
 	 * @param string                $className Class name of expected element.
 	 * @param WebDriverElement|null $element   (Optional) Container element to search in.
 	 *
+	 * @deprecated Method will be removed in future version. Use expectsToBe[type]by[WebDriverBy] to improve stability.
 	 * @return bool True if the expected element is selected, false otherwise.
 	 */
 	public function isSelectedByClassName($className, WebDriverElement $element = null)
@@ -501,6 +1075,7 @@ trait InspectionProviderTrait
 	 * @param string                $linkText Link text of expected element.
 	 * @param WebDriverElement|null $element  (Optional) Container element to search in.
 	 *
+	 * @deprecated Method will be removed in future version. Use expectsToBe[type]by[WebDriverBy] to improve stability.
 	 * @return bool True if the expected element is selected, false otherwise.
 	 */
 	public function isSelectedByLinkText($linkText, WebDriverElement $element = null)
@@ -520,6 +1095,7 @@ trait InspectionProviderTrait
 	 * @param string                $partialLinkText Partial link text of expected element.
 	 * @param WebDriverElement|null $element         (Optional) Container element to search in.
 	 *
+	 * @deprecated Method will be removed in future version. Use expectsToBe[type]by[WebDriverBy] to improve stability.
 	 * @return bool True if the expected element is selected, false otherwise.
 	 */
 	public function isSelectedByPartialLinkText($partialLinkText, WebDriverElement $element = null)
@@ -539,6 +1115,7 @@ trait InspectionProviderTrait
 	 * @param string                $tagName Tag name of expected element.
 	 * @param WebDriverElement|null $element (Optional) Container element to search in.
 	 *
+	 * @deprecated Method will be removed in future version. Use expectsToBe[type]by[WebDriverBy] to improve stability.
 	 * @return bool True if the expected element is selected, false otherwise.
 	 */
 	public function isSelectedByTagName($tagName, WebDriverElement $element = null)
@@ -558,6 +1135,7 @@ trait InspectionProviderTrait
 	 * @param string                $cssSelector Css selector of expected element.
 	 * @param WebDriverElement|null $element     (Optional) Container element to search in.
 	 *
+	 * @deprecated Method will be removed in future version. Use expectsToBe[type]by[WebDriverBy] to improve stability.
 	 * @return bool True if the expected element is selected, false otherwise.
 	 */
 	public function isSelectedByCssSelector($cssSelector, WebDriverElement $element = null)
@@ -577,6 +1155,7 @@ trait InspectionProviderTrait
 	 * @param string                $xpath   Xpath of expected element.
 	 * @param WebDriverElement|null $element (Optional) Container element to search in.
 	 *
+	 * @deprecated Method will be removed in future version. Use expectsToBe[type]by[WebDriverBy] to improve stability.
 	 * @return bool True if the expected element is selected, false otherwise.
 	 */
 	public function isSelectedByXpath($xpath, WebDriverElement $element = null)
@@ -597,6 +1176,7 @@ trait InspectionProviderTrait
 	 * @param string                $id      Id of expected element.
 	 * @param WebDriverElement|null $element (Optional) Container element to search in.
 	 *
+	 * @deprecated Method will be removed in future version. Use expectsToBe[type]by[WebDriverBy] to improve stability.
 	 * @return bool True if the expected element is enabled, false otherwise.
 	 */
 	public function isEnabledById($id, WebDriverElement $element = null)
@@ -616,6 +1196,7 @@ trait InspectionProviderTrait
 	 * @param string                $name    Name attribute of expected element.
 	 * @param WebDriverElement|null $element (Optional) Container element to search in.
 	 *
+	 * @deprecated Method will be removed in future version. Use expectsToBe[type]by[WebDriverBy] to improve stability.
 	 * @return bool True if the expected element is enabled, false otherwise.
 	 */
 	public function isEnabledByName($name, WebDriverElement $element = null)
@@ -635,6 +1216,7 @@ trait InspectionProviderTrait
 	 * @param string                $className Class name of expected element.
 	 * @param WebDriverElement|null $element   (Optional) Container element to search in.
 	 *
+	 * @deprecated Method will be removed in future version. Use expectsToBe[type]by[WebDriverBy] to improve stability.
 	 * @return bool True if the expected element is enabled, false otherwise.
 	 */
 	public function isEnabledByClassName($className, WebDriverElement $element = null)
@@ -654,6 +1236,7 @@ trait InspectionProviderTrait
 	 * @param string                $linkText Link text of expected element.
 	 * @param WebDriverElement|null $element  (Optional) Container element to search in.
 	 *
+	 * @deprecated Method will be removed in future version. Use expectsToBe[type]by[WebDriverBy] to improve stability.
 	 * @return bool True if the expected element is enabled, false otherwise.
 	 */
 	public function isEnabledByLinkText($linkText, WebDriverElement $element = null)
@@ -673,6 +1256,7 @@ trait InspectionProviderTrait
 	 * @param string                $partialLinkText Partial link text of expected element.
 	 * @param WebDriverElement|null $element         (Optional) Container element to search in.
 	 *
+	 * @deprecated Method will be removed in future version. Use expectsToBe[type]by[WebDriverBy] to improve stability.
 	 * @return bool True if the expected element is enabled, false otherwise.
 	 */
 	public function isEnabledByPartialLinkText($partialLinkText, WebDriverElement $element = null)
@@ -692,6 +1276,7 @@ trait InspectionProviderTrait
 	 * @param string                $tagName Tag name of expected element.
 	 * @param WebDriverElement|null $element (Optional) Container element to search in.
 	 *
+	 * @deprecated Method will be removed in future version. Use expectsToBe[type]by[WebDriverBy] to improve stability.
 	 * @return bool True if the expected element is enabled, false otherwise.
 	 */
 	public function isEnabledByTagName($tagName, WebDriverElement $element = null)
@@ -711,6 +1296,7 @@ trait InspectionProviderTrait
 	 * @param string                $cssSelector Css selector of expected element.
 	 * @param WebDriverElement|null $element     (Optional) Container element to search in.
 	 *
+	 * @deprecated Method will be removed in future version. Use expectsToBe[type]by[WebDriverBy] to improve stability.
 	 * @return bool True if the expected element is enabled, false otherwise.
 	 */
 	public function isEnabledByCssSelector($cssSelector, WebDriverElement $element = null)
@@ -730,6 +1316,7 @@ trait InspectionProviderTrait
 	 * @param string                $xpath   Xpath of expected element.
 	 * @param WebDriverElement|null $element (Optional) Container element to search in.
 	 *
+	 * @deprecated Method will be removed in future version. Use expectsToBe[type]by[WebDriverBy] to improve stability.
 	 * @return bool True if the expected element is enabled, false otherwise.
 	 */
 	public function isEnabledByXpath($xpath, WebDriverElement $element = null)
