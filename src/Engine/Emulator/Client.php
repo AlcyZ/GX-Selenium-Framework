@@ -127,6 +127,9 @@ class Client
 	 */
 	public function scrollToElement(WebDriverElement $element)
 	{
+		if($this->isFailed()):
+			return $this;
+		endif;
 		$xOffset = $this->testSuite->getSuiteSettings()->getScrollXOffset();
 		$yOffset = $this->testSuite->getSuiteSettings()->getScrollYOffset();
 
