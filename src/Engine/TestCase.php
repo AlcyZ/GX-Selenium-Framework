@@ -339,7 +339,7 @@ abstract class TestCase
 	 * @param string $message                  Message to display.
 	 * @param bool   $camelCaseToHumanReadable Converts camel case message to human readable messages.
 	 */
-	protected function output($message, $camelCaseToHumanReadable = false)
+	public function output($message, $camelCaseToHumanReadable = false)
 	{
 		if($camelCaseToHumanReadable)
 		{
