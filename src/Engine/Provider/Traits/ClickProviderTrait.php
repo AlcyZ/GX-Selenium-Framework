@@ -623,7 +623,7 @@ trait ClickProviderTrait
 
 		$result = $this->expectClickCssSelector($cssSelector, $attempts);
 		if(!$result):
-			$this->error('Failed to click on element by css selector "' . $attempts . '"');
+			$this->error('Failed to click on element by css selector "' . $cssSelector . '"');
 		endif;
 
 		return $this;
