@@ -721,7 +721,7 @@ trait ClickProviderTrait
 		if($element instanceof WebDriverElementNull || $this->isFailed()):
 			return $element;
 		endif;
-		echo "Click\t|\t" . $this->_getClickingElementsHtml($element) . "\n";
+		$this->output("Click\t|\t" . $this->_getClickingElementsHtml($element));
 
 		return $element;
 	}

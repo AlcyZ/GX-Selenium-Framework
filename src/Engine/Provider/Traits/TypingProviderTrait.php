@@ -518,9 +518,9 @@ trait TypingProviderTrait
 		$tag = $this->_getTypingElementsHtml($element);
 
 		if($clear):
-			echo "Clear\t|\t" . $tag;
+			$this->output("Clear\t|\t" . $tag);
 		endif;
-		echo "Type\t|\t" . $tag . "\t= " . $txt . "\n";
+		$this->output("Type\t|\t" . $tag . "\t= " . $txt);
 
 		return $element;
 	}
