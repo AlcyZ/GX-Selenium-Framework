@@ -18,14 +18,5 @@
     "psr-4": {
       "GXSelenium\\": "src/"
     }
-  },
-  "scripts": {
-    "pre-update-cmd": [
-      "cp -r ./logs ./../../logs_temp"
-    ],
-    "post-update-cmd": [
-      "cp -r ./../../logs_temp/* ./logs/.",
-      "rm -rf ./../../logs_temp"
-    ]
   }
 }
