@@ -14,6 +14,7 @@ namespace GXSelenium\Engine\Provider\Traits;
 use Facebook\WebDriver\Exception\TimeOutException;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\WebDriverBy;
+use GXSelenium\Engine\Emulator\Client;
 
 /**
  * Class WaitProviderTrait
@@ -21,6 +22,36 @@ use Facebook\WebDriver\WebDriverBy;
  */
 trait WaitProviderTrait
 {
+	/**
+	 * Wait until the callback argument returns true, or the set timeouts are reached.
+	 *
+	 * @param callable $closure      Callback function to determine the waiting condition.
+	 * @param string   $errorMessage Message if the timeouts are reached.
+	 * @param int      $timeOut      Timeout to wait.
+	 * @param int      $interval     Interval (in milliseconds) in which the callback function is called.
+	 *
+	 * @return $this|Client Same instance for chained method calls.
+	 */
+	public function waitUntil(callable $closure, $errorMessage, $timeOut = 30, $interval = 250)
+	{
+		if($this->isFailed()):
+			return $this;
+		endif;
+
+		try
+		{
+			$this->getWebDriver()->wait($timeOut, $interval)->until($closure);
+		}
+		catch(TimeOutException $e)
+		{
+			$this->output($errorMessage);
+			$this->exceptionError($errorMessage, $e);
+		}
+
+		return $this;
+	}
+
+
 	/**
 	 * Wait until an element is displayed or the value of the timeout argument is achieved.
 	 *
