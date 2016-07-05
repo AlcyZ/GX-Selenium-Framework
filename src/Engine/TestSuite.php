@@ -111,6 +111,7 @@ class TestSuite
 		return $this->_closeWebDriver();
 	}
 
+
 	/**
 	 * Closes the WebDriver session.
 	 *
@@ -126,6 +127,7 @@ class TestSuite
 
 		return $this;
 	}
+
 
 	/**
 	 * Starts and runs the test suite.
@@ -152,6 +154,7 @@ class TestSuite
 		endif;
 
 		$this->_closeWebDriver();
+
 		return $this;
 	}
 
@@ -276,8 +279,8 @@ class TestSuite
 		endif;
 
 		$subject = '[SeleniumTest] Test fehlgeschlagen, Branch: ' . $this->suiteSettings->getBranch();
-		$header  =
-			'From: ' . $from . "\r\n" . 'Reply-To: ' . $reply . "\r\n" . 'Content-Type: text/plain; charset=UTF-8"';
+		$header  = 'From: ' . $from . "\r\n" . 'Reply-To: ' . $reply . "\r\n"
+		           . 'Content-Type: text/plain; charset=UTF-8"';
 		mail($to, $subject, $this->errorMessages, $header);
 		echo "Error E-Mail send!\n";
 		$this->errorMailSend = true;
@@ -419,9 +422,8 @@ class TestSuite
 		try
 		{
 			if(null === $this->webDriver):
-				$this->webDriver =
-					RemoteWebDriver::create($this->suiteSettings->getSeleniumHost(),
-					                        $this->suiteSettings->getCapabilities());
+				$this->webDriver = RemoteWebDriver::create($this->suiteSettings->getSeleniumHost(),
+				                                           $this->suiteSettings->getCapabilities());
 			endif;
 		}
 		catch(WebDriverCurlException $e)
@@ -497,8 +499,10 @@ class TestSuite
 	private function _applyImplicitlyWaitTimeoutSetting()
 	{
 		$implicitlyWait = $this->suiteSettings->getImplicitlyWait();
-		echo 'Set implicitly wait setting to ' . $implicitlyWait . ' seconds.' . "\n";
-		$this->webDriver->manage()->timeouts()->implicitlyWait($implicitlyWait);
+		if((int)$implicitlyWait !== 0):
+			echo 'Set implicitly wait setting to ' . $implicitlyWait . ' seconds.' . "\n";
+			$this->webDriver->manage()->timeouts()->implicitlyWait($implicitlyWait);
+		endif;
 
 		return $this;
 	}
@@ -512,8 +516,10 @@ class TestSuite
 	private function _applyPageLoadTimeoutSetting()
 	{
 		$pageLoadTimeout = $this->suiteSettings->getPageLoadTimeout();
-		echo 'Set page load timeout setting to ' . $pageLoadTimeout . ' seconds.' . "\n";
-		$this->webDriver->manage()->timeouts()->pageLoadTimeout($pageLoadTimeout);
+		if((int)$pageLoadTimeout !== 0):
+			echo 'Set page load timeout setting to ' . $pageLoadTimeout . ' seconds.' . "\n";
+			$this->webDriver->manage()->timeouts()->pageLoadTimeout($pageLoadTimeout);
+		endif;
 
 		return $this;
 	}
@@ -527,8 +533,10 @@ class TestSuite
 	private function _applyScriptTimeoutSetting()
 	{
 		$scriptTimeout = $this->suiteSettings->getScriptTimeout();
-		echo 'Set script timeout setting to ' . $scriptTimeout . ' seconds.' . "\n";
-		$this->webDriver->manage()->timeouts()->setScriptTimeout($scriptTimeout);
+		if((int)$scriptTimeout !== 0):
+			echo 'Set script timeout setting to ' . $scriptTimeout . ' seconds.' . "\n";
+			$this->webDriver->manage()->timeouts()->setScriptTimeout($scriptTimeout);
+		endif;
 
 		return $this;
 	}

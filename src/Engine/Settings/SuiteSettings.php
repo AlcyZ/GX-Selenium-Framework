@@ -118,7 +118,7 @@ class SuiteSettings
 	/**
 	 * @var int
 	 */
-	private $scriptTimeout = 5;
+	private $scriptTimeout = 0;
 
 	/**
 	 * @var string
