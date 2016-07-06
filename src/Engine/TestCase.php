@@ -249,7 +249,7 @@ abstract class TestCase
 		catch(WebDriverCurlException $e)
 		{
 			$txt .= 'Failed to take a screen shot, additional error information:' . "\nMessage:\t" . $e->getMessage()
-			       . "\nStack Trace:\t" . $e->getTraceAsString() . "\n";
+			        . "\nStack Trace:\t" . $e->getTraceAsString() . "\n";
 			$screenPath = '';
 		}
 		$this->testSuite->getFileLogger()->log($txt, 'errors');
@@ -394,4 +394,67 @@ abstract class TestCase
 	 * @return $this|TestCase Same instance for chained method calls.
 	 */
 	abstract protected function _run();
+
+	######################################## Test Case helper methods ##################################################
+	/**
+	 * Generates random alphabetical letters.
+	 * The $length argument
+	 *
+	 *
+	 * @param int         $length Determine the length of the returned string.
+	 * @param string|null $case   Whether 'lower' or 'upper' to transform the string in lower or uppercase. Random if
+	 *                            other value is set.
+	 *
+	 * @return string
+	 */
+	protected function _randomAlphabeticLetter($length = 1, $case = null)
+	{
+		$alphabet = [
+			'a',
+			'b',
+			'c',
+			'd',
+			'e',
+			'f',
+			'g',
+			'h',
+			'i',
+			'j',
+			'k',
+			'l',
+			'm',
+			'n',
+			'o',
+			'p',
+			'q',
+			'r',
+			's',
+			't',
+			'u',
+			'v',
+			'w',
+			'x',
+			'y',
+			'z'
+		];
+		$result   = '';
+		for($i = 0; $i < $length; $i++)
+		{
+			if($case === 'upper')
+			{
+				ucfirst($alphabet[mt_rand(0, 25)]);
+			}
+			elseif($case === 'lower')
+			{
+				$result .= lcfirst($alphabet[mt_rand(0, 25)]);
+			}
+			else
+			{
+				$result .= (mt_rand(0, 1) === 0) ? lcfirst($alphabet[mt_rand(0, 25)]) : ucfirst($alphabet[mt_rand(0,
+				                                                                                                  25)]);
+			}
+		}
+
+		return $result;
+	}
 }
