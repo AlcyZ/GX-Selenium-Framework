@@ -35,6 +35,7 @@ use GXSelenium\Engine\Provider\Traits\InspectionProviderTrait;
 use GXSelenium\Engine\Provider\Traits\MouseTrait;
 use GXSelenium\Engine\Provider\Traits\SelectingProviderTrait;
 use GXSelenium\Engine\Provider\Traits\TypingProviderTrait;
+use GXSelenium\Engine\Provider\Traits\VerificationTrait;
 use GXSelenium\Engine\Provider\Traits\WaitProviderTrait;
 use GXSelenium\Engine\TestCase;
 use GXSelenium\Engine\TestSuite;
@@ -45,7 +46,8 @@ use GXSelenium\Engine\TestSuite;
  */
 class Client
 {
-	use ClickProviderTrait, InspectionProviderTrait, SelectingProviderTrait, TypingProviderTrait, MouseTrait, WaitProviderTrait;
+	use ClickProviderTrait, InspectionProviderTrait, SelectingProviderTrait, TypingProviderTrait, MouseTrait,
+		WaitProviderTrait, VerificationTrait;
 
 	/**
 	 * @var TestSuite
