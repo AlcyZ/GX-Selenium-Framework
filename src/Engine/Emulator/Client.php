@@ -46,8 +46,7 @@ use GXSelenium\Engine\TestSuite;
  */
 class Client
 {
-	use ClickProviderTrait, InspectionProviderTrait, SelectingProviderTrait, TypingProviderTrait, MouseTrait,
-		WaitProviderTrait, VerificationTrait;
+	use ClickProviderTrait, InspectionProviderTrait, SelectingProviderTrait, TypingProviderTrait, MouseTrait, WaitProviderTrait, VerificationTrait;
 
 	/**
 	 * @var TestSuite
@@ -315,5 +314,16 @@ class Client
 		endif;
 
 		return $this->failed;
+	}
+
+
+	/**
+	 * Returns the test suite instance.
+	 *
+	 * @return TestSuite
+	 */
+	public function getTestSuite()
+	{
+		return $this->testSuite;
 	}
 }
