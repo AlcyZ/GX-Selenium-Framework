@@ -715,11 +715,11 @@ trait VerificationTrait
 		if($type === 'text' || $type === 'id' || $type === 'tagName'):
 			$method = 'get' . ucfirst($type);
 
-			return ($regex) ? preg_match($expectation, call_user_func([$element, $method])) === 1 : call_user_func([
-				                                                                                                       $element,
-				                                                                                                       $method
-			                                                                                                       ])
-			                                                                                        === $expectation;
+			return ($regex) ? preg_match($expectation, call_user_func([$element, $method]))
+			                  === 1 : (string)call_user_func([
+				                                                 $element,
+				                                                 $method
+			                                                 ]) === (string)$expectation;
 		else:
 			if(array_key_exists('attribute', $type)):
 				$method = 'getAttribute';
@@ -730,10 +730,10 @@ trait VerificationTrait
 			endif;
 
 			return ($regex) ? preg_match($expectation, call_user_func([$element, $method], $value))
-			                  === 1 : call_user_func([
-				                                         $element,
-				                                         $method
-			                                         ], $value) === $expectation;
+			                  === 1 : (string)call_user_func([
+				                                                 $element,
+				                                                 $method
+			                                                 ], $value) === (string)$expectation;
 		endif;
 	}
 	
