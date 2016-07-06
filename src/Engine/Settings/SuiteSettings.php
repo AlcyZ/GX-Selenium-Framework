@@ -165,6 +165,16 @@ class SuiteSettings
 	 */
 	private $dbName = 'database_name';
 
+	/**
+	 * @var bool
+	 */
+	private $logStored = false;
+
+	/**
+	 * @var bool
+	 */
+	private $logDisplayed = true;
+
 
 	/**
 	 * Initialize the suite settings.
@@ -644,5 +654,41 @@ class SuiteSettings
 	public function setDbName($dbName)
 	{
 		$this->dbName = $dbName;
+	}
+
+
+	/**
+	 * @return boolean
+	 */
+	public function isLogStored()
+	{
+		return $this->logStored;
+	}
+
+
+	/**
+	 * @param boolean $logStored
+	 */
+	public function setLogStored($logStored)
+	{
+		$this->logStored = $logStored;
+	}
+
+
+	/**
+	 * @return boolean
+	 */
+	public function isLogDisplayed()
+	{
+		return $this->logDisplayed;
+	}
+
+
+	/**
+	 * @param boolean $logDisplayed
+	 */
+	public function setLogDisplayed($logDisplayed)
+	{
+		$this->logDisplayed = $logDisplayed;
 	}
 }
