@@ -338,16 +338,24 @@ abstract class TestCase
 	 *
 	 * @param string $message                  Message to display.
 	 * @param bool   $camelCaseToHumanReadable Converts camel case message to human readable messages.
+	 *
+	 * @return $this Same instance for chained method calls.
 	 */
 	public function output($message, $camelCaseToHumanReadable = false)
 	{
-		if($camelCaseToHumanReadable)
-		{
-			echo $this->camelToSentence($message) . ' …' . "\n";
+		if($this->testSuite->getSuiteSettings()->isLogDisplayed()):
+			if($camelCaseToHumanReadable):
+				echo $this->camelToSentence($message) . "\n";
 
-			return;
-		}
-		echo $message . ' …' . "\n";
+				return $this;
+			endif;
+			echo $message . "\n";
+		endif;
+		if($this->testSuite->getSuiteSettings()->isLogStored()):
+			$this->testSuite->getFileLogger()->log($message, 'log');
+		endif;
+
+		return $this;
 	}
 	
 
