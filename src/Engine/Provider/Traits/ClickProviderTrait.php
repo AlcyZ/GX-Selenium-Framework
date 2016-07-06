@@ -24,6 +24,7 @@
 
 namespace GXSelenium\Engine\Provider\Traits;
 
+use Facebook\WebDriver\Exception\ScriptTimeoutException;
 use Facebook\WebDriver\Exception\StaleElementReferenceException;
 use Facebook\WebDriver\Exception\UnknownServerException;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
@@ -31,6 +32,7 @@ use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\WebDriverElement;
 use GXSelenium\Engine\NullObjects\WebDriverElementNull;
 use GXSelenium\Engine\Provider\ElementProvider;
+use GXSelenium\Engine\TestSuite;
 
 /**
  * Trait ClickProviderTrait
@@ -73,7 +75,18 @@ trait ClickProviderTrait
 				$ex = get_class($e) . ' thrown and caught';
 				$this->output($text . $ex);
 			}
-				// Todo: specify exception with more data.
+			catch(ScriptTimeoutException $e)
+			{
+				// Edge case that the client first clicks, and then is an ScriptTimeoutException thrown.
+				$msg = 'Unexpected ScriptTimeoutExceptionThrown and caught.' . "\n";
+				if(method_exists('getResults', $e)):
+					$msg .= 'Results: ' . $e->getResults() . "\n";
+				endif;
+				$msg .= 'Stack Trace: ' . $e->getTraceAsString();
+				$this->getTestSuite()->getFileLogger()->log($msg, 'scriptTimeoutException');
+				$result = true;
+				break;
+			}
 			catch(\Exception $e)
 			{
 				$text = ($attempt + 1) . '. attempt to click on an element failed';
@@ -770,4 +783,12 @@ trait ClickProviderTrait
 	 * @return bool
 	 */
 	abstract public function isFailed();
+
+
+	/**
+	 * Returns the test suite instance.
+	 *
+	 * @return TestSuite
+	 */
+	abstract public function getTestSuite();
 }
