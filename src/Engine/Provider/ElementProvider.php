@@ -37,7 +37,9 @@ use GXSelenium\Engine\TestSuite;
 
 /**
  * Class ElementProvider
- * @package GXSelenium\Engine\Provider
+ * @package    GXSelenium\Engine\Provider
+ *
+ * @deprecated Will be remove in future version! Algorithms are unstable and may procedure errors.
  */
 class ElementProvider
 {
@@ -69,6 +71,7 @@ class ElementProvider
 	 * @param string           $id      Id value.
 	 * @param WebDriverElement $element Expected value of searching type.
 	 *
+	 * @deprecated Will be remove in future version! Algorithms are unstable and may procedure errors.
 	 * @return WebDriverElement Expected web driver element.
 	 */
 	public function byId($id, WebDriverElement $element = null)
@@ -85,6 +88,7 @@ class ElementProvider
 	 * @param string           $id      Id value.
 	 * @param WebDriverElement $element Expected value of searching type.
 	 *
+	 * @deprecated Will be remove in future version! Algorithms are unstable and may procedure errors.
 	 * @return WebDriverElement Expected web driver element.
 	 */
 	public function tryById($id, WebDriverElement $element = null)
@@ -102,6 +106,7 @@ class ElementProvider
 	 * @param string                $name Name html attribute.
 	 * @param WebDriverElement|null $element
 	 *
+	 * @deprecated Will be remove in future version! Algorithms are unstable and may procedure errors.
 	 * @return WebDriverElement
 	 */
 	public function byName($name, WebDriverElement $element = null)
@@ -118,6 +123,7 @@ class ElementProvider
 	 * @param string                $name Name html attribute.
 	 * @param WebDriverElement|null $element
 	 *
+	 * @deprecated Will be remove in future version! Algorithms are unstable and may procedure errors.
 	 * @return WebDriverElement
 	 */
 	public function tryByName($name, WebDriverElement $element = null)
@@ -135,6 +141,7 @@ class ElementProvider
 	 * @param string                $name Name html attribute.
 	 * @param WebDriverElement|null $element
 	 *
+	 * @deprecated Will be remove in future version! Algorithms are unstable and may procedure errors.
 	 * @return WebDriverElement[]|WebDriverLocatable[]|RemoteWebElement[]
 	 */
 	public function arrayByName($name, WebDriverElement $element = null)
@@ -152,6 +159,7 @@ class ElementProvider
 	 * @param string           $className Class name value.
 	 * @param WebDriverElement $element   Expected value of searching type.
 	 *
+	 * @deprecated Will be remove in future version! Algorithms are unstable and may procedure errors.
 	 * @return WebDriverElement Expected web driver element.
 	 */
 	public function byClassName($className, WebDriverElement $element = null)
@@ -169,6 +177,7 @@ class ElementProvider
 	 * @param string           $className Class name value.
 	 * @param WebDriverElement $element   Expected value of searching type.
 	 *
+	 * @deprecated Will be remove in future version! Algorithms are unstable and may procedure errors.
 	 * @return WebDriverElement Expected web driver element.
 	 */
 	public function tryByClassName($className, WebDriverElement $element = null)
@@ -186,6 +195,7 @@ class ElementProvider
 	 * @param string           $className Class name value.
 	 * @param WebDriverElement $element   Expected value of searching type.
 	 *
+	 * @deprecated Will be remove in future version! Algorithms are unstable and may procedure errors.
 	 * @return WebDriverElement[]|WebDriverLocatable[]|RemoteWebElement[] Expected web driver element.
 	 */
 	public function arrayByClassName($className, WebDriverElement $element = null)
@@ -203,6 +213,7 @@ class ElementProvider
 	 * @param string           $linkText Link text value.
 	 * @param WebDriverElement $element  Expected value of searching type.
 	 *
+	 * @deprecated Will be remove in future version! Algorithms are unstable and may procedure errors.
 	 * @return WebDriverElement Expected web driver element.
 	 */
 	public function byLinkText($linkText, WebDriverElement $element = null)
@@ -220,6 +231,7 @@ class ElementProvider
 	 * @param string           $linkText Link text value.
 	 * @param WebDriverElement $element  Expected value of searching type.
 	 *
+	 * @deprecated Will be remove in future version! Algorithms are unstable and may procedure errors.
 	 * @return WebDriverElement Expected web driver element.
 	 */
 	public function tryByLinkText($linkText, WebDriverElement $element = null)
@@ -237,6 +249,7 @@ class ElementProvider
 	 * @param string           $linkText Link text value.
 	 * @param WebDriverElement $element  Expected value of searching type.
 	 *
+	 * @deprecated Will be remove in future version! Algorithms are unstable and may procedure errors.
 	 * @return WebDriverElement[]|WebDriverLocatable[]|RemoteWebElement[] Expected web driver element.
 	 */
 	public function arrayByLinkText($linkText, WebDriverElement $element = null)
@@ -254,6 +267,7 @@ class ElementProvider
 	 * @param string           $partialLinkText Partial link text value.
 	 * @param WebDriverElement $element         Expected value of searching type.
 	 *
+	 * @deprecated Will be remove in future version! Algorithms are unstable and may procedure errors.
 	 * @return WebDriverElement Expected web driver element.
 	 */
 	public function byPartialLinkText($partialLinkText, WebDriverElement $element = null)
@@ -271,6 +285,7 @@ class ElementProvider
 	 * @param string           $partialLinkText Partial link text value.
 	 * @param WebDriverElement $element         Expected value of searching type.
 	 *
+	 * @deprecated Will be remove in future version! Algorithms are unstable and may procedure errors.
 	 * @return WebDriverElement Expected web driver element.
 	 */
 	public function tryByPartialLinkText($partialLinkText, WebDriverElement $element = null)
@@ -288,6 +303,7 @@ class ElementProvider
 	 * @param string           $partialLinkText Partial link text value.
 	 * @param WebDriverElement $element         Expected value of searching type.
 	 *
+	 * @deprecated Will be remove in future version! Algorithms are unstable and may procedure errors.
 	 * @return WebDriverElement[]|WebDriverLocatable[]|RemoteWebElement[] Expected web driver element.
 	 */
 	public function arrayByPartialLinkText($partialLinkText, WebDriverElement $element = null)
@@ -305,6 +321,7 @@ class ElementProvider
 	 * @param string           $tagName Tag name value.
 	 * @param WebDriverElement $element Expected value of searching type.
 	 *
+	 * @deprecated Will be remove in future version! Algorithms are unstable and may procedure errors.
 	 * @return WebDriverElement Expected web driver element.
 	 */
 	public function byTagName($tagName, WebDriverElement $element = null)
@@ -322,6 +339,7 @@ class ElementProvider
 	 * @param string           $tagName Tag name value.
 	 * @param WebDriverElement $element Expected value of searching type.
 	 *
+	 * @deprecated Will be remove in future version! Algorithms are unstable and may procedure errors.
 	 * @return WebDriverElement Expected web driver element.
 	 */
 	public function tryByTagName($tagName, WebDriverElement $element = null)
@@ -339,6 +357,7 @@ class ElementProvider
 	 * @param string           $tagName Tag name value.
 	 * @param WebDriverElement $element Expected value of searching type.
 	 *
+	 * @deprecated Will be remove in future version! Algorithms are unstable and may procedure errors.
 	 * @return WebDriverElement[]|WebDriverLocatable[]|RemoteWebElement[] Expected web driver element.
 	 */
 	public function arrayByTagName($tagName, WebDriverElement $element = null)
@@ -356,6 +375,7 @@ class ElementProvider
 	 * @param string           $cssSelector Css selector value.
 	 * @param WebDriverElement $element     Expected value of searching type.
 	 *
+	 * @deprecated Will be remove in future version! Algorithms are unstable and may procedure errors.
 	 * @return WebDriverElement Expected web driver element.
 	 */
 	public function byCssSelector($cssSelector, WebDriverElement $element = null)
@@ -373,6 +393,7 @@ class ElementProvider
 	 * @param string           $cssSelector Css selector value.
 	 * @param WebDriverElement $element     Expected value of searching type.
 	 *
+	 * @deprecated Will be remove in future version! Algorithms are unstable and may procedure errors.
 	 * @return WebDriverElement Expected web driver element.
 	 */
 	public function tryByCssSelector($cssSelector, WebDriverElement $element = null)
@@ -390,6 +411,7 @@ class ElementProvider
 	 * @param string           $cssSelector Css selector value.
 	 * @param WebDriverElement $element     Expected value of searching type.
 	 *
+	 * @deprecated Will be remove in future version! Algorithms are unstable and may procedure errors.
 	 * @return WebDriverElement[]|WebDriverLocatable[]|RemoteWebElement[] Expected web driver element.
 	 */
 	public function arrayByCssSelector($cssSelector, WebDriverElement $element = null)
@@ -407,6 +429,7 @@ class ElementProvider
 	 * @param string           $xPath   xPath value.
 	 * @param WebDriverElement $element Expected value of searching type.
 	 *
+	 * @deprecated Will be remove in future version! Algorithms are unstable and may procedure errors.
 	 * @return WebDriverElement Expected web driver element.
 	 */
 	public function byXpath($xPath, WebDriverElement $element = null)
@@ -424,6 +447,7 @@ class ElementProvider
 	 * @param string           $xPath   xPath value.
 	 * @param WebDriverElement $element Expected value of searching type.
 	 *
+	 * @deprecated Will be remove in future version! Algorithms are unstable and may procedure errors.
 	 * @return WebDriverElement Expected web driver element.
 	 */
 	public function tryByXpath($xPath, WebDriverElement $element = null)
@@ -441,6 +465,7 @@ class ElementProvider
 	 * @param string           $xPath   xPath value.
 	 * @param WebDriverElement $element Expected value of searching type.
 	 *
+	 * @deprecated Will be remove in future version! Algorithms are unstable and may procedure errors.
 	 * @return WebDriverElement[]|WebDriverLocatable[]|RemoteWebElement[] Expected web driver element.
 	 */
 	public function arrayByXpath($xPath, WebDriverElement $element = null)
@@ -454,6 +479,7 @@ class ElementProvider
 
 	/**
 	 * Sets the failed property to true.
+	 * @deprecated Will be remove in future version! Algorithms are unstable and may procedure errors.
 	 */
 	public function failed()
 	{
@@ -472,6 +498,7 @@ class ElementProvider
 	/**
 	 * True when an error is occurred in the test suite.
 	 *
+	 * @deprecated Will be remove in future version! Algorithms are unstable and may procedure errors.
 	 * @return bool
 	 */
 	public function isFailed()
@@ -483,6 +510,7 @@ class ElementProvider
 	/**
 	 * Resets the element providers failed property.
 	 *
+	 * @deprecated Will be remove in future version! Algorithms are unstable and may procedure errors.
 	 * @return $this Same instance for chained method calls.
 	 */
 	public function reset()
@@ -503,6 +531,7 @@ class ElementProvider
 	 * @param string                 $value   Expected value of searching type.
 	 * @param WebDriverSearchContext $context Instance to find elements.
 	 *
+	 * @deprecated Will be remove in future version! Algorithms are unstable and may procedure errors.
 	 * @return WebDriverElement Expected web driver element.
 	 */
 	private function _by($by, $value, WebDriverSearchContext $context)
@@ -551,6 +580,7 @@ class ElementProvider
 	 * @param string                 $value   Expected value of searching type.
 	 * @param WebDriverSearchContext $context Instance to find elements.
 	 *
+	 * @deprecated Will be remove in future version! Algorithms are unstable and may procedure errors.
 	 * @return WebDriverElement[]|WebDriverLocatable[]|RemoteWebElement[] Array with expected web driver elements.
 	 */
 	private function _arrayBy($by, $value, WebDriverSearchContext $context)
