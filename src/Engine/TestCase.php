@@ -27,11 +27,7 @@ namespace GXSelenium\Engine;
 use Facebook\WebDriver\Exception\ElementNotVisibleException;
 use Facebook\WebDriver\Exception\InvalidSelectorException;
 use Facebook\WebDriver\Exception\WebDriverCurlException;
-use Facebook\WebDriver\WebDriver;
 use GXSelenium\Engine\Emulator\Client;
-use GXSelenium\Engine\Logger\FileLogger;
-use GXSelenium\Engine\Logger\SqlLogger;
-use GXSelenium\Engine\Settings\SuiteSettings;
 
 /**
  * Class TestCase
@@ -293,32 +289,6 @@ abstract class TestCase
 
 
 	/**
-	 * Wait the specified amount of time until the case will continue.
-	 *
-	 * @param string $expectedUrlSnippet Snippet of url to match before continue the case.
-	 * @param int    $waitTimeout        (Optional) Amount of seconds to wait before the case fail. Default is 5.
-	 * @param int    $delay              (Optional) Delay after the page is loaded. Default is 1.
-	 * @param string $return             (Optional) Return value, when empty the client instance is returned.
-	 *
-	 * @return Client|TestCase|$this Whether the same or the client instance, specified by the 3. argument.
-	 */
-	protected function waitForPageLoaded($expectedUrlSnippet, $waitTimeout = 5, $delay = 0, $return = 'client')
-	{
-		try
-		{
-			$this->client->waitForPageLoaded($expectedUrlSnippet, $waitTimeout);
-		}
-		catch(\Exception $e)
-		{
-			$this->_exceptionError('Wait to long for page load', $e);
-		}
-		($delay > 0) ? sleep($delay) : null;
-
-		return ($return === 'client') ? $this->client : $this;
-	}
-
-
-	/**
 	 * Returns the name of the current case.
 	 *
 	 * @Todo: Remove this method in future and refactor all usages! Duplicated with public ::getCaseName method.
@@ -417,40 +387,13 @@ abstract class TestCase
 	 */
 	protected function _randomAlphabeticLetter($length = 1, $case = null)
 	{
-		$alphabet = [
-			'a',
-			'b',
-			'c',
-			'd',
-			'e',
-			'f',
-			'g',
-			'h',
-			'i',
-			'j',
-			'k',
-			'l',
-			'm',
-			'n',
-			'o',
-			'p',
-			'q',
-			'r',
-			's',
-			't',
-			'u',
-			'v',
-			'w',
-			'x',
-			'y',
-			'z'
-		];
+		$alphabet = 'abcdefghijklmnopqrstuvwxyz';
 		$result   = '';
 		for($i = 0; $i < $length; $i++)
 		{
 			if($case === 'upper')
 			{
-				ucfirst($alphabet[mt_rand(0, 25)]);
+				$result .= ucfirst($alphabet[mt_rand(0, 25)]);
 			}
 			elseif($case === 'lower')
 			{

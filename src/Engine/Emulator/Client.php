@@ -24,9 +24,7 @@
 
 namespace GXSelenium\Engine\Emulator;
 
-use Facebook\WebDriver\JavaScriptExecutor;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
-use Facebook\WebDriver\WebDriver;
 use Facebook\WebDriver\WebDriverElement;
 use Facebook\WebDriver\WebDriverSelect;
 use GXSelenium\Engine\Provider\ElementProvider;
@@ -38,7 +36,6 @@ use GXSelenium\Engine\Provider\Traits\SelectingProviderTrait;
 use GXSelenium\Engine\Provider\Traits\TypingProviderTrait;
 use GXSelenium\Engine\Provider\Traits\VerificationTrait;
 use GXSelenium\Engine\Provider\Traits\WaitProviderTrait;
-use GXSelenium\Engine\TestCase;
 use GXSelenium\Engine\TestSuite;
 
 /**
@@ -141,32 +138,6 @@ class Client
 		$yPos = $element->getLocation()->getY() - $yOffset;
 
 		return $this->scrollTo($xPos, $yPos);
-	}
-
-
-	/**
-	 * Wait the specified amount of time until the case will continue.
-	 *
-	 * @param string $expectedUrlSnippet Snippet of url to match before continue the case.
-	 * @param int    $waitTimeout        Amount of seconds to wait before the case fail.
-	 *
-	 * @return $this|Client Same instance for chained method calls.
-	 *
-	 * @throws \Exception Look at WebDriverWait::until() for detailed information.
-	 * @throws \Facebook\WebDriver\Exception\TimeOutException Look at WebDriverWait::until() for detailed information.
-	 * @throws \Facebook\WebDriver\Exception\NoSuchElementException Look at WebDriverWait::until() for detailed
-	 *                                                              information.
-	 * @codeCoverageIgnore
-	 */
-	public function waitForPageLoaded($expectedUrlSnippet, $waitTimeout)
-	{
-		$this->testSuite->getWebDriver()->wait($waitTimeout)->until(function ($webDriver) use ($expectedUrlSnippet)
-		{
-			/** @var RemoteWebDriver $webDriver */
-			return (strpos($webDriver->getCurrentURL(), $expectedUrlSnippet)) ? true : false;
-		});
-
-		return $this;
 	}
 
 
