@@ -224,29 +224,8 @@ trait ElementProviderTrait
 		if($this->isFailed()):
 			return $this->_createWebDriverNull();
 		endif;
-		$attempt = 0;
-		while($attempt < $attempts):
-			try
-			{
-				return $this->getWebDriver()->findElement($by);
-			}
-			catch(StaleElementReferenceException $e)
-			{
-				$msg = ($attempt + 1) . '. attempt to get an element by ' . $by->getMechanism() . '"' . $by->getValue()
-				       . '" failed, StaleElementReferenceException thrown';
-				$this->output($msg);
-			}
-			catch(\Exception $e)
-			{
-				$msg = ($attempt + 1) . '. attempt to get an element by ' . $by->getMechanism() . '"' . $by->getValue()
-				       . '" failed';
-				$ex  = get_class($e) . ' thrown and caught' . "\n";
-				$this->output($msg . $ex);
-			}
-			$attempt++;
-		endwhile;
 
-		return $this->_createWebDriverNull();
+		return $this->_tryBy($by, $attempts);
 	}
 	
 
@@ -420,7 +399,7 @@ trait ElementProviderTrait
 
 	/**
 	 * Try to get an elements array.
-	 * If nothing is found. an empty array will be returned.
+	 * If nothing is found, an empty array will be returned.
 	 *
 	 * @param WebDriverBy $by       Expected element (WebDriverBy instance, access via static methods).
 	 * @param int         $attempts Attempts until the method will fail and return false.
@@ -430,13 +409,194 @@ trait ElementProviderTrait
 	public function tryGetArrayBy(WebDriverBy $by, $attempts = 2)
 	{
 		if($this->isFailed()):
+			return [];
+		endif;
+
+		return $this->_tryBy($by, $attempts, 'array');
+	}
+	
+
+	/**
+	 * Try to get an element by the given id.
+	 * If nothing is found, an empty array will be returned.
+	 *
+	 * @param string $id       Id of expected element.
+	 * @param int    $attempts Attempts until the method will fail and return false.
+	 *
+	 * @return WebDriverElement[]|array
+	 */
+	public function tryGetArrayById($id, $attempts = 2)
+	{
+		if($this->isFailed()):
+			return [];
+		endif;
+		$by = WebDriverBy::id($id);
+
+		return $this->_tryBy($by, $attempts);
+	}
+
+
+	/**
+	 * Try to get an element by the given name.
+	 * If nothing is found, an empty array will be returned.
+	 *
+	 * @param string $name     Name of expected element.
+	 * @param int    $attempts Attempts until the method will fail and return false.
+	 *
+	 * @return WebDriverElement[]|array
+	 */
+	public function tryGetArrayByName($name, $attempts = 2)
+	{
+		if($this->isFailed()):
+			return [];
+		endif;
+		$by = WebDriverBy::name($name);
+
+		return $this->_tryBy($by, $attempts);
+	}
+
+
+	/**
+	 * Try to get an element by the given class name.
+	 * If nothing is found, an empty array will be returned.
+	 *
+	 * @param string $className Class name of expected element.
+	 * @param int    $attempts  Attempts until the method will fail and return false.
+	 *
+	 * @return WebDriverElement[]|array
+	 */
+	public function tryGetArrayByClassName($className, $attempts = 2)
+	{
+		if($this->isFailed()):
+			return [];
+		endif;
+		$by = WebDriverBy::className($className);
+
+		return $this->_tryBy($by, $attempts);
+	}
+
+
+	/**
+	 * Try to get an element by the given css selector.
+	 * If nothing is found, an empty array will be returned.
+	 *
+	 * @param string $cssSelector Css selector of expected element.
+	 * @param int    $attempts    Attempts until the method will fail and return false.
+	 *
+	 * @return WebDriverElement[]|array
+	 */
+	public function tryGetArrayByCssSelector($cssSelector, $attempts = 2)
+	{
+		if($this->isFailed()):
+			return [];
+		endif;
+		$by = WebDriverBy::cssSelector($cssSelector);
+
+		return $this->_tryBy($by, $attempts);
+	}
+
+
+	/**
+	 * Try to get an element by the given link text.
+	 * If nothing is found, an empty array will be returned.
+	 *
+	 * @param string $linkText Link text of expected element.
+	 * @param int    $attempts Attempts until the method will fail and return false.
+	 *
+	 * @return WebDriverElement[]|array
+	 */
+	public function tryGetArrayByLinkText($linkText, $attempts = 2)
+	{
+		if($this->isFailed()):
+			return [];
+		endif;
+		$by = WebDriverBy::linkText($linkText);
+
+		return $this->_tryBy($by, $attempts);
+	}
+
+
+	/**
+	 * Try to get an element by the given partial link text.
+	 * If nothing is found, an empty array will be returned.
+	 *
+	 * @param string $partialLinkText Partial link text of expected element.
+	 * @param int    $attempts        Attempts until the method will fail and return false.
+	 *
+	 * @return WebDriverElement[]|array
+	 */
+	public function tryGetArrayByPartialLinkText($partialLinkText, $attempts = 2)
+	{
+		if($this->isFailed()):
+			return [];
+		endif;
+		$by = WebDriverBy::partialLinkText($partialLinkText);
+
+		return $this->_tryBy($by, $attempts);
+	}
+
+
+	/**
+	 * Try to get an element by the given tag name.
+	 * If nothing is found, an empty array will be returned.
+	 *
+	 * @param string $tagName  Tag name of expected element.
+	 * @param int    $attempts Attempts until the method will fail and return false.
+	 *
+	 * @return WebDriverElement[]|array
+	 */
+	public function tryGetArrayByTagName($tagName, $attempts = 2)
+	{
+		if($this->isFailed()):
+			return [];
+		endif;
+		$by = WebDriverBy::tagName($tagName);
+
+		return $this->_tryBy($by, $attempts);
+	}
+
+
+	/**
+	 * Try to get an element by the given xpath.
+	 * If nothing is found, an empty array will be returned.
+	 *
+	 * @param string $xpath    Xpath of expected element.
+	 * @param int    $attempts Attempts until the method will fail and return false.
+	 *
+	 * @return WebDriverElement[]|array
+	 */
+	public function tryGetArrayByXpath($xpath, $attempts = 2)
+	{
+		if($this->isFailed()):
+			return [];
+		endif;
+		$by = WebDriverBy::xpath($xpath);
+
+		return $this->_tryBy($by, $attempts);
+	}
+	
+
+	/**
+	 * Wrapper method to handle all element provider methods with the same logic.
+	 *
+	 * @param WebDriverBy $by       Expected element (WebDriverBy instance, access via static methods).
+	 * @param int         $attempts Attempts until the method will fail and return false.
+	 * @param string|null $type     When set to "array", an array with remote web elements is returned.
+	 *
+	 * @return array|\GXSelenium\Engine\NullObjects\WebDriverElementNull|mixed
+	 */
+	private function _tryBy(WebDriverBy $by, $attempts = 2, $type = null)
+	{
+		if($this->isFailed()):
 			return $this->_createWebDriverNull();
 		endif;
 		$attempt = 0;
 		while($attempt < $attempts):
 			try
 			{
-				return $this->getWebDriver()->findElements($by);
+				$findMethod = $type === 'array' ? 'findElements' : 'findElement';
+				
+				return call_user_func([$this->getWebDriver(), $findMethod], $by);
 			}
 			catch(StaleElementReferenceException $e)
 			{
@@ -454,7 +614,7 @@ trait ElementProviderTrait
 			$attempt++;
 		endwhile;
 
-		return [];
+		return $type === 'array' ? [] : $this->_createWebDriverNull();
 	}
 
 
