@@ -31,6 +31,7 @@ use Facebook\WebDriver\WebDriverElement;
 use Facebook\WebDriver\WebDriverSelect;
 use GXSelenium\Engine\Provider\ElementProvider;
 use GXSelenium\Engine\Provider\Traits\ClickProviderTrait;
+use GXSelenium\Engine\Provider\Traits\ElementProviderTrait;
 use GXSelenium\Engine\Provider\Traits\InspectionProviderTrait;
 use GXSelenium\Engine\Provider\Traits\MouseTrait;
 use GXSelenium\Engine\Provider\Traits\SelectingProviderTrait;
@@ -46,7 +47,8 @@ use GXSelenium\Engine\TestSuite;
  */
 class Client
 {
-	use ClickProviderTrait, InspectionProviderTrait, SelectingProviderTrait, TypingProviderTrait, MouseTrait, WaitProviderTrait, VerificationTrait;
+	use ClickProviderTrait, InspectionProviderTrait, SelectingProviderTrait, TypingProviderTrait, MouseTrait, 
+		WaitProviderTrait, VerificationTrait, ElementProviderTrait;
 
 	/**
 	 * @var TestSuite
