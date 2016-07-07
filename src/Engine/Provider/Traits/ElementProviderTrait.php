@@ -38,7 +38,7 @@ trait ElementProviderTrait
 
 		return $element;
 	}
-	
+
 
 	/**
 	 * Returns a remove web element by the given id.
@@ -416,7 +416,47 @@ trait ElementProviderTrait
 
 		return $this->tryGetBy($by, $attempts);
 	}
-	
+
+
+	/**
+	 * Try to get an elements array.
+	 * If nothing is found. an empty array will be returned.
+	 *
+	 * @param WebDriverBy $by       Expected element (WebDriverBy instance, access via static methods).
+	 * @param int         $attempts Attempts until the method will fail and return false.
+	 *
+	 * @return WebDriverElement[]|array
+	 */
+	public function tryGetArrayBy(WebDriverBy $by, $attempts = 2)
+	{
+		if($this->isFailed()):
+			return $this->_createWebDriverNull();
+		endif;
+		$attempt = 0;
+		while($attempt < $attempts):
+			try
+			{
+				return $this->getWebDriver()->findElements($by);
+			}
+			catch(StaleElementReferenceException $e)
+			{
+				$msg = ($attempt + 1) . '. attempt to get an element by ' . $by->getMechanism() . '"' . $by->getValue()
+				       . '" failed, StaleElementReferenceException thrown';
+				$this->output($msg);
+			}
+			catch(\Exception $e)
+			{
+				$msg = ($attempt + 1) . '. attempt to get an element by ' . $by->getMechanism() . '"' . $by->getValue()
+				       . '" failed';
+				$ex  = get_class($e) . ' thrown and caught' . "\n";
+				$this->output($msg . $ex);
+			}
+			$attempt++;
+		endwhile;
+
+		return [];
+	}
+
 
 	/**
 	 * Creates and returns a new web driver element null instance.
