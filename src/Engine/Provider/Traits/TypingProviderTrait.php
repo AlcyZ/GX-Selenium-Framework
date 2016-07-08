@@ -79,8 +79,8 @@ trait TypingProviderTrait
 					$text = ($attempt + 1) . '. attempt to type on an element which is not found failed';
 				endif;
 				$text .= "\n";
-				$ex = get_class($e) . ' thrown and caught' . "\n";
-				echo $text . $ex;
+				$ex = get_class($e) . ' thrown and caught';
+				$this->output($text . $ex);
 			}
 			$attempt++;
 		endwhile;

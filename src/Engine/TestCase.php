@@ -75,7 +75,7 @@ abstract class TestCase
 		$this->testSuite->getSqlLogger()->startCase($this);
 		try
 		{
-			echo "\nStart of " . $this->getCaseName() . "!\n";
+			$this->output("\nStart of " . $this->getCaseName() . '!');
 			$this->_run();
 		}
 		catch(ElementNotVisibleException $e)
@@ -92,7 +92,7 @@ abstract class TestCase
 		}
 		if(!$this->_isFailed())
 		{
-			echo $this->getCaseName() . " successful!\n";
+			$this->output($this->getCaseName() . ' successful!');
 		}
 		$this->testSuite->getSqlLogger()->endCase($this);
 	}
@@ -253,7 +253,7 @@ abstract class TestCase
 		                ->caseError($message, $this->testSuite->getWebDriver()->getCurrentURL(), $screenPath);
 
 		$this->addErrorMessages($screenPath, $txt)->failed = true;
-		echo "TestCaseFailed ..\n";
+		$this->output('TestCaseFailed! ...');
 
 		return $this;
 	}

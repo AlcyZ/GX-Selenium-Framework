@@ -202,7 +202,7 @@ class Client
 			return $this;
 		endif;
 
-		echo "Client deactivated ..\n";
+		$this->output('Client deactivated ...');
 		$this->failed = true;
 
 		return $this;
@@ -250,7 +250,7 @@ class Client
 	public function reset()
 	{
 		if($this->failed):
-			echo "\nClient reset..\n";
+			$this->output("\n" . 'Client reset ...');
 		endif;
 		$this->failed = false;
 

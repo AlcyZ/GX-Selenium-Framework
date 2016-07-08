@@ -762,8 +762,8 @@ trait InspectionProviderTrait
 					$text = ($attempt + 1) . '. attempt to inspect an element which is not found failed';
 				endif;
 				$text .= "\n";
-				$ex = get_class($e) . ' thrown and caught' . "\n";
-				echo $text . $ex;
+				$ex = get_class($e) . ' thrown and caught';
+				$this->output($text . $ex);
 			}
 				// Todo: specify exception with more data.
 			catch(\Exception $e)
@@ -775,8 +775,8 @@ trait InspectionProviderTrait
 					$text = ($attempt + 1) . '. attempt to inspect an element which is not found failed';
 				endif;
 				$text .= "\n";
-				$ex = get_class($e) . ' thrown and caught' . "\n";
-				echo $text . $ex;
+				$ex = get_class($e) . ' thrown and caught';
+				$this->output($text . $ex);
 			}
 			$attempt++;
 		endwhile;
@@ -825,8 +825,8 @@ trait InspectionProviderTrait
 					$text = ($attempt + 1) . '. attempt to inspect an element which is not found failed';
 				endif;
 				$text .= "\n";
-				$ex = get_class($e) . ' thrown and caught' . "\n";
-				echo $text . $ex;
+				$ex = get_class($e) . ' thrown and caught';
+				$this->output($text . $ex);
 			}
 				// Todo: specify exception with more data.
 			catch(\Exception $e)
@@ -838,8 +838,8 @@ trait InspectionProviderTrait
 					$text = ($attempt + 1) . '. attempt to inspect an element which is not found failed';
 				endif;
 				$text .= "\n";
-				$ex = get_class($e) . ' thrown and caught' . "\n";
-				echo $text . $ex;
+				$ex = get_class($e) . ' thrown and caught';
+				$this->output($text . $ex);
 			}
 			$attempt++;
 		endwhile;

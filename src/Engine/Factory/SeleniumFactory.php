@@ -169,7 +169,7 @@ class SeleniumFactory
 			}
 			catch(\PDOException $e)
 			{
-				echo "\nInvalid db credentials .. database logging deactivated\n";
+				$this->testSuite->output("\n" . 'Invalid db credentials .. database logging deactivated');
 				$this->sqlLogger = new SqlNull();
 			}
 		endif;

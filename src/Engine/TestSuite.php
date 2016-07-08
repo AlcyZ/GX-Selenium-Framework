@@ -120,7 +120,7 @@ class TestSuite
 	private function _closeWebDriver()
 	{
 		if($this->webDriver instanceof RemoteWebDriver):
-			echo 'Close WebDriver session' . "\n";
+			$this->output('Close WebDriver session');
 			$this->webDriver->close()->quit();
 			$this->webDriver = null;
 		endif;
@@ -273,7 +273,7 @@ class TestSuite
 		$reply = $this->suiteSettings->getSendMailReplyTo();
 
 		if($to === '' || $reply === '' || $from === ''):
-			echo 'Invalid E-Mail credentials, not possible to send the error mail' . "\n";
+			$this->output('Invalid E-Mail credentials, not possible to send the error mail');
 
 			return $this;
 		endif;
@@ -282,7 +282,7 @@ class TestSuite
 		$header  = 'From: ' . $from . "\r\n" . 'Reply-To: ' . $reply . "\r\n"
 		           . 'Content-Type: text/plain; charset=UTF-8"';
 		mail($to, $subject, $this->errorMessages, $header);
-		echo "Error E-Mail send!\n";
+		$this->output('Error E-Mail send!');
 		$this->errorMailSend = true;
 
 		return $this;
@@ -376,7 +376,7 @@ class TestSuite
 	 */
 	private function _initSuiteSettingsFromArray(array $settings)
 	{
-		echo "\nInitialize the test suite settings.\n";
+		$this->output("\n" . 'Initialize the test suite settings.');
 		$suiteSettings = $this->seleniumFactory->createSuiteSettings();
 		foreach($settings as $key => $value):
 			if($key === 'browser'):
@@ -394,14 +394,12 @@ class TestSuite
 			endif;
 
 			if(method_exists($suiteSettings, $setterName)):
-				echo ($value instanceof DesiredCapabilities) ? 'Set ' . lcfirst(str_replace('set', '', $setterName))
-				                                               . ' = ' . $value->getBrowserName() . "\n" : 'Set '
-				                                                                                           . lcfirst(str_replace('set',
-				                                                                                                                 '',
-				                                                                                                                 $setterName))
-				                                                                                           . ' = '
-				                                                                                           . $value
-				                                                                                           . "\n";
+				if($value instanceof DesiredCapabilities):
+					$message = 'Set ' . lcfirst(str_replace('set', '', $setterName)) . ' = ' . $value->getBrowserName();
+				else:
+					$message = 'Set ' . lcfirst(str_replace('set', '', $setterName)) . ' = ' . $value;
+				endif;
+				$this->output($message);
 
 				call_user_func([$suiteSettings, $setterName], $value);
 			endif;
@@ -472,7 +470,22 @@ class TestSuite
 
 		return $this;
 	}
+	
 
+	/**
+	 * Displays a message on the console.
+	 *
+	 * @param string $message
+	 */
+	public function output($message)
+	{
+		$currentTestCase = $this->suiteSettings->getCurrentTestCase();
+		if($currentTestCase):
+			$currentTestCase->output($message);
+		else:
+			echo $message . "\n";
+		endif;
+	}
 
 	################################### helper methods to apply settings ###############################################
 	/**
@@ -483,7 +496,7 @@ class TestSuite
 	private function _applyMaximizedWindowSetting()
 	{
 		if($this->suiteSettings->isWindowsMaximized()):
-			echo 'Maximize web driver window!' . "\n";
+			$this->output('Maximize web driver window!');
 			$this->webDriver->manage()->window()->maximize();
 		endif;
 
@@ -500,7 +513,7 @@ class TestSuite
 	{
 		$implicitlyWait = $this->suiteSettings->getImplicitlyWait();
 		if((int)$implicitlyWait !== 0):
-			echo 'Set implicitly wait setting to ' . $implicitlyWait . ' seconds.' . "\n";
+			$this->output('Set implicitly wait setting to ' . $implicitlyWait . ' seconds.');
 			$this->webDriver->manage()->timeouts()->implicitlyWait($implicitlyWait);
 		endif;
 
@@ -517,7 +530,7 @@ class TestSuite
 	{
 		$pageLoadTimeout = $this->suiteSettings->getPageLoadTimeout();
 		if((int)$pageLoadTimeout !== 0):
-			echo 'Set page load timeout setting to ' . $pageLoadTimeout . ' seconds.' . "\n";
+			$this->output('Set page load timeout setting to ' . $pageLoadTimeout . ' seconds.');
 			$this->webDriver->manage()->timeouts()->pageLoadTimeout($pageLoadTimeout);
 		endif;
 
@@ -534,7 +547,7 @@ class TestSuite
 	{
 		$scriptTimeout = $this->suiteSettings->getScriptTimeout();
 		if((int)$scriptTimeout !== 0):
-			echo 'Set script timeout setting to ' . $scriptTimeout . ' seconds.' . "\n";
+			$this->output('Set script timeout setting to ' . $scriptTimeout . ' seconds.');
 			$this->webDriver->manage()->timeouts()->setScriptTimeout($scriptTimeout);
 		endif;
 
