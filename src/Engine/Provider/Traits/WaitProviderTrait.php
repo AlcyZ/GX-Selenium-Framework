@@ -19,6 +19,8 @@ use GXSelenium\Engine\Emulator\Client;
 /**
  * Class WaitProviderTrait
  * @package GXSelenium\Engine\Provider\Traits
+ *
+ * @Todo Implement methods ::waitUntilNot[Type][WebDriverBy]. (type === selected || type === enabled)
  */
 trait WaitProviderTrait
 {
@@ -237,6 +239,194 @@ trait WaitProviderTrait
 		$by = WebDriverBy::xpath($xPath);
 
 		return $this->waitUntilElementIsDisplayed($by, $timeOut, $interval);
+	}
+
+
+	/**
+	 * Wait until an element is displayed or the value of the timeout argument is achieved.
+	 *
+	 * @param WebDriverBy $by       WebDriverBy instance to locate the expected element.
+	 * @param int         $timeOut  Timeout to wait, when the amount (in seconds) is reached, the test case fails.
+	 * @param int         $interval Interval of repeating the waiting condition.
+	 *
+	 * @return $this Same instance for chained method calls.
+	 */
+	public function waitUntilElementIsNotDisplayed(WebDriverBy $by, $timeOut = 30, $interval = 250)
+	{
+		if($this->isFailed()):
+			return $this;
+		endif;
+
+		return $this->_waitUntil('displayed', $by, $timeOut, $interval, false);
+	}
+
+
+	/**
+	 * Wait until an element is displayed by the given id or the value of the timeout argument is achieved.
+	 *
+	 * @param int $id       Id of expected element.
+	 * @param int $timeOut  Timeout to wait, when the amount (in seconds) is reached, the test case fails.
+	 * @param int $interval Interval of repeating the waiting condition.
+	 *
+	 * @return $this Same instance for chained method calls.
+	 */
+	public function waitUntilIdIsNotDisplayed($id, $timeOut = 30, $interval = 250)
+	{
+		if($this->isFailed()):
+			return $this;
+		endif;
+
+		$by = WebDriverBy::id($id);
+
+		return $this->waitUntilElementIsNotDisplayed($by, $timeOut, $interval);
+	}
+
+
+	/**
+	 * Wait until an element is displayed by the given class name or the value of the timeout argument is achieved.
+	 *
+	 * @param int $className ClassName of expected element.
+	 * @param int $timeOut   Timeout to wait, when the amount (in seconds) is reached, the test case fails.
+	 * @param int $interval  Interval of repeating the waiting condition.
+	 *
+	 * @return $this Same instance for chained method calls.
+	 */
+	public function waitUntilClassNameIsNotDisplayed($className, $timeOut = 30, $interval = 250)
+	{
+		if($this->isFailed()):
+			return $this;
+		endif;
+
+		$by = WebDriverBy::className($className);
+
+		return $this->waitUntilElementIsNotDisplayed($by, $timeOut, $interval);
+	}
+
+
+	/**
+	 * Wait until an element is displayed by the given name or the value of the timeout argument is achieved.
+	 *
+	 * @param int $name     Name of expected element.
+	 * @param int $timeOut  Timeout to wait, when the amount (in seconds) is reached, the test case fails.
+	 * @param int $interval Interval of repeating the waiting condition.
+	 *
+	 * @return $this Same instance for chained method calls.
+	 */
+	public function waitUntilNameIsNotDisplayed($name, $timeOut = 30, $interval = 250)
+	{
+		if($this->isFailed()):
+			return $this;
+		endif;
+
+		$by = WebDriverBy::name($name);
+
+		return $this->waitUntilElementIsNotDisplayed($by, $timeOut, $interval);
+	}
+
+
+	/**
+	 * Wait until an element is displayed by the given css selector or the value of the timeout argument is achieved.
+	 *
+	 * @param int $cssSelector Css selector of expected element.
+	 * @param int $timeOut     Timeout to wait, when the amount (in seconds) is reached, the test case fails.
+	 * @param int $interval    Interval of repeating the waiting condition.
+	 *
+	 * @return $this Same instance for chained method calls.
+	 */
+	public function waitUntilCssSelectorIsNotDisplayed($cssSelector, $timeOut = 30, $interval = 250)
+	{
+		if($this->isFailed()):
+			return $this;
+		endif;
+
+		$by = WebDriverBy::cssSelector($cssSelector);
+
+		return $this->waitUntilElementIsNotDisplayed($by, $timeOut, $interval);
+	}
+
+
+	/**
+	 * Wait until an element is displayed by the given link text or the value of the timeout argument is achieved.
+	 *
+	 * @param int $linkText Link text of expected element.
+	 * @param int $timeOut  Timeout to wait, when the amount (in seconds) is reached, the test case fails.
+	 * @param int $interval Interval of repeating the waiting condition.
+	 *
+	 * @return $this Same instance for chained method calls.
+	 */
+	public function waitUntilLinkTextIsNotDisplayed($linkText, $timeOut = 30, $interval = 250)
+	{
+		if($this->isFailed()):
+			return $this;
+		endif;
+
+		$by = WebDriverBy::linkText($linkText);
+
+		return $this->waitUntilElementIsNotDisplayed($by, $timeOut, $interval);
+	}
+
+
+	/**
+	 * Wait until an element is displayed by the given partial link text or the value of the timeout argument is
+	 * achieved.
+	 *
+	 * @param int $partialLinkText Partial link text of expected element.
+	 * @param int $timeOut         Timeout to wait, when the amount (in seconds) is reached, the test case fails.
+	 * @param int $interval        Interval of repeating the waiting condition.
+	 *
+	 * @return $this Same instance for chained method calls.
+	 */
+	public function waitUntilPartialLinkTextIsNotDisplayed($partialLinkText, $timeOut = 30, $interval = 250)
+	{
+		if($this->isFailed()):
+			return $this;
+		endif;
+
+		$by = WebDriverBy::partialLinkText($partialLinkText);
+
+		return $this->waitUntilElementIsNotDisplayed($by, $timeOut, $interval);
+	}
+
+
+	/**
+	 * Wait until an element is displayed by the given tag name or the value of the timeout argument is achieved.
+	 *
+	 * @param int $tagName  Tag name of expected element.
+	 * @param int $timeOut  Timeout to wait, when the amount (in seconds) is reached, the test case fails.
+	 * @param int $interval Interval of repeating the waiting condition.
+	 *
+	 * @return $this Same instance for chained method calls.
+	 */
+	public function waitUntilTagNameIsNotDisplayed($tagName, $timeOut = 30, $interval = 250)
+	{
+		if($this->isFailed()):
+			return $this;
+		endif;
+
+		$by = WebDriverBy::tagName($tagName);
+
+		return $this->waitUntilElementIsNotDisplayed($by, $timeOut, $interval);
+	}
+
+
+	/**
+	 * Wait until an element is displayed by the given xpath or the value of the timeout argument is achieved.
+	 *
+	 * @param int $xPath    Xpath of expected element.
+	 * @param int $timeOut  Timeout to wait, when the amount (in seconds) is reached, the test case fails.
+	 * @param int $interval Interval of repeating the waiting condition.
+	 *
+	 * @return $this Same instance for chained method calls.
+	 */
+	public function waitUntilXpathIsNotDisplayed($xPath, $timeOut = 30, $interval = 250)
+	{
+		if($this->isFailed()):
+			return $this;
+		endif;
+
+		$by = WebDriverBy::xpath($xPath);
+
+		return $this->waitUntilElementIsNotDisplayed($by, $timeOut, $interval);
 	}
 	
 
@@ -620,14 +810,15 @@ trait WaitProviderTrait
 	 * to handle the waiting process with the same algorithm. When the timeout is reached an error gets handled
 	 * automatically. After the waiting process, the test case will continue.
 	 *
-	 * @param string      $type     Whether displayed, enabled or selected.
-	 * @param WebDriverBy $by       WebDriverBy instance to locate the expected element.
-	 * @param int         $timeOut  Timeout to wait, when the amount (in seconds) is reached, the test case fails.
-	 * @param int         $interval Interval of repeating the waiting condition.
+	 * @param string      $type        Whether displayed, enabled or selected.
+	 * @param WebDriverBy $by          WebDriverBy instance to locate the expected element.
+	 * @param int         $timeOut     Timeout to wait, when the amount (in seconds) is reached, the test case fails.
+	 * @param int         $interval    Interval of repeating the waiting condition.
+	 * @param bool        $expectation Possibility to negate the wait condition.
 	 *
 	 * @return $this Same instance for chained method calls.
 	 */
-	private function _waitUntil($type, WebDriverBy $by, $timeOut = 30, $interval = 250)
+	private function _waitUntil($type, WebDriverBy $by, $timeOut = 30, $interval = 250, $expectation = true)
 	{
 		if($this->isFailed()):
 			return $this;
@@ -640,9 +831,9 @@ trait WaitProviderTrait
 		$expectMethod = 'expectsToBe' . ucfirst($type);
 		try
 		{
-			$this->getWebDriver()->wait($timeOut, $interval)->until(function () use ($by, $expectMethod)
+			$this->getWebDriver()->wait($timeOut, $interval)->until(function () use ($by, $expectMethod, $expectation)
 			{
-				return call_user_func([$this, $expectMethod], $by);
+				return call_user_func([$this, $expectMethod], $by) === $expectation;
 			});
 		}
 		catch(TimeOutException $e)
