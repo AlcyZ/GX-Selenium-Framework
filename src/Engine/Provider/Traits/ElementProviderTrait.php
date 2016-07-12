@@ -398,7 +398,7 @@ trait ElementProviderTrait
 
 
 	/**
-	 * Try to get an elements array.
+	 * Returns an elements array.
 	 * If nothing is found, an empty array will be returned.
 	 *
 	 * @param WebDriverBy $by       Expected element (WebDriverBy instance, access via static methods).
@@ -406,7 +406,7 @@ trait ElementProviderTrait
 	 *
 	 * @return WebDriverElement[]|array
 	 */
-	public function tryGetArrayBy(WebDriverBy $by, $attempts = 2)
+	public function getArrayBy(WebDriverBy $by, $attempts = 2)
 	{
 		if($this->isFailed()):
 			return [];
@@ -414,30 +414,11 @@ trait ElementProviderTrait
 
 		return $this->_tryBy($by, $attempts, 'array');
 	}
-	
 
-	/**
-	 * Try to get an element by the given id.
-	 * If nothing is found, an empty array will be returned.
-	 *
-	 * @param string $id       Id of expected element.
-	 * @param int    $attempts Attempts until the method will fail and return false.
-	 *
-	 * @return WebDriverElement[]|array
-	 */
-	public function tryGetArrayById($id, $attempts = 2)
-	{
-		if($this->isFailed()):
-			return [];
-		endif;
-		$by = WebDriverBy::id($id);
-
-		return $this->_tryBy($by, $attempts);
-	}
 
 
 	/**
-	 * Try to get an element by the given name.
+	 * Returns an element by the given name.
 	 * If nothing is found, an empty array will be returned.
 	 *
 	 * @param string $name     Name of expected element.
@@ -445,19 +426,19 @@ trait ElementProviderTrait
 	 *
 	 * @return WebDriverElement[]|array
 	 */
-	public function tryGetArrayByName($name, $attempts = 2)
+	public function getArrayByName($name, $attempts = 2)
 	{
 		if($this->isFailed()):
 			return [];
 		endif;
 		$by = WebDriverBy::name($name);
 
-		return $this->_tryBy($by, $attempts);
+		return $this->getArrayBy($by, $attempts);
 	}
 
 
 	/**
-	 * Try to get an element by the given class name.
+	 * Returns an element by the given class name.
 	 * If nothing is found, an empty array will be returned.
 	 *
 	 * @param string $className Class name of expected element.
@@ -465,19 +446,19 @@ trait ElementProviderTrait
 	 *
 	 * @return WebDriverElement[]|array
 	 */
-	public function tryGetArrayByClassName($className, $attempts = 2)
+	public function getArrayByClassName($className, $attempts = 2)
 	{
 		if($this->isFailed()):
 			return [];
 		endif;
 		$by = WebDriverBy::className($className);
 
-		return $this->_tryBy($by, $attempts);
+		return $this->getArrayBy($by, $attempts);
 	}
 
 
 	/**
-	 * Try to get an element by the given css selector.
+	 * Returns an element by the given css selector.
 	 * If nothing is found, an empty array will be returned.
 	 *
 	 * @param string $cssSelector Css selector of expected element.
@@ -485,19 +466,19 @@ trait ElementProviderTrait
 	 *
 	 * @return WebDriverElement[]|array
 	 */
-	public function tryGetArrayByCssSelector($cssSelector, $attempts = 2)
+	public function getArrayByCssSelector($cssSelector, $attempts = 2)
 	{
 		if($this->isFailed()):
 			return [];
 		endif;
 		$by = WebDriverBy::cssSelector($cssSelector);
 
-		return $this->_tryBy($by, $attempts);
+		return $this->getArrayBy($by, $attempts);
 	}
 
 
 	/**
-	 * Try to get an element by the given link text.
+	 * Returns an element by the given link text.
 	 * If nothing is found, an empty array will be returned.
 	 *
 	 * @param string $linkText Link text of expected element.
@@ -505,19 +486,19 @@ trait ElementProviderTrait
 	 *
 	 * @return WebDriverElement[]|array
 	 */
-	public function tryGetArrayByLinkText($linkText, $attempts = 2)
+	public function getArrayByLinkText($linkText, $attempts = 2)
 	{
 		if($this->isFailed()):
 			return [];
 		endif;
 		$by = WebDriverBy::linkText($linkText);
 
-		return $this->_tryBy($by, $attempts);
+		return $this->getArrayBy($by, $attempts);
 	}
 
 
 	/**
-	 * Try to get an element by the given partial link text.
+	 * Returns an element by the given partial link text.
 	 * If nothing is found, an empty array will be returned.
 	 *
 	 * @param string $partialLinkText Partial link text of expected element.
@@ -525,19 +506,19 @@ trait ElementProviderTrait
 	 *
 	 * @return WebDriverElement[]|array
 	 */
-	public function tryGetArrayByPartialLinkText($partialLinkText, $attempts = 2)
+	public function getArrayByPartialLinkText($partialLinkText, $attempts = 2)
 	{
 		if($this->isFailed()):
 			return [];
 		endif;
 		$by = WebDriverBy::partialLinkText($partialLinkText);
 
-		return $this->_tryBy($by, $attempts);
+		return $this->getArrayBy($by, $attempts);
 	}
 
 
 	/**
-	 * Try to get an element by the given tag name.
+	 * Returns an element by the given tag name.
 	 * If nothing is found, an empty array will be returned.
 	 *
 	 * @param string $tagName  Tag name of expected element.
@@ -545,19 +526,19 @@ trait ElementProviderTrait
 	 *
 	 * @return WebDriverElement[]|array
 	 */
-	public function tryGetArrayByTagName($tagName, $attempts = 2)
+	public function getArrayByTagName($tagName, $attempts = 2)
 	{
 		if($this->isFailed()):
 			return [];
 		endif;
 		$by = WebDriverBy::tagName($tagName);
 
-		return $this->_tryBy($by, $attempts);
+		return $this->getArrayBy($by, $attempts);
 	}
 
 
 	/**
-	 * Try to get an element by the given xpath.
+	 * Returns an element array by the given xpath.
 	 * If nothing is found, an empty array will be returned.
 	 *
 	 * @param string $xpath    Xpath of expected element.
@@ -565,14 +546,14 @@ trait ElementProviderTrait
 	 *
 	 * @return WebDriverElement[]|array
 	 */
-	public function tryGetArrayByXpath($xpath, $attempts = 2)
+	public function getArrayByXpath($xpath, $attempts = 2)
 	{
 		if($this->isFailed()):
 			return [];
 		endif;
 		$by = WebDriverBy::xpath($xpath);
 
-		return $this->_tryBy($by, $attempts);
+		return $this->getArrayBy($by, $attempts);
 	}
 	
 
@@ -588,7 +569,7 @@ trait ElementProviderTrait
 	private function _tryBy(WebDriverBy $by, $attempts = 2, $type = null)
 	{
 		if($this->isFailed()):
-			return $this->_createWebDriverNull();
+			return ($type) ? [] : $this->_createWebDriverNull();
 		endif;
 		$attempt = 0;
 		while($attempt < $attempts):
