@@ -44,8 +44,7 @@ use GXSelenium\Engine\TestSuite;
  */
 class Client
 {
-	use ClickProviderTrait, InspectionProviderTrait, SelectingProviderTrait, TypingProviderTrait, MouseTrait, 
-		WaitProviderTrait, VerificationTrait, ElementProviderTrait;
+	use ClickProviderTrait, InspectionProviderTrait, SelectingProviderTrait, TypingProviderTrait, MouseTrait, WaitProviderTrait, VerificationTrait, ElementProviderTrait;
 
 	/**
 	 * @var TestSuite
@@ -206,6 +205,23 @@ class Client
 		$this->failed = true;
 
 		return $this;
+	}
+	
+	
+	/**
+	 * Creates a new PNG image of the current screen in the compare image directory of the suite settings.
+	 *
+	 * @param $imageName
+	 *
+	 * @return string
+	 */
+	public function createCompareImage($imageName)
+	{
+		$compareImageDir = $this->testSuite->getSuiteSettings()->getCompareImageDir() . DIRECTORY_SEPARATOR;
+		$image           = $compareImageDir . $imageName . '.png';
+		$this->testSuite->getWebDriver()->takeScreenshot($image);
+
+		return $image;
 	}
 
 
