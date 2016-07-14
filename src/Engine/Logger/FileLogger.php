@@ -100,7 +100,7 @@ class FileLogger
 	public function screenshot(WebDriver $webDriver, $case = 'undefined')
 	{
 		$this->_createScreenShotDirIfNotExists();
-		$screenName = date('d|m|y|H|i|s') . '|' . $case . '.jpg';
+		$screenName = date('d|m|y|H|i|s') . '|' . $case . '.png';
 
 		file_put_contents($this->screenshotDir . DIRECTORY_SEPARATOR . $screenName, $webDriver->takeScreenshot());
 
