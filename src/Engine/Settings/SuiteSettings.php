@@ -180,6 +180,11 @@ class SuiteSettings
 	 */
 	private $compareImageDir;
 
+	/**
+	 * @var string
+	 */
+	private $diffImageDir;
+
 
 	/**
 	 * Initialize the suite settings.
@@ -189,6 +194,7 @@ class SuiteSettings
 		$this->capabilities     = DesiredCapabilities::firefox();
 		$this->loggingDirectory = dirname(dirname(dirname(__DIR__))) . DIRECTORY_SEPARATOR . 'logs';
 		$this->compareImageDir  = dirname(dirname(dirname(__DIR__))) . DIRECTORY_SEPARATOR . 'compareImages';
+		$this->diffImageDir     = dirname(dirname(dirname(__DIR__))) . DIRECTORY_SEPARATOR . 'diffImages';
 	}
 
 
@@ -714,5 +720,23 @@ class SuiteSettings
 	public function setCompareImageDir($compareImageDir)
 	{
 		$this->compareImageDir = $compareImageDir;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getDiffImageDir()
+	{
+		return $this->diffImageDir;
+	}
+
+
+	/**
+	 * @param string $diffImageDir
+	 */
+	public function setDiffImageDir($diffImageDir)
+	{
+		$this->diffImageDir = $diffImageDir;
 	}
 }
