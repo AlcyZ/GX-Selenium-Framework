@@ -6,7 +6,8 @@
   "require": {
     "php": ">=5.4.0",
     "facebook/webdriver": "~1.0",
-    "AlcyZ/alcys-orm": "dev-master"
+    "AlcyZ/alcys-orm": "dev-master",
+    "AlcyZ/php-image-magick": "dev-master"
   },
   "repositories": [
     {
