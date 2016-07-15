@@ -37,6 +37,7 @@ use GXSelenium\Engine\Provider\Traits\TypingProviderTrait;
 use GXSelenium\Engine\Provider\Traits\VerificationTrait;
 use GXSelenium\Engine\Provider\Traits\WaitProviderTrait;
 use GXSelenium\Engine\TestSuite;
+use ImageMagick\ImageMagick;
 
 /**
  * Class Client
@@ -62,6 +63,11 @@ class Client
 	 */
 	private $failed = false;
 
+	/**
+	 * @var ImageMagick
+	 */
+	private $imageMagick;
+
 
 	/**
 	 * Initialize the client emulator.
@@ -73,6 +79,7 @@ class Client
 	{
 		$this->testSuite       = $testSuite;
 		$this->elementProvider = $elementProvider;
+		$this->imageMagick     = new ImageMagick();
 	}
 
 
@@ -222,6 +229,29 @@ class Client
 		$this->testSuite->getWebDriver()->takeScreenshot($image);
 
 		return $image;
+	}
+	
+
+	/**
+	 * Compares an image with a screenshot of the currently displayed screen.
+	 * When they are different, a gif of both images will be created.
+	 * Returns true when the images looking equal and false otherwise.
+	 *
+	 * @param $compareImage
+	 *
+	 * @return bool
+	 */
+	public function compareWithVerificationImage($compareImage)
+	{
+		$compareImage = $this->testSuite->getSuiteSettings()->getCompareImageDir() . DIRECTORY_SEPARATOR . $compareImage
+		                . '.png';
+		$actualImage  = $this->createCompareImage('compareImage');
+		$result       = $this->imageMagick->createDiffGifOnDifferences($actualImage, $compareImage,
+		                                                               $compareImage . 'Diff',
+		                                                               $this->testSuite->getSuiteSettings()
+		                                                                               ->getDiffImageDir());
+
+		return !$result;
 	}
 
 
