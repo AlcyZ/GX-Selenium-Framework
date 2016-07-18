@@ -257,7 +257,7 @@ class Client
 		                                                                  $this->testSuite->getSuiteSettings()
 		                                                                                  ->getDiffImageDir());
 
-		if(!$result):
+		if($result):
 			$this->error('The screenshot of the actual display is not looking equal to the compare image "'
 			             . $compareImage . '", stored in ' . $compareImg);
 		endif;
