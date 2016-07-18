@@ -243,23 +243,21 @@ class Client
 	 */
 	public function compareWithVerificationImage($compareImage)
 	{
-		$timestamp = date('Ymd-His');
+		$timestamp  = date('Ymd-His');
 		$compareImg = $this->testSuite->getSuiteSettings()->getCompareImageDir() . DIRECTORY_SEPARATOR . $compareImage
 		              . '.png';
 		$this->output("Create\tCompare Image");
 		$actualImage = $this->createCompareImage('compareImage');
 		$this->output("Compare\t$compareImage | $actualImage");
 		$this->imageMagick->createDiffGifOnDifferences($actualImage, $compareImg, $compareImage . 'Diff' . $timestamp,
-		                                                         $this->testSuite->getSuiteSettings()
-		                                                                         ->getDiffImageDir());
+		                                               $this->testSuite->getSuiteSettings()->getDiffImageDir());
 		$result = $this->imageMagick->createComparisonImageOnDifferences($compareImg, $actualImage,
-		                                                                  $compareImage . 'Compared' . $timestamp,
-		                                                                  $this->testSuite->getSuiteSettings()
-		                                                                                  ->getDiffImageDir());
+		                                                                 $compareImage . 'Compared' . $timestamp,
+		                                                                 $this->testSuite->getSuiteSettings()
+		                                                                                 ->getDiffImageDir());
 
 		if($result):
-			$this->error('The screenshot of the actual display is not looking equal to the compare image "'
-			             . $compareImage . '", stored in ' . $compareImg);
+			$this->error('Actual screen does not looking equal to compare image "' . $compareImage . '"');
 		endif;
 		unlink($actualImage);
 
