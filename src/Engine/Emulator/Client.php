@@ -248,14 +248,18 @@ class Client
 		$this->output("Create\tCompare Image");
 		$actualImage = $this->createCompareImage('compareImage');
 		$this->output("Compare\t$compareImage | $actualImage");
-		$result = $this->imageMagick->createDiffGifOnDifferences($actualImage, $compareImg, $compareImage . 'Diff',
+		$this->imageMagick->createDiffGifOnDifferences($actualImage, $compareImg, $compareImage . 'Diff',
 		                                                         $this->testSuite->getSuiteSettings()
 		                                                                         ->getDiffImageDir());
-		$result &= $this->imageMagick->createComparisonImageOnDifferences($compareImg, $actualImage,
+		$result = $this->imageMagick->createComparisonImageOnDifferences($compareImg, $actualImage,
 		                                                                  $compareImage . 'Compared',
 		                                                                  $this->testSuite->getSuiteSettings()
 		                                                                                  ->getDiffImageDir());
-
+		
+		if(!$result):
+			$this->error('The screenshot of the actual display is not looking equal to the compare image "'
+			             . $compareImage . '", stored in ' . $compareImg);
+		endif;
 		unlink($actualImage); #
 
 		return !$result;
