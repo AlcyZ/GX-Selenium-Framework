@@ -255,12 +255,12 @@ class Client
 		                                                                  $compareImage . 'Compared',
 		                                                                  $this->testSuite->getSuiteSettings()
 		                                                                                  ->getDiffImageDir());
-		
+
 		if(!$result):
 			$this->error('The screenshot of the actual display is not looking equal to the compare image "'
 			             . $compareImage . '", stored in ' . $compareImg);
 		endif;
-		unlink($actualImage); #
+		unlink($actualImage);
 
 		return !$result;
 	}
