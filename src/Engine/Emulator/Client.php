@@ -253,7 +253,7 @@ class Client
 		                                                               $this->testSuite->getSuiteSettings()
 		                                                                               ->getDiffImageDir());
 
-		unlink($actualImage);
+		unlink($actualImage); #
 
 		return !$result;
 	}
