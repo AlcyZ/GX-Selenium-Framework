@@ -246,12 +246,15 @@ class Client
 		$compareImg = $this->testSuite->getSuiteSettings()->getCompareImageDir() . DIRECTORY_SEPARATOR . $compareImage
 		              . '.png';
 		$this->output("Create\tCompare Image");
-		$actualImage  = $this->createCompareImage('compareImage');
+		$actualImage = $this->createCompareImage('compareImage');
 		$this->output("Compare\t$compareImage | $actualImage");
-		$result       = $this->imageMagick->createDiffGifOnDifferences($actualImage, $compareImg,
-		                                                               $compareImage . 'Diff',
-		                                                               $this->testSuite->getSuiteSettings()
-		                                                                               ->getDiffImageDir());
+		$result = $this->imageMagick->createDiffGifOnDifferences($actualImage, $compareImg, $compareImage . 'Diff',
+		                                                         $this->testSuite->getSuiteSettings()
+		                                                                         ->getDiffImageDir());
+		$result &= $this->imageMagick->createComparisonImageOnDifferences($compareImg, $actualImage,
+		                                                                  $compareImage . 'Compared',
+		                                                                  $this->testSuite->getSuiteSettings()
+		                                                                                  ->getDiffImageDir());
 
 		unlink($actualImage); #
 
