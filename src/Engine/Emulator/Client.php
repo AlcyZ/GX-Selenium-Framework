@@ -243,13 +243,16 @@ class Client
 	 */
 	public function compareWithVerificationImage($compareImage)
 	{
-		$compareImage = $this->testSuite->getSuiteSettings()->getCompareImageDir() . DIRECTORY_SEPARATOR . $compareImage
-		                . '.png';
+		$compareImg = $this->testSuite->getSuiteSettings()->getCompareImageDir() . DIRECTORY_SEPARATOR . $compareImage
+		              . '.png';
+		$this->output("Create\tCompare Image");
 		$actualImage  = $this->createCompareImage('compareImage');
-		$result       = $this->imageMagick->createDiffGifOnDifferences($actualImage, $compareImage,
+		$this->output("Compare\t$compareImage | $actualImage");
+		$result       = $this->imageMagick->createDiffGifOnDifferences($actualImage, $compareImg,
 		                                                               $compareImage . 'Diff',
 		                                                               $this->testSuite->getSuiteSettings()
 		                                                                               ->getDiffImageDir());
+
 		unlink($actualImage);
 
 		return !$result;
