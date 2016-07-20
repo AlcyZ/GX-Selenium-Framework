@@ -25,6 +25,7 @@
 namespace GXSelenium\Engine\Emulator;
 
 use Facebook\WebDriver\Remote\RemoteWebDriver;
+use Facebook\WebDriver\WebDriverDimension;
 use Facebook\WebDriver\WebDriverElement;
 use Facebook\WebDriver\WebDriverSelect;
 use GXSelenium\Engine\Provider\ElementProvider;
@@ -224,6 +225,15 @@ class Client
 	 */
 	public function createCompareImage($imageName)
 	{
+		$dimension = $this->_createMaximizedWebDriverDimension();
+		// workaround for a bug in the chrome diver that the maximize command does not work like expected
+		if($this->testSuite->getSuiteSettings()->getCapabilities()->getBrowserName() === 'chrome'
+		   && !$this->testSuite->getWebDriver()->manage()->window()->getSize()->equals($dimension)
+		):
+			$this->output('Set web driver window to maximal content height "' . $dimension->getHeight() . '"');
+			$this->testSuite->getWebDriver()->manage()->window()->setSize($dimension);
+		endif;
+
 		$compareImageDir = $this->testSuite->getSuiteSettings()->getCompareImageDir() . DIRECTORY_SEPARATOR;
 		$image           = $compareImageDir . $imageName . '.png';
 		$this->testSuite->getWebDriver()->takeScreenshot($image);
@@ -231,6 +241,20 @@ class Client
 		return $image;
 	}
 	
+
+	/**
+	 * Creates a new web driver dimension instance.
+	 * The width is 1920px and the height is the maximal content size of the current window.
+	 *
+	 * @return WebDriverDimension
+	 */
+	private function _createMaximizedWebDriverDimension()
+	{
+		$windowContentSize = $this->testSuite->getWebDriver()->executeScript('return $("body").innerHeight();');
+
+		return new WebDriverDimension(1920, (int)$windowContentSize);
+	}
+
 
 	/**
 	 * Compares an image with a screenshot of the currently displayed screen.
