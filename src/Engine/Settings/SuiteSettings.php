@@ -193,7 +193,7 @@ class SuiteSettings
 	{
 		$this->capabilities     = DesiredCapabilities::firefox();
 		$this->loggingDirectory = dirname(dirname(dirname(__DIR__))) . DIRECTORY_SEPARATOR . 'logs';
-		$this->compareImageDir  = dirname(dirname(dirname(__DIR__))) . DIRECTORY_SEPARATOR . 'compareImages';
+		$this->compareImageDir  = dirname(dirname(dirname(__DIR__))) . DIRECTORY_SEPARATOR . 'expectedImages';
 		$this->diffImageDir     = dirname(dirname(dirname(__DIR__))) . DIRECTORY_SEPARATOR . 'diffImages';
 	}
 
