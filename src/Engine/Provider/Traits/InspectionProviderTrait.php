@@ -756,8 +756,7 @@ trait InspectionProviderTrait
 			catch(StaleElementReferenceException $e)
 			{
 				if(!empty($element)):
-					$text = ($attempt + 1) . '. attempt to inspect an element '
-					        . $this->_getClickingElementsHtml($element) . ' failed';
+					$text = ($attempt + 1) . '. attempt to inspect an element failed';
 				else:
 					$text = ($attempt + 1) . '. attempt to inspect an element which is not found failed';
 				endif;
@@ -769,8 +768,7 @@ trait InspectionProviderTrait
 			catch(\Exception $e)
 			{
 				if(!empty($element)):
-					$text = ($attempt + 1) . '. attempt to inspect an element '
-					        . $this->_getClickingElementsHtml($element) . ' failed';
+					$text = ($attempt + 1) . '. attempt to inspect an element failed';
 				else:
 					$text = ($attempt + 1) . '. attempt to inspect an element which is not found failed';
 				endif;
@@ -819,8 +817,7 @@ trait InspectionProviderTrait
 			catch(StaleElementReferenceException $e)
 			{
 				if(!empty($element)):
-					$text = ($attempt + 1) . '. attempt to inspect an element '
-					        . $this->_getClickingElementsHtml($element) . ' failed';
+					$text = ($attempt + 1) . '. attempt to inspect an element failed';
 				else:
 					$text = ($attempt + 1) . '. attempt to inspect an element which is not found failed';
 				endif;
@@ -832,8 +829,7 @@ trait InspectionProviderTrait
 			catch(\Exception $e)
 			{
 				if(!empty($element)):
-					$text = ($attempt + 1) . '. attempt to inspect an element '
-					        . $this->_getClickingElementsHtml($element) . ' failed';
+					$text = ($attempt + 1) . '. attempt to inspect an element failed';
 				else:
 					$text = ($attempt + 1) . '. attempt to inspect an element which is not found failed';
 				endif;
