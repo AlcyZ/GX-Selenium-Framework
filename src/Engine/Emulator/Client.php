@@ -69,6 +69,16 @@ class Client
 	 */
 	private $imageMagick;
 
+	/**
+	 * @var string
+	 */
+	private $expectedImagesDirectory;
+
+	/**
+	 * @var string
+	 */
+	private $diffImagesDirectory;
+
 
 	/**
 	 * Initialize the client emulator.
@@ -214,8 +224,8 @@ class Client
 
 		return $this;
 	}
-	
-	
+
+
 	/**
 	 * Creates a new PNG image of the current screen in the compare image directory of the suite settings.
 	 *
@@ -234,13 +244,13 @@ class Client
 			$this->testSuite->getWebDriver()->manage()->window()->setSize($dimension);
 		endif;
 
-		$compareImageDir = $this->testSuite->getSuiteSettings()->getCompareImageDir() . DIRECTORY_SEPARATOR;
-		$image           = $compareImageDir . $imageName . '.png';
+		$image = $this->getExpectedImagesDirectory() . DIRECTORY_SEPARATOR . $imageName . '.png';
 		$this->testSuite->getWebDriver()->takeScreenshot($image);
+		$this->output('Created expected reference image "' . $image . '"');
 
 		return $image;
 	}
-	
+
 
 	/**
 	 * Creates a new web driver dimension instance.
@@ -267,25 +277,118 @@ class Client
 	 */
 	public function compareWithVerificationImage($compareImage)
 	{
-		$timestamp  = date('Ymd-His');
-		$compareImg = $this->testSuite->getSuiteSettings()->getCompareImageDir() . DIRECTORY_SEPARATOR . $compareImage
-		              . '.png';
-		$this->output("Create\tCompare Image");
+		$compareImg  = $this->getExpectedImagesDirectory() . DIRECTORY_SEPARATOR . $compareImage . '.png';
 		$actualImage = $this->createCompareImage('compareImage');
-		$this->output("Compare\t$compareImage | $actualImage");
-		$this->imageMagick->createDiffGifOnDifferences($actualImage, $compareImg, $compareImage . 'Diff' . $timestamp,
-		                                               $this->testSuite->getSuiteSettings()->getDiffImageDir());
-		$result = $this->imageMagick->createComparisonImageOnDifferences($compareImg, $actualImage,
-		                                                                 $compareImage . 'Compared' . $timestamp,
-		                                                                 $this->testSuite->getSuiteSettings()
-		                                                                                 ->getDiffImageDir());
 
-		if($result):
+		$this->output("Compare\t$compareImage | $actualImage");
+		
+		$result = $this->imageMagick->compareImages($compareImg, $actualImage, $compareImage,
+		                                            $this->getDiffImagesDirectory());
+
+		if(!$result):
 			$this->error('Actual screen does not looking equal to compare image "' . $compareImage . '"');
 		endif;
 		unlink($actualImage);
 
 		return !$result;
+	}
+
+
+	/**
+	 * Returns the path to the expected reference images directory.
+	 *
+	 * @return string
+	 */
+	private function getExpectedImagesDirectory()
+	{
+		if(!$this->expectedImagesDirectory)
+		{
+			$this->_prepareExpectedImagesDirectory();
+		}
+
+		return $this->expectedImagesDirectory;
+	}
+
+
+	/**
+	 * Returns the path to the diff images directory.
+	 *
+	 * @return string
+	 */
+	private function getDiffImagesDirectory()
+	{
+		if(!$this->diffImagesDirectory)
+		{
+			$this->_prepareDiffImagesDirectory();
+		}
+
+		return $this->diffImagesDirectory;
+	}
+
+
+	/**
+	 * Prepares the directory with the expected reference images for the test suite.
+	 *
+	 * @return $this|Client Same instance for chained method calls.
+	 */
+	private function _prepareExpectedImagesDirectory()
+	{
+		return $this->_prepareImagesDirectory('expected');
+	}
+
+
+	/**
+	 * Prepares the directory with the diff images for the test suite.
+	 *
+	 * @return $this|Client Same instance for chained method calls.
+	 */
+	private function _prepareDiffImagesDirectory()
+	{
+		return $this->_prepareImagesDirectory('diff');
+	}
+
+
+	/**
+	 * Prepares whether the directory with the diff images or with expected reference images.
+	 *
+	 * @param string $type Whether 'expected' or 'diff'.
+	 *
+	 * @return $this|Client Same instance for chained method calls.
+	 */
+	private function _prepareImagesDirectory($type = 'expected')
+	{
+		if($type !== 'expected' && $type !== 'diff')
+		{
+			throw new \InvalidArgumentException('Invalid $type argument, allowed types: "expected", "diff". Current value: "'
+			                                    . $type . '"');
+		}
+
+		$root = $type === 'expected' ? $this->testSuite->getSuiteSettings()
+		                                               ->getCompareImageDir() : $this->testSuite->getSuiteSettings()
+		                                                                                        ->getDiffImageDir();
+
+		$imagesDirectory = $root . DIRECTORY_SEPARATOR . $this->testSuite->getSuiteSettings()->getBranch()
+		                   . DIRECTORY_SEPARATOR . $this->testSuite->getSuiteSettings()->getSuiteName();
+
+		if(!is_dir($imagesDirectory))
+		{
+			$success = mkdir($imagesDirectory, 0777, true);
+			if(!$success)
+			{
+				throw new \RuntimeException('Unable to create the directory: "' . $imagesDirectory . '"');
+			}
+		}
+
+		if($type === 'expected')
+		{
+			$this->expectedImagesDirectory = $imagesDirectory;
+		}
+		else
+		{
+			$this->diffImagesDirectory = $imagesDirectory;
+		}
+
+		return $this;
 	}
 
 
