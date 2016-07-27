@@ -185,6 +185,16 @@ class SuiteSettings
 	 */
 	private $diffImageDir;
 
+	/**
+	 * @var bool
+	 */
+	private $compareImages = true;
+
+	/**
+	 * @var bool
+	 */
+	private $referenceImageSuite = false;
+
 
 	/**
 	 * Initialize the suite settings.
@@ -738,5 +748,41 @@ class SuiteSettings
 	public function setDiffImageDir($diffImageDir)
 	{
 		$this->diffImageDir = $diffImageDir;
+	}
+	
+	
+	/**
+	 * @return boolean
+	 */
+	public function isCompareImages()
+	{
+		return $this->compareImages;
+	}
+	
+	
+	/**
+	 * @param boolean $compareImages
+	 */
+	public function setCompareImages($compareImages)
+	{
+		$this->compareImages = $compareImages;
+	}
+	
+	
+	/**
+	 * @return boolean
+	 */
+	public function isReferenceImageSuite()
+	{
+		return $this->referenceImageSuite;
+	}
+	
+	
+	/**
+	 * @param boolean $referenceImageSuite
+	 */
+	public function setReferenceImageSuite($referenceImageSuite)
+	{
+		$this->referenceImageSuite = $referenceImageSuite;
 	}
 }

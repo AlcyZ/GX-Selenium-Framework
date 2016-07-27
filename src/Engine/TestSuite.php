@@ -140,7 +140,8 @@ class TestSuite
 		     ->_applyImplicitlyWaitTimeoutSetting()
 		     ->_applyPageLoadTimeoutSetting()
 		     ->_applyScriptTimeoutSetting()
-		     ->_addCasesToCollection()->sqlLogger->startSuite();
+		     ->_addCasesToCollection()
+		     ->_determineSuiteType()->sqlLogger->startSuite();
 
 		foreach($this->testCaseCollection as $testCase):
 			/** @var TestCase $testCase */
@@ -550,6 +551,30 @@ class TestSuite
 			$this->output('Set script timeout setting to ' . $scriptTimeout . ' seconds.');
 			$this->webDriver->manage()->timeouts()->setScriptTimeout($scriptTimeout);
 		endif;
+
+		return $this;
+	}
+
+
+	/**
+	 * Determine whether the test suite should create reference images
+	 * or should compare with already created reference images.
+	 *
+	 * @return $this|TestSuite Same instance for chained method calls.
+	 */
+	private function _determineSuiteType()
+	{
+		$client = $this->seleniumFactory->createClientEmulator();
+		if(!(new \FilesystemIterator($client->getExpectedImagesDirectory()))->valid())
+		{
+			$this->getSuiteSettings()->setReferenceImageSuite(true);
+			$this->output('Running reference images test suite');
+		}
+		else
+		{
+			$this->getSuiteSettings()->setReferenceImageSuite(false);
+			$this->output('Running compare images test suite');
+		}
 
 		return $this;
 	}
