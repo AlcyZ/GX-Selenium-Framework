@@ -367,8 +367,8 @@ class Client
 		                                               ->getCompareImageDir() : $this->testSuite->getSuiteSettings()
 		                                                                                        ->getDiffImageDir();
 
-		$imagesDirectory = $root . DIRECTORY_SEPARATOR . $this->testSuite->getSuiteSettings()->getBranch()
-		                   . DIRECTORY_SEPARATOR . $this->testSuite->getSuiteSettings()->getSuiteName();
+		$imagesDirectory = $root . DIRECTORY_SEPARATOR . trim($this->testSuite->getSuiteSettings()->getBranch())
+		                   . DIRECTORY_SEPARATOR . trim($this->testSuite->getSuiteSettings()->getSuiteName());
 
 		if(!is_dir($imagesDirectory))
 		{
