@@ -585,7 +585,7 @@ class TestSuite
 	 */
 	public function getSuiteSettings()
 	{
-		return $this->suiteSettings;
+ 		return $this->suiteSettings;
 	}
 
 
