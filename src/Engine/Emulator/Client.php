@@ -299,7 +299,7 @@ class Client
 	 *
 	 * @return string
 	 */
-	private function getExpectedImagesDirectory()
+	public function getExpectedImagesDirectory()
 	{
 		if(!$this->expectedImagesDirectory)
 		{
@@ -315,7 +315,7 @@ class Client
 	 *
 	 * @return string
 	 */
-	private function getDiffImagesDirectory()
+	public function getDiffImagesDirectory()
 	{
 		if(!$this->diffImagesDirectory)
 		{
