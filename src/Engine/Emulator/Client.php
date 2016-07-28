@@ -148,7 +148,7 @@ class Client
 	 *
 	 * @return bool True on success, false otherwise.
 	 */
-	public function expectOpenUrl($url, $attempts = 2)
+	public function expectOpenUrl($url, $attempts = 5)
 	{
 		if($this->isFailed()):
 			return false;
