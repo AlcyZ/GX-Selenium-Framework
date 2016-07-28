@@ -24,6 +24,7 @@
 
 namespace GXSelenium\Engine\Emulator;
 
+use Facebook\WebDriver\Exception\ScriptTimeoutException;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\WebDriverDimension;
 use Facebook\WebDriver\WebDriverElement;
@@ -111,9 +112,74 @@ class Client
 		endforeach;
 		$url = rtrim($url, '/');
 		$this->output('Open url|' . "\t" . $url);
-		$this->testSuite->getWebDriver()->get($url);
+		$this->openUrl($url);
 
 		return $this;
+	}
+
+
+	/**
+	 * Opens the given url.
+	 *
+	 * @param string $url Url to be opened.
+	 *
+	 * @return $this|Client Same instance for chained method calls.
+	 */
+	public function openUrl($url)
+	{
+		if($this->isFailed()):
+			return $this;
+		endif;
+		$result = $this->expectOpenUrl($url);
+
+		if(!$result):
+			$this->error('Failed to open url "' . $url . '"');
+		endif;
+
+		return $this;
+	}
+	
+
+	/**
+	 * Try to open the given url.
+	 *
+	 * @param string $url Url to be opened.
+	 * @param int    $attempts
+	 *
+	 * @return bool True on success, false otherwise.
+	 */
+	public function expectOpenUrl($url, $attempts = 2)
+	{
+		if($this->isFailed()):
+			return false;
+		endif;
+
+		$result  = false;
+		$attempt = 0;
+		while($attempt < $attempts):
+			try
+			{
+				$this->testSuite->getWebDriver()->get($url);
+				$result = true;
+				break;
+			}
+			catch(ScriptTimeoutException $e)
+			{
+				$msg = 'Unexpected ScriptTimeoutExceptionThrown and caught.' . "\n";
+				if(method_exists('getResults', $e)):
+					$msg .= 'Results: ' . $e->getResults() . "\n";
+				endif;
+				$msg .= 'Stack Trace: ' . $e->getTraceAsString();
+				$this->getTestSuite()->getFileLogger()->log($msg, 'scriptTimeoutException');
+			}
+			catch(\Exception $e)
+			{
+				// Todo: Maybe display message here later ..
+			}
+			$attempt++;
+		endwhile;
+
+		return $result;
 	}
 
 
