@@ -367,10 +367,9 @@ class Client
 	 */
 	public function getExpectedImagesDirectory()
 	{
-		if(!$this->expectedImagesDirectory)
-		{
+		if(!$this->expectedImagesDirectory):
 			$this->_prepareExpectedImagesDirectory();
-		}
+		endif;
 
 		return $this->expectedImagesDirectory;
 	}
@@ -383,10 +382,9 @@ class Client
 	 */
 	public function getDiffImagesDirectory()
 	{
-		if(!$this->diffImagesDirectory)
-		{
+		if(!$this->diffImagesDirectory):
 			$this->_prepareDiffImagesDirectory();
-		}
+		endif;
 
 		return $this->diffImagesDirectory;
 	}
@@ -438,23 +436,18 @@ class Client
 		                   . DIRECTORY_SEPARATOR . str_replace(' ', '',
 		                                                       $this->testSuite->getSuiteSettings()->getSuiteName());
 
-		if(!is_dir($imagesDirectory))
-		{
+		if(!is_dir($imagesDirectory)):
 			$success = mkdir($imagesDirectory, 0777, true);
-			if(!$success)
-			{
+			if(!$success):
 				throw new \RuntimeException('Unable to create the directory: "' . $imagesDirectory . '"');
-			}
-		}
+			endif;
+		endif;
 
-		if($type === 'expected')
-		{
+		if($type === 'expected'):
 			$this->expectedImagesDirectory = $imagesDirectory;
-		}
-		else
-		{
+		else:
 			$this->diffImagesDirectory = $imagesDirectory;
-		}
+		endif;
 
 		return $this;
 	}
