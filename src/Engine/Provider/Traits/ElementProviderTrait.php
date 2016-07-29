@@ -8,6 +8,7 @@ use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\WebDriverElement;
 use GXSelenium\Engine\Emulator\Client;
 use GXSelenium\Engine\NullObjects\WebDriverElementNull;
+use GXSelenium\Engine\TestSuite;
 
 /**
  * Class ElementProviderTrait
@@ -416,7 +417,6 @@ trait ElementProviderTrait
 	}
 
 
-
 	/**
 	 * Returns an element by the given name.
 	 * If nothing is found, an empty array will be returned.
@@ -579,18 +579,11 @@ trait ElementProviderTrait
 				
 				return call_user_func([$this->getWebDriver(), $findMethod], $by);
 			}
-			catch(StaleElementReferenceException $e)
-			{
-				$msg = ($attempt + 1) . '. attempt to get an element by ' . $by->getMechanism() . '"' . $by->getValue()
-				       . '" failed, StaleElementReferenceException thrown';
-				$this->output($msg);
-			}
 			catch(\Exception $e)
 			{
-				$msg = ($attempt + 1) . '. attempt to get an element by ' . $by->getMechanism() . '"' . $by->getValue()
-				       . '" failed';
-				$ex  = get_class($e) . ' thrown and caught' . "\n";
-				$this->output($msg . $ex);
+				$msg = get_class($e) . ' thrown and caught while trying to get ' . ($attempt + 1)
+				       . '. time element by ' . $by->getMechanism() . ' "' . $by->getValue() . '"';
+				$this->getTestSuite()->getFileLogger()->log($msg . "\n" . $e->getTraceAsString(), 'exceptions');
 			}
 			$attempt++;
 		endwhile;
@@ -647,4 +640,12 @@ trait ElementProviderTrait
 	 * @return $this|Client Same instance for chained method calls.
 	 */
 	abstract public function error($message);
+
+
+	/**
+	 * Returns the test suite instance.
+	 *
+	 * @return TestSuite
+	 */
+	abstract public function getTestSuite();
 }

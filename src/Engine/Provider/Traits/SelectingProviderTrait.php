@@ -31,6 +31,7 @@ use Facebook\WebDriver\WebDriverElement;
 use Facebook\WebDriver\WebDriverSelect;
 use GXSelenium\Engine\Emulator\Client;
 use GXSelenium\Engine\Provider\ElementProvider;
+use GXSelenium\Engine\TestSuite;
 
 /**
  * Trait SelectEmulator
@@ -1378,18 +1379,11 @@ trait SelectingProviderTrait
 				$result = true;
 				break;
 			}
-			catch(StaleElementReferenceException $e)
-			{
-				$msg = ($attempt + 1) . '. attempt to select an elements ' . $type . ' "' . $value . '" by '
-				       . $by->getMechanism() . '"' . $by->getValue() . '" failed';
-				$this->output($msg);
-			}
 			catch(\Exception $e)
 			{
-				$msg = ($attempt + 1) . '. attempt to select an elements ' . $type . ' "' . $value . '" by '
-				       . $by->getMechanism() . '"' . $by->getValue() . '" failed' . "\n";
-				$ex  = get_class($e) . ' thrown and caught' . "\n";
-				$this->output($msg . $ex);
+				$msg = get_class($e) . ' thrown and caught while trying to select ' . ($attempt + 1)
+				       . '. time element by ' . $by->getMechanism() . ' "' . $by->getValue() . '"';
+				$this->getTestSuite()->getFileLogger()->log($msg . "\n" . $e->getTraceAsString(), 'exceptions');
 			}
 			$attempt++;
 		endwhile;
@@ -1916,4 +1910,12 @@ trait SelectingProviderTrait
 	 * @return bool
 	 */
 	abstract public function isFailed();
+
+
+	/**
+	 * Returns the test suite instance.
+	 *
+	 * @return TestSuite
+	 */
+	abstract public function getTestSuite();
 }

@@ -29,6 +29,7 @@ use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\WebDriverElement;
 use GXSelenium\Engine\Provider\ElementProvider;
+use GXSelenium\Engine\TestSuite;
 
 /**
  * Class InspectionProvider
@@ -753,31 +754,19 @@ trait InspectionProviderTrait
 				$result  = call_user_func([$element, $type]);
 				break;
 			}
-			catch(StaleElementReferenceException $e)
-			{
-				if(!empty($element)):
-					$text = ($attempt + 1) . '. attempt to inspect an element failed';
-				else:
-					$text = ($attempt + 1) . '. attempt to inspect an element which is not found failed';
-				endif;
-				$text .= "\n";
-				$ex = get_class($e) . ' thrown and caught';
-				$this->output($text . $ex);
-			}
-				// Todo: specify exception with more data.
 			catch(\Exception $e)
 			{
-				if(!empty($element)):
-					$text = ($attempt + 1) . '. attempt to inspect an element failed';
-				else:
-					$text = ($attempt + 1) . '. attempt to inspect an element which is not found failed';
-				endif;
-				$text .= "\n";
-				$ex = get_class($e) . ' thrown and caught';
-				$this->output($text . $ex);
+				$msg = get_class($e) . ' thrown and caught while trying to inspect ' . ($attempt + 1)
+				       . '. time element by ' . $by->getMechanism() . ' "' . $by->getValue() . '"';
+				$this->getTestSuite()->getFileLogger()->log($msg . "\n" . $e->getTraceAsString(), 'exceptions');
 			}
 			$attempt++;
 		endwhile;
+
+		if(!$result):
+			$this->output('Element by ' . $by->getMechanism() . ' "' . $by->getValue() . '" is not '
+			              . strtolower(str_replace('is', '', $type)));
+		endif;
 
 		return $result;
 	}
@@ -788,6 +777,7 @@ trait InspectionProviderTrait
 	 * Handles the expectations of displayed, enabled or selected elements.
 	 * Recommended usage in web driver waits.
 	 *
+	 * @param string      $type     Inspection type, whether isDisplayed, isEnabled or isSelected is allowed.
 	 * @param WebDriverBy $parentBy Expected container element (WebDriverBy instance, access via static methods)
 	 * @param WebDriverBy $by       Expected element (WebDriverBy instance, access via static methods)
 	 * @param int         $attempts (Optional) Attempts until the method will fail and return false.
@@ -814,31 +804,20 @@ trait InspectionProviderTrait
 				$result    = call_user_func([$element, $type]);
 				break;
 			}
-			catch(StaleElementReferenceException $e)
-			{
-				if(!empty($element)):
-					$text = ($attempt + 1) . '. attempt to inspect an element failed';
-				else:
-					$text = ($attempt + 1) . '. attempt to inspect an element which is not found failed';
-				endif;
-				$text .= "\n";
-				$ex = get_class($e) . ' thrown and caught';
-				$this->output($text . $ex);
-			}
-				// Todo: specify exception with more data.
 			catch(\Exception $e)
 			{
-				if(!empty($element)):
-					$text = ($attempt + 1) . '. attempt to inspect an element failed';
-				else:
-					$text = ($attempt + 1) . '. attempt to inspect an element which is not found failed';
-				endif;
-				$text .= "\n";
-				$ex = get_class($e) . ' thrown and caught';
-				$this->output($text . $ex);
+				$msg = get_class($e) . ' thrown and caught while trying to click ' . ($attempt + 1)
+				       . '. time on element by ' . $by->getMechanism() . ' "' . $by->getValue() . '"';
+				$this->getTestSuite()->getFileLogger()->log($msg, 'exceptions');
 			}
 			$attempt++;
 		endwhile;
+
+		if(!$result):
+			$this->output('Element by ' . $by->getMechanism() . ' "' . $by->getValue() . '" inside element by '
+			              . $parentBy->getMechanism() . ' "' . $parentBy->getValue() . '" is not '
+			              . strtolower(str_replace('is', '', $type)));
+		endif;
 
 		return $result;
 	}
@@ -1348,4 +1327,12 @@ trait InspectionProviderTrait
 	 * @return bool
 	 */
 	abstract public function isFailed();
+
+
+	/**
+	 * Returns the test suite instance.
+	 *
+	 * @return TestSuite
+	 */
+	abstract public function getTestSuite();
 }

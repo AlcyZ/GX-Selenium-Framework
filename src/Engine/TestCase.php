@@ -198,6 +198,7 @@ abstract class TestCase
 	 */
 	private function _prepareAndLogErrorMessage($message, \Exception $e = null)
 	{
+		$this->output($message);
 		$screenMessage = implode('', array_map('ucfirst', explode(' ', $message)));
 		if($e):
 

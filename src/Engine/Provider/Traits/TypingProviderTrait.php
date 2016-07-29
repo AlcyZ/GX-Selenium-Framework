@@ -30,6 +30,7 @@ use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\WebDriverElement;
 use GXSelenium\Engine\Provider\ElementProvider;
+use GXSelenium\Engine\TestSuite;
 
 /**
  * Trait TypingProviderTrait
@@ -69,18 +70,11 @@ trait TypingProviderTrait
 				$result = true;
 				break;
 			}
-				// Todo: specify exception with more data.
 			catch(\Exception $e)
 			{
-				if(!empty($element)):
-					$text = ($attempt + 1) . '. attempt to type on element ' . $this->_getTypingElementsHtml($element)
-					        . ' failed';
-				else:
-					$text = ($attempt + 1) . '. attempt to type on an element which is not found failed';
-				endif;
-				$text .= "\n";
-				$ex = get_class($e) . ' thrown and caught';
-				$this->output($text . $ex);
+				$msg = get_class($e) . ' thrown and caught while trying to type ' . ($attempt + 1)
+				       . '. time on element by ' . $by->getMechanism() . ' "' . $by->getValue() . '"';
+				$this->getTestSuite()->getFileLogger()->log($msg . "\n" . $e->getTraceAsString(), 'exceptions');
 			}
 			$attempt++;
 		endwhile;
@@ -575,4 +569,12 @@ trait TypingProviderTrait
 	 * @return bool
 	 */
 	abstract public function isFailed();
+
+
+	/**
+	 * Returns the test suite instance.
+	 *
+	 * @return TestSuite
+	 */
+	abstract public function getTestSuite();
 }

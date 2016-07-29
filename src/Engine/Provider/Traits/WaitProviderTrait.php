@@ -20,7 +20,7 @@ use GXSelenium\Engine\Emulator\Client;
  * Class WaitProviderTrait
  * @package GXSelenium\Engine\Provider\Traits
  *
- * @Todo Implement methods ::waitUntilNot[Type][WebDriverBy]. (type === selected || type === enabled)
+ * @Todo    Implement methods ::waitUntilNot[Type][WebDriverBy]. (type === selected || type === enabled)
  */
 trait WaitProviderTrait
 {
@@ -827,6 +827,9 @@ trait WaitProviderTrait
 			throw new \InvalidArgumentException('the $type argument has to be whether "displayed", "enabled" or '
 			                                    . '"selected"');
 		endif;
+
+		$this->output('Wait ' . $timeOut . ' seconds until an element with ' . $by->getMechanism() . ' "'
+		              . $by->getValue() . '" is ' . $type);
 
 		$expectMethod = 'expectsToBe' . ucfirst($type);
 		try

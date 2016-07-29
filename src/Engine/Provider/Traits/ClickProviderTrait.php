@@ -68,13 +68,6 @@ trait ClickProviderTrait
 				$result = true;
 				break;
 			}
-			catch(StaleElementReferenceException $e)
-			{
-				$text = ($attempt + 1) . '. attempt to click on an failed';
-				$text .= "\n";
-				$ex = get_class($e) . ' thrown and caught';
-				$this->output($text . $ex);
-			}
 			catch(ScriptTimeoutException $e)
 			{
 				// Edge case that the client first clicks, and then is an ScriptTimeoutException thrown.
@@ -89,10 +82,9 @@ trait ClickProviderTrait
 			}
 			catch(\Exception $e)
 			{
-				$text = ($attempt + 1) . '. attempt to click on an element failed';
-				$text .= "\n";
-				$ex = get_class($e) . ' thrown and caught';
-				$this->output($text . $ex);
+				$msg = get_class($e) . ' thrown and caught while trying to click ' . ($attempt + 1)
+				       . '. time on element by ' . $by->getMechanism() . ' "' . $by->getValue() . '"';
+				$this->getTestSuite()->getFileLogger()->log($msg, 'exceptions');
 			}
 			$attempt++;
 		endwhile;
@@ -131,18 +123,11 @@ trait ClickProviderTrait
 				$result = true;
 				break;
 			}
-			catch(StaleElementReferenceException $e)
-			{
-				$text = ($attempt + 1) . '. attempt to click on element  failed' . "\n";
-				$ex   = get_class($e) . ' thrown and caught';
-				$this->output($text . $ex);
-			}
-				// Todo: specify exception with more data.
 			catch(\Exception $e)
 			{
-				$text = ($attempt + 1) . '. attempt to click on element failed' . "\n";
-				$ex   = get_class($e) . ' thrown and caught';
-				$this->output($text . $ex);
+				$msg = get_class($e) . ' thrown and caught while trying to click ' . ($attempt + 1)
+				       . '. time on element by ' . $by->getMechanism() . ' "' . $by->getValue() . '"';
+				$this->getTestSuite()->getFileLogger()->log($msg . "\n" . $e->getTraceAsString(), 'exceptions');
 			}
 			$attempt++;
 		endwhile;
