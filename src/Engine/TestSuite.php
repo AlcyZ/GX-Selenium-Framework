@@ -154,7 +154,32 @@ class TestSuite
 			$this->_sendErrorMail();
 		endif;
 
+		if($this->isFailed() && $this->getSuiteSettings()->isReferenceImageSuite()):
+			$client = $this->seleniumFactory->createClientEmulator();
+			$this->_truncateDirectory($client->getExpectedImagesDirectory());
+		endif;
+
 		$this->_closeWebDriver();
+
+		return $this;
+	}
+	
+
+	/**
+	 * Truncates the given directory.
+	 *
+	 * @param string $directory Path to expected directory.
+	 *
+	 * @return $this|TestSuite Same instance for chained method calls.
+	 */
+	private function _truncateDirectory($directory)
+	{
+		$iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($directory,
+		                                                                           \RecursiveDirectoryIterator::SKIP_DOTS),
+		                                           \RecursiveIteratorIterator::CHILD_FIRST);
+		foreach($iterator as $fileInfo):
+			$fileInfo->isDir() ? rmdir($fileInfo) : unlink($fileInfo);
+		endforeach;
 
 		return $this;
 	}
@@ -593,7 +618,7 @@ class TestSuite
 	 */
 	public function getSuiteSettings()
 	{
- 		return $this->suiteSettings;
+		return $this->suiteSettings;
 	}
 
 
