@@ -155,6 +155,7 @@ class TestSuite
 		endif;
 
 		if($this->isFailed() && $this->getSuiteSettings()->isReferenceImageSuite()):
+			$this->output('Error in reference image suite occurred, truncate reference images directory');
 			$client = $this->seleniumFactory->createClientEmulator();
 			$this->_truncateDirectory($client->getExpectedImagesDirectory());
 		endif;
