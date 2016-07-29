@@ -195,6 +195,10 @@ class SuiteSettings
 	 */
 	private $referenceImageSuite = false;
 
+	/**
+	 * @var bool
+	 */
+	private $forceReferenceImageSuite = false;
 
 	/**
 	 * Initialize the suite settings.
@@ -784,5 +788,23 @@ class SuiteSettings
 	public function setReferenceImageSuite($referenceImageSuite)
 	{
 		$this->referenceImageSuite = $referenceImageSuite;
+	}
+
+
+	/**
+	 * @return boolean
+	 */
+	public function isForceReferenceImageSuite()
+	{
+		return $this->forceReferenceImageSuite;
+	}
+
+
+	/**
+	 * @param boolean $forceReferenceImageSuite
+	 */
+	public function setForceReferenceImageSuite($forceReferenceImageSuite)
+	{
+		$this->forceReferenceImageSuite = $forceReferenceImageSuite;
 	}
 }
