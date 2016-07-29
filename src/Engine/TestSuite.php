@@ -564,6 +564,14 @@ class TestSuite
 	 */
 	private function _determineSuiteType()
 	{
+		if($this->getSuiteSettings()->isForceReferenceImageSuite())
+		{
+			$this->getSuiteSettings()->setReferenceImageSuite(true);
+			$this->output('Running reference images test suite [forced]');
+
+			return $this;
+		}
+
 		$client = $this->seleniumFactory->createClientEmulator();
 		if(!(new \FilesystemIterator($client->getExpectedImagesDirectory()))->valid())
 		{
