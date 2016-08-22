@@ -151,39 +151,41 @@ abstract class TestCase
 	/**
 	 * Logs an error and do a screenshot of the current screen.
 	 *
-	 * @param string $message Error message to log.
+	 * @param string      $message    Error message to log.
+	 * @param array|null $errorImage (Optional) Existing error image name.
 	 *
 	 * @Todo Remove underscore prefix, adjust all method calls.
 	 *
 	 * @return $this|TestCase Same instance for chained method calls.
 	 */
-	public function _error($message)
+	public function _error($message, $errorImage = null)
 	{
 		if($this->_isFailed()):
 			return $this;
 		endif;
 
-		return $this->_prepareAndLogErrorMessage($message);
+		return $this->_prepareAndLogErrorMessage($message, null, $errorImage);
 	}
 
 
 	/**
 	 * Logs a thrown exception and do a screenshot of the current screen.
 	 *
-	 * @param string     $message Error message of the current case.
-	 * @param \Exception $e       Thrown exception.
+	 * @param string      $message    Error message of the current case.
+	 * @param \Exception  $e          Thrown exception.
+	 * @param string|null $errorImage (Optional) Existing error image name.
 	 *
 	 * @Todo Remove underscore prefix, adjust all method calls.
 	 *
 	 * @return $this|TestCase Same instance for chained method calls.
 	 */
-	public function _exceptionError($message, \Exception $e)
+	public function _exceptionError($message, \Exception $e, $errorImage = null)
 	{
 		if($this->_isFailed()):
 			return $this;
 		endif;
 
-		return $this->_prepareAndLogErrorMessage($message, $e);
+		return $this->_prepareAndLogErrorMessage($message, $e, $errorImage);
 	}
 
 
@@ -191,12 +193,13 @@ abstract class TestCase
 	 * Prepares the error text and screen shot name.
 	 * Afterwards, the ::logData method is called.
 	 *
-	 * @param string          $message Error message.
-	 * @param \Exception|null $e       (Optional) Exception if thrown.
+	 * @param string          $message    Error message.
+	 * @param \Exception|null $e          (Optional) Exception if thrown.
+	 * @param array|null     $errorImage (Optional) Existing error image name.
 	 *
 	 * @return TestCase|$this Same instance for chained method calls.
 	 */
-	private function _prepareAndLogErrorMessage($message, \Exception $e = null)
+	private function _prepareAndLogErrorMessage($message, \Exception $e = null, $errorImage = null)
 	{
 		$this->output($message);
 		$screenMessage = implode('', array_map('ucfirst', explode(' ', $message)));
@@ -221,7 +224,7 @@ abstract class TestCase
 
 		endif;
 
-		return $this->_logData($message, $txt, $screenName);
+		return $this->_logData($message, $txt, $screenName, $errorImage);
 	}
 
 
@@ -229,19 +232,27 @@ abstract class TestCase
 	 * Logs data in the database and filesystem.
 	 * A screenshot of the current screen will be created.
 	 *
-	 * @param string $message    Error message.
-	 * @param string $txt        Prepared error text.
-	 * @param string $screenName Name of screen shot.
+	 * @param string      $message    Error message.
+	 * @param string      $txt        Prepared error text.
+	 * @param string      $screenName Name of screen shot.
+	 * @param array|null $errorImage (Optional) Existing error image name.
 	 *
 	 * @return $this Same instance for chained method calls.
 	 */
-	private function _logData($message, $txt, $screenName)
+	private function _logData($message, $txt, $screenName, $errorImage = null)
 	{
 		try
 		{
-			$screenPath = $this->testSuite->getFileLogger()
-			                              ->screenshot($this->testSuite->getWebDriver(),
-			                                           str_replace(' ', '', $screenName));
+			if($errorImage)
+			{
+				$screenPath = array_shift($errorImage);
+			}
+			else
+			{
+				$screenPath = $this->testSuite->getFileLogger()
+				                              ->screenshot($this->testSuite->getWebDriver(),
+				                                           str_replace(' ', '', $screenName));
+			}
 		}
 		catch(WebDriverCurlException $e)
 		{

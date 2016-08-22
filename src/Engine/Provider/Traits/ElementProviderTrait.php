@@ -581,8 +581,8 @@ trait ElementProviderTrait
 			}
 			catch(\Exception $e)
 			{
-				$msg = get_class($e) . ' thrown and caught while trying to get ' . ($attempt + 1)
-				       . '. time element by ' . $by->getMechanism() . ' "' . $by->getValue() . '"';
+				$msg = get_class($e) . ' thrown and caught while trying to get ' . ($attempt + 1) . '. time element by '
+				       . $by->getMechanism() . ' "' . $by->getValue() . '"';
 				$this->getTestSuite()->getFileLogger()->log($msg . "\n" . $e->getTraceAsString(), 'exceptions');
 			}
 			$attempt++;
@@ -635,11 +635,12 @@ trait ElementProviderTrait
 	/**
 	 * Logs an error and do a screen shot of the current screen.
 	 *
-	 * @param string $message Message to log.
+	 * @param string      $message    Message to log.
+	 * @param string|null $errorImage (Optional) Existing error image name.
 	 *
-	 * @return $this|Client Same instance for chained method calls.
+	 * @return $this|\GXSelenium\Engine\Emulator\Client Same instance for chained method calls.
 	 */
-	abstract public function error($message);
+	abstract public function error($message, $errorImage = null);
 
 
 	/**

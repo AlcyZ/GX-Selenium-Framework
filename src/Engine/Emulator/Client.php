@@ -227,13 +227,14 @@ class Client
 	/**
 	 * Logs an error and do a screen shot of the current screen.
 	 *
-	 * @param string $message Message to log.
+	 * @param string     $message    Message to log.
+	 * @param array|null $errorImage (Optional) Existing error image name.
 	 *
 	 * @return $this|Client Same instance for chained method calls.
 	 */
-	public function error($message)
+	public function error($message, $errorImage = null)
 	{
-		$this->testSuite->getSuiteSettings()->getCurrentTestCase()->_error($message);
+		$this->testSuite->getSuiteSettings()->getCurrentTestCase()->_error($message, $errorImage);
 
 		return $this;
 	}
@@ -351,8 +352,8 @@ class Client
 		$result = $this->imageMagick->compareImages($compareImg, $actualImage, $compareImage,
 		                                            $this->getDiffImagesDirectory());
 
-		if(!$result):
-			$this->error('Actual screen does not looking equal to compare image "' . $compareImage . '"');
+		if(count($result) > 0):
+			$this->error('Actual screen does not looking equal to compare image "' . $compareImage . '"', $result);
 		endif;
 		unlink($actualImage);
 
