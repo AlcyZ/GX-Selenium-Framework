@@ -590,6 +590,12 @@ class TestSuite
 	 */
 	private function _determineSuiteType()
 	{
+		if(!$this->getSuiteSettings()->isCompareImages())
+		{
+			$this->output('Running test suite without compare images');
+
+			return $this;
+		}
 		if($this->getSuiteSettings()->isForceReferenceImageSuite())
 		{
 			$this->getSuiteSettings()->setReferenceImageSuite(true);
