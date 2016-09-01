@@ -387,7 +387,7 @@ abstract class TestCase
 	private function _handleUnexpectedException(\Exception $e)
 	{
 		$exceptionStackTrace = $e->getTrace();
-		$classSegments       = $exceptionStackTrace[0]['class'];
+		$classSegments       = explode('\\', $exceptionStackTrace[0]['class']);
 		$class               = $classSegments[count($classSegments) - 1];
 		$type                = $exceptionStackTrace[0]['type'];
 		$method              = $exceptionStackTrace[0]['function'];
