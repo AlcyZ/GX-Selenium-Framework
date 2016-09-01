@@ -80,15 +80,15 @@ abstract class TestCase
 		}
 		catch(ElementNotVisibleException $e)
 		{
-			$this->_exceptionError('todo: try to get method which throws this exception', $e);
+			$this->_handleUnexpectedException($e);
 		}
 		catch(InvalidSelectorException $ex)
 		{
-			$this->_exceptionError('todo: try to get method which throws this exception', $ex);
+			$this->_handleUnexpectedException($ex);
 		}
 		catch(\Exception $exe)
 		{
-			$this->_exceptionError('todo: try to get method which throws this exception', $exe);
+			$this->_handleUnexpectedException($exe);
 		}
 		if(!$this->_isFailed())
 		{
@@ -151,7 +151,7 @@ abstract class TestCase
 	/**
 	 * Logs an error and do a screenshot of the current screen.
 	 *
-	 * @param string      $message    Error message to log.
+	 * @param string     $message    Error message to log.
 	 * @param array|null $errorImage (Optional) Existing error image name.
 	 *
 	 * @Todo Remove underscore prefix, adjust all method calls.
@@ -195,7 +195,7 @@ abstract class TestCase
 	 *
 	 * @param string          $message    Error message.
 	 * @param \Exception|null $e          (Optional) Exception if thrown.
-	 * @param array|null     $errorImage (Optional) Existing error image name.
+	 * @param array|null      $errorImage (Optional) Existing error image name.
 	 *
 	 * @return TestCase|$this Same instance for chained method calls.
 	 */
@@ -232,9 +232,9 @@ abstract class TestCase
 	 * Logs data in the database and filesystem.
 	 * A screenshot of the current screen will be created.
 	 *
-	 * @param string      $message    Error message.
-	 * @param string      $txt        Prepared error text.
-	 * @param string      $screenName Name of screen shot.
+	 * @param string     $message    Error message.
+	 * @param string     $txt        Prepared error text.
+	 * @param string     $screenName Name of screen shot.
 	 * @param array|null $errorImage (Optional) Existing error image name.
 	 *
 	 * @return $this Same instance for chained method calls.
@@ -269,7 +269,7 @@ abstract class TestCase
 
 		return $this;
 	}
-	
+
 
 	/**
 	 * Adds error messages after an error is occurred.
@@ -313,7 +313,7 @@ abstract class TestCase
 
 		return $classNamespaceArray[count($classNamespaceArray) - 1];
 	}
-	
+
 
 	/**
 	 * Method to output messages in the running console.
@@ -339,7 +339,7 @@ abstract class TestCase
 
 		return $this;
 	}
-	
+
 
 	/**
 	 * Converts a camel case string to an human readable string. (Whitespaces instead of camel case)
@@ -375,6 +375,24 @@ abstract class TestCase
 		endif;
 
 		return $debugBacktrace[$deepness][$return];
+	}
+
+
+	/**
+	 * Handles unexpected exception.
+	 *
+	 * @param \Exception $e
+	 */
+	private function _handleUnexpectedException(\Exception $e)
+	{
+		$exceptionStackTrace = $e->getTrace();
+		$class               = $exceptionStackTrace[0]['class'];
+		$type                = $exceptionStackTrace[0]['type'];
+		$method              = $exceptionStackTrace[0]['function'];
+		$line                = $exceptionStackTrace[0]['line'];
+
+		$msg = 'Unexpected exception thrown by ' . $class . $type . $method . ' on line ' . $line;
+		$this->_exceptionError($msg, $exe);
 	}
 
 
