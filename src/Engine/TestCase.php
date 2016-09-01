@@ -392,7 +392,7 @@ abstract class TestCase
 		$line                = $exceptionStackTrace[0]['line'];
 
 		$msg = 'Unexpected exception thrown by ' . $class . $type . $method . ' on line ' . $line;
-		$this->_exceptionError($msg, $exe);
+		$this->_exceptionError($msg, $e);
 	}
 
 
