@@ -245,7 +245,8 @@ abstract class TestCase
 		{
 			if($errorImage)
 			{
-				$screenPath = array_shift($errorImage);
+				$screenPath = $this->testSuite->getSuiteSettings()->getBranch() . '/'
+				              . $this->testSuite->getSuiteSettings()->getSuiteName() . '/' . array_shift($errorImage);
 			}
 			else
 			{
