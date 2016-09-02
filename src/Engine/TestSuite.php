@@ -158,6 +158,37 @@ class TestSuite
 			$this->output('Error in reference image suite occurred, truncate reference images directory');
 			$client = $this->seleniumFactory->createClientEmulator();
 			$this->_truncateDirectory($client->getExpectedImagesDirectory());
+
+			// copied and adjusted from send error mail method
+			{
+				$from  = $this->suiteSettings->getSendMailFrom();
+				$to    = $this->suiteSettings->getSendMailTo();
+				$reply = $this->suiteSettings->getSendMailReplyTo();
+
+				if($to === '' || $reply === '' || $from === ''):
+					$this->output('Invalid E-Mail credentials, not possible to send the error mail');
+
+					return $this;
+				endif;
+
+				$subject = '[Selenium] Anlegen der Referenzbilder fehlgeschlagen';
+				$header  = 'From: ' . $from . "\r\n" . 'Reply-To: ' . $reply . "\r\n"
+				           . 'Content-Type: text/plain; charset=UTF-8"';
+
+				$message = 'Es ist ein Fehler beim anlegen der Referenzbilder aufgetreten.';
+				$message .= "\n" . 'Bitte führe folgende Befehle aus, um sie erneut anzulegen.';
+				$message .= "\n" . 'ssh ci-runner (zum Login auf den CI-Server)';
+				$message .= "\n"
+				            . 'php /var/www/selenium-statistics/launcher/start rebuild_references gxci/selenium_builds/'
+				            . $this->suiteSettings->getBranch() . ' ci_' . str_replace('.', '_',
+				                                                                       $this->suiteSettings->getBranch()) . '_TEST ' . $this->suiteSettings->getBranch();
+
+				mail($to, $subject, $message, $header);
+				$this->output('Reference Suite error E-Mail send!');
+
+				return $this;
+			}
+
 		endif;
 
 		$this->_closeWebDriver();
