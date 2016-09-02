@@ -199,7 +199,7 @@ class TestSuite
 
 	/**
 	 * Truncates the given directory.
-	 *
+	 * 
 	 * @param string $directory Path to expected directory.
 	 *
 	 * @return $this|TestSuite Same instance for chained method calls.
