@@ -590,6 +590,7 @@ class TestSuite
 	 */
 	private function _determineSuiteType()
 	{
+		$client = $this->seleniumFactory->createClientEmulator();
 		if(!$this->getSuiteSettings()->isCompareImages())
 		{
 			$this->output('Running test suite without compare images');
@@ -600,6 +601,8 @@ class TestSuite
 		{
 			$this->getSuiteSettings()->setReferenceImageSuite(true);
 			$this->output('Running reference images test suite [forced]');
+			$this->_truncateDirectory($client->getExpectedImagesDirectory());
+			$this->output('Truncate expected images directory "' . $client->getExpectedImagesDirectory() . '"');
 
 			return $this;
 		}
@@ -609,6 +612,8 @@ class TestSuite
 		{
 			$this->getSuiteSettings()->setReferenceImageSuite(true);
 			$this->output('Running reference images test suite');
+			$this->_truncateDirectory($client->getExpectedImagesDirectory());
+			$this->output('Truncate expected images directory "' . $client->getExpectedImagesDirectory() . '"');
 		}
 		else
 		{
