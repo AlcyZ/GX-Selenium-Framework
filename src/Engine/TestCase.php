@@ -241,6 +241,9 @@ abstract class TestCase
 	 */
 	private function _logData($message, $txt, $screenName, $errorImage = null)
 	{
+		// scroll to top of the page
+		$this->client->scrollTo(0, 0);
+		//$this->testSuite->getWebDriver()->executeScript('javascript:window')
 		try
 		{
 			if($errorImage)
