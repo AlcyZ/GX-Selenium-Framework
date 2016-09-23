@@ -48,10 +48,11 @@ trait ClickProviderTrait
 	 *
 	 * @param WebDriverBy $by       WebDriverBy instance to detect the expected element.
 	 * @param int         $attempts Amount of retries until the operation will fail.
+	 * @param bool        $link     (Optional) True if it is a link text to click on.
 	 *
 	 * @return bool
 	 */
-	public function expectClick(WebDriverBy $by, $attempts = 2)
+	public function expectClick(WebDriverBy $by, $attempts = 2, $link = false)
 	{
 		if($this->isFailed()):
 			return $this;
@@ -64,7 +65,9 @@ trait ClickProviderTrait
 			{
 				$element = $this->getWebDriver()->findElement($by);
 
-				if(strrpos($element->getAttribute('href'), '#') === (strlen($element->getAttribute('href')) - 1)):
+				if($link
+				   && strrpos($element->getAttribute('href'), '#') === (strlen($element->getAttribute('href')) - 1)
+				):
 					$this->output("\033[33mInvalid href attribute found\033[0m");
 					$attempt = $attempt + 0.1;
 					continue;
@@ -403,7 +406,7 @@ trait ClickProviderTrait
 		
 		$by = WebDriverBy::linkText($linkText);
 		
-		return $this->expectClick($by, $attempts);
+		return $this->expectClick($by, $attempts, true);
 	}
 
 
