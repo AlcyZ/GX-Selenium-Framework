@@ -63,6 +63,13 @@ trait ClickProviderTrait
 			try
 			{
 				$element = $this->getWebDriver()->findElement($by);
+
+				if(strrpos($element->getAttribute('href'), '#') === (strlen($element->getAttribute('href')) - 1)):
+					$this->output("\033[33mInvalid href attribute found\033[0m");
+					$attempt = $attempt + 0.1;
+					continue;
+				endif;
+
 				$this->scrollToElement($element);
 				$this->_logClick($element)->click();
 				$result = true;
