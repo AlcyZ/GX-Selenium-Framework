@@ -38,12 +38,12 @@ abstract class TestCase
 	/**
 	 * @var TestSuite
 	 */
-	protected $testSuite;
+	public $testSuite;
 	
 	/**
 	 * @var Client
 	 */
-	protected $client;
+	public $client;
 	
 	/**
 	 * @var bool
@@ -243,7 +243,6 @@ abstract class TestCase
 	{
 		// scroll to top of the page
 		$this->client->scrollTo(0, 0);
-		sleep(1);
 		//$this->testSuite->getWebDriver()->executeScript('javascript:window')
 		try
 		{
