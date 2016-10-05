@@ -39,18 +39,18 @@ abstract class TestCase
 	 * @var TestSuite
 	 */
 	protected $testSuite;
-
+	
 	/**
 	 * @var Client
 	 */
 	protected $client;
-
+	
 	/**
 	 * @var bool
 	 */
 	protected $failed = false;
-
-
+	
+	
 	/**
 	 * Initialize the test case.
 	 *
@@ -62,8 +62,8 @@ abstract class TestCase
 		$this->testSuite = $testSuite;
 		$this->client    = $client;
 	}
-
-
+	
+	
 	/**
 	 * Start the test case.
 	 *
@@ -96,8 +96,8 @@ abstract class TestCase
 		}
 		$this->testSuite->getSqlLogger()->endCase($this);
 	}
-
-
+	
+	
 	/**
 	 * Checks if the current test case is failed.
 	 * When the client or element provider is failed,
@@ -109,32 +109,32 @@ abstract class TestCase
 	{
 		$clientFailed          = $this->client->isFailed();
 		$elementProviderFailed = $this->client->isElementProviderFailed();
-
+		
 		if($clientFailed && $elementProviderFailed):
-
+			
 			$this->failed = true;
-
+		
 		elseif($clientFailed):
-
+			
 			$this->client->getElementProvider()->failed();
 			$this->failed = true;
-
+		
 		elseif($elementProviderFailed):
-
+			
 			$this->client->failed();
 			$this->failed = true;
-
+		
 		elseif($this->failed):
-
+			
 			$this->client->getElementProvider()->failed();
 			$this->client->failed();
-
+		
 		endif;
-
+		
 		return $this->failed;
 	}
-
-
+	
+	
 	/**
 	 * Returns the name of the current case.
 	 *
@@ -143,11 +143,11 @@ abstract class TestCase
 	public function getCaseName()
 	{
 		$classNamespaceArray = explode('\\', get_class($this));
-
+		
 		return $classNamespaceArray[count($classNamespaceArray) - 1];
 	}
-
-
+	
+	
 	/**
 	 * Logs an error and do a screenshot of the current screen.
 	 *
@@ -163,11 +163,11 @@ abstract class TestCase
 		if($this->_isFailed()):
 			return $this;
 		endif;
-
+		
 		return $this->_prepareAndLogErrorMessage($message, null, $errorImage);
 	}
-
-
+	
+	
 	/**
 	 * Logs a thrown exception and do a screenshot of the current screen.
 	 *
@@ -184,11 +184,11 @@ abstract class TestCase
 		if($this->_isFailed()):
 			return $this;
 		endif;
-
+		
 		return $this->_prepareAndLogErrorMessage($message, $e, $errorImage);
 	}
-
-
+	
+	
 	/**
 	 * Prepares the error text and screen shot name.
 	 * Afterwards, the ::logData method is called.
@@ -204,30 +204,30 @@ abstract class TestCase
 		$this->output($message);
 		$screenMessage = implode('', array_map('ucfirst', explode(' ', $message)));
 		if($e):
-
+			
 			$exceptionArray = explode('\\', get_class($e));
 			$exceptionName  = $exceptionArray[count($exceptionArray) - 1];
-
+			
 			$screenName = $this->getCaseName() . ' | ' . $this->_invokedBy() . ' | ' . $screenMessage . ' | '
 			              . $exceptionName;
 			$txt        = $this->getCaseName() . ' | ' . $this->_invokedBy() . ' | ' . $message . ' | ' . $exceptionName
 			              . "\n" . $e->getMessage() . "\n" . $e->getTraceAsString() . "\n";
-
+		
 		else:
-
+			
 			ob_start();
 			debug_print_backtrace();
 			$backtrace = ob_get_clean();
-
+			
 			$screenName = $this->getCaseName() . ' | ' . $this->_invokedBy() . ' | ' . $screenMessage;
 			$txt        = $this->getCaseName() . ' | ' . $this->_invokedBy() . ' | ' . $message . "\n" . $backtrace;
-
+		
 		endif;
-
+		
 		return $this->_logData($message, $txt, $screenName, $errorImage);
 	}
-
-
+	
+	
 	/**
 	 * Logs data in the database and filesystem.
 	 * A screenshot of the current screen will be created.
@@ -243,6 +243,7 @@ abstract class TestCase
 	{
 		// scroll to top of the page
 		$this->client->scrollTo(0, 0);
+		sleep(1);
 		//$this->testSuite->getWebDriver()->executeScript('javascript:window')
 		try
 		{
@@ -267,14 +268,14 @@ abstract class TestCase
 		$this->testSuite->getFileLogger()->log($txt, 'errors');
 		$this->testSuite->getSqlLogger()
 		                ->caseError($message, $this->testSuite->getWebDriver()->getCurrentURL(), $screenPath);
-
+		
 		$this->addErrorMessages($screenPath, $txt)->failed = true;
 		$this->output('TestCaseFailed! ...');
-
+		
 		return $this;
 	}
-
-
+	
+	
 	/**
 	 * Adds error messages after an error is occurred.
 	 *
@@ -299,11 +300,11 @@ abstract class TestCase
 		                                  . DIRECTORY_SEPARATOR . $screenShotUrl);
 		$this->testSuite->addErrorMessage('Logfile: [Functionality not developed]');
 		$this->testSuite->addErrorMessage('');
-
+		
 		return $this;
 	}
-
-
+	
+	
 	/**
 	 * Returns the name of the current case.
 	 *
@@ -314,37 +315,95 @@ abstract class TestCase
 	protected function _getCaseName()
 	{
 		$classNamespaceArray = explode('\\', get_class($this));
-
+		
 		return $classNamespaceArray[count($classNamespaceArray) - 1];
 	}
-
-
+	
+	
 	/**
 	 * Method to output messages in the running console.
 	 *
 	 * @param string $message                  Message to display.
+	 * @param string $foreground               (Optional) Text color.
+	 * @param string $background               (Optional) Background color.
 	 * @param bool   $camelCaseToHumanReadable Converts camel case message to human readable messages.
 	 *
 	 * @return $this Same instance for chained method calls.
 	 */
-	public function output($message, $camelCaseToHumanReadable = false)
+	public function output($message, $foreground = null, $background = null, $camelCaseToHumanReadable = false)
 	{
 		if($this->testSuite->getSuiteSettings()->isLogDisplayed()):
 			if($camelCaseToHumanReadable):
-				echo $this->camelToSentence($message) . "\n";
-
-				return $this;
+				$message = $this->camelToSentence($message);
 			endif;
-			echo $message . "\n";
+			echo $this->dye($message, $foreground, $background) . "\n";
 		endif;
 		if($this->testSuite->getSuiteSettings()->isLogStored()):
 			$this->testSuite->getFileLogger()->log($message, 'log');
 		endif;
-
+		
 		return $this;
 	}
+	
 
-
+	/**
+	 * Dyes the text for console output.
+	 * 
+	 * @param      $text
+	 * @param null $foreground
+	 * @param null $background
+	 *
+	 * @return string
+	 */
+	private function dye($text, $foreground = null, $background = null)
+	{
+		$foregroundArray = [
+			'black'        => '0;30',
+			'dark_gray'    => '1;30',
+			'blue'         => '0;34',
+			'light_blue'   => '1;34',
+			'green'        => '0;32',
+			'light_green'  => '1;32',
+			'cyan'         => '0;36',
+			'light_cyan'   => '1;36',
+			'red'          => '0;31',
+			'light_red'    => '1;31',
+			'purple'       => '0;35',
+			'light_purple' => '1;35',
+			'brown'        => '0;33',
+			'yellow'       => '1;33',
+			'light_gray'   => '0;37',
+			'white'        => '1;37',
+		];
+		
+		$backgroundArray = [
+			'black'      => '40',
+			'red'        => '41',
+			'green'      => '42',
+			'yellow'     => '43',
+			'blue'       => '44',
+			'magenta'    => '45',
+			'cyan'       => '46',
+			'light_gray' => '47',
+		];
+		
+		$dyed = '';
+		
+		if(array_key_exists($foreground, $foregroundArray))
+		{
+			$dyed .= "\033[" . $foregroundArray[$foreground] . "m";
+		}
+		if(array_key_exists($background, $backgroundArray))
+		{
+			$dyed .= "\033[" . $backgroundArray[$background] . "m";
+		}
+		
+		$dyed .= $text . "\033[0m";
+		
+		return $dyed;
+	}
+	
+	
 	/**
 	 * Converts a camel case string to an human readable string. (Whitespaces instead of camel case)
 	 *
@@ -356,8 +415,8 @@ abstract class TestCase
 	{
 		return strtolower(preg_replace(['/([a-z\d])([A-Z])/', '/([^_])([A-Z][a-z])/'], '$1 $2', $camelCaseString));
 	}
-
-
+	
+	
 	/**
 	 * Returns the method which call the method of current scope without arguments.
 	 * The argument must be a key of the debug backtrace array, otherwise the key is automatic set to 'function'.
@@ -370,18 +429,18 @@ abstract class TestCase
 	private function _invokedBy($type = null, $deepness = 2)
 	{
 		$return = $type ? : 'function';
-
+		
 		$debugBacktrace = debug_backtrace();
 		if(!array_key_exists($deepness, $debugBacktrace)):
 			throw new \UnexpectedValueException('no invokation with deepness "' . $deepness . '" found in backtrace');
 		elseif(!array_key_exists($return, $debugBacktrace[$deepness])):
 			$return = 'function';
 		endif;
-
+		
 		return $debugBacktrace[$deepness][$return];
 	}
-
-
+	
+	
 	/**
 	 * Handles unexpected exception.
 	 *
@@ -395,19 +454,19 @@ abstract class TestCase
 		$type                = $exceptionStackTrace[0]['type'];
 		$method              = $exceptionStackTrace[0]['function'];
 		$line                = $exceptionStackTrace[0]['line'];
-
+		
 		$msg = 'Unexpected exception thrown by ' . $class . $type . $method . ' on line ' . $line;
 		$this->_exceptionError($msg, $e);
 	}
-
-
+	
+	
 	/**
 	 * Run the test case.
 	 *
 	 * @return $this|TestCase Same instance for chained method calls.
 	 */
 	abstract protected function _run();
-
+	
 	######################################## Test Case helper methods ##################################################
 	/**
 	 * Generates random alphabetical letters.
@@ -440,7 +499,7 @@ abstract class TestCase
 				                                                                                                  25)]);
 			}
 		}
-
+		
 		return $result;
 	}
 }
